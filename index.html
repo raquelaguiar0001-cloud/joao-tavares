@@ -9,6 +9,19 @@
         * { box-sizing: border-box; }
         body { font-family: 'Fredoka', sans-serif; margin: 0; height: 100vh; overflow: hidden; background: #f4f7f6; }
         header { background: linear-gradient(90deg, #0d47a1 0%, #d32f2f 100%); padding: 15px; color: white; border-bottom: 4px solid #ffd700; }
+        
+        /* Estilo do Nome da Professora */
+        .teacher-name { 
+            font-size: 14px; 
+            color: #ffd700; 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+        .teacher-name:hover { opacity: 0.8; }
+
         .nav-container { background: white; border-radius: 12px; display: flex; padding: 5px; gap: 5px; margin-top: 10px; border: 2px solid #ddd; }
         .nav-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #0d47a1; border-radius: 8px; text-transform: uppercase; font-size: 11px; }
         .nav-btn.active { background: #0d47a1; color: white; }
@@ -20,6 +33,7 @@
         .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 8px; }
         .runner-emoji { font-size: 28px; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
         .runner-tag { background: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 2px solid #0d47a1; white-space: nowrap; color: #0d47a1; }
+        
         .config-overlay { position: fixed; top: 180px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 500px; z-index: 100; display: none; border: 5px solid #0d47a1; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
         .input-group { display: flex; gap: 5px; margin-bottom: 10px; }
         .input-group input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
@@ -35,7 +49,7 @@
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <div>
             <h2 style="margin:0; font-family:'Orbitron';">UE. JOÃO TAVARES DA COSTA</h2>
-            <div id="info-header" style="font-size:13px; font-weight: bold; color: #ffd700;">CHOOSE A CLASS & SUBJECT 💬</div>
+            <div class="teacher-name" onclick="editTeacher()">TEACHER: <span id="t-name">CLICK TO ADD NAME</span></div>
         </div>
         <div style="display:flex; gap:10px;">
             <button onclick="gerarExcel()" class="btn-action" style="background:#217346; color:white;">📊 EXCEL</button>
@@ -94,12 +108,17 @@
 </main>
 
 <script>
-    const CHAVE_STORAGE = 'biolab_joao_tavares_v4';
-    let dados = { turmas: [], ti: -1, bim: 1 };
+    const CHAVE_STORAGE = 'biolab_joao_tavares_v5';
+    let dados = { turmas: [], ti: -1, bim: 1, teacher: "RAQUEL AGUIAR" };
     const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏸', '🥋'];
 
     function salvar() { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(dados)); renderizar(); }
     
+    function editTeacher() {
+        let n = prompt("Enter Teacher's Name:", dados.teacher);
+        if(n) { dados.teacher = n.toUpperCase(); salvar(); }
+    }
+
     function abrirPainel(id) {
         const p = document.getElementById(id);
         const vis = p.style.display === 'block';
@@ -108,13 +127,12 @@
     }
 
     function renderizar() {
+        document.getElementById('t-name').innerText = dados.teacher || "CLICK TO ADD NAME";
         const t = dados.turmas[dados.ti];
-        document.getElementById('class-tabs').innerHTML = dados.turmas.map((x, i) => `<button onclick="dados.ti=${i};salvar();" class="btn-action" style="margin:2px; background:${i===dados.ti?'#0d47a1':'#eee'}; color:${i===dados.ti?'#fff':'#333'}">${x.n}</button>`).join('') || "Add a class first.";
+        document.getElementById('class-tabs').innerHTML = dados.turmas.map((x, i) => `<button onclick="dados.ti=${i};salvar();" class="btn-action" style="margin:2px; background:${i===dados.ti?'#0d47a1':'#eee'}; color:${i===dados.ti?'#fff':'#333'}">${x.n}</button>`).join('') || "Add a class.";
 
         if(t) {
             const m = t.mats[t.mi];
-            document.getElementById('info-header').innerText = `${t.n} | ${m ? m.toUpperCase() : 'SELECT SUBJECT'} | ${dados.bim}º TERM`;
-            
             document.getElementById('subject-tabs').innerHTML = (t.mats || []).map((x, i) => `<button onclick="dados.turmas[dados.ti].mi=${i};salvar();" class="btn-action" style="margin:2px; background:${i===t.mi?'#d32f2f':'#eee'}; color:${i===t.mi?'#fff':'#333'}">${x}</button>`).join('') || "Add a subject.";
 
             if(t.mi !== undefined && t.mats[t.mi]) {
@@ -132,7 +150,7 @@
                     track.innerHTML += `<div class="lane"><div class="runner" style="left:${nota*9.2}%"><span class="runner-emoji">${emojis[idx % emojis.length]}</span><div class="runner-tag">${s.n} | ${nota.toFixed(1)}</div></div></div>`;
                 });
             } else {
-                document.getElementById('stu-list').innerHTML = "<p style='padding:20px'>Please select a Subject above.</p>";
+                document.getElementById('stu-list').innerHTML = "<p style='padding:20px'>Select a Subject in 'SUBJECTS'.</p>";
             }
             document.getElementById('lista-exclusao').innerHTML = t.st.map((s,i) => `<div style="font-size:12px; padding:5px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${s.n} <span onclick="dados.turmas[dados.ti].st.splice(${i},1);salvar()" style="cursor:pointer">❌</span></div>`).join('');
         }
