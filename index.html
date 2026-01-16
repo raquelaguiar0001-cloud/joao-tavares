@@ -22,13 +22,12 @@
         .track-container { flex: 1; background: #c35a44; border-radius: 25px; padding: 20px; overflow-y: auto; border: 6px solid #333; background-image: linear-gradient(90deg, transparent 94%, rgba(255,255,255,0.4) 94%); background-size: 60px 100%; }
         .lane { border-bottom: 2px solid rgba(255,255,255,0.9); position: relative; height: 65px; display: flex; align-items: center; }
         .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 8px; }
-        .runner-emoji { font-size: 28px; }
         
-        /* Estilos das Notas Coloridas */
         .grade-bad { color: #d32f2f; font-weight: bold; }
         .grade-good { color: #2e7d32; font-weight: bold; }
+        .annual-box { margin-top: 8px; padding-top: 5px; border-top: 1px dashed #ccc; font-size: 12px; color: #555; display: flex; justify-content: space-between; }
+        
         .runner-tag { background: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 2px solid #0d47a1; white-space: nowrap; color: #333; }
-
         .config-overlay { position: fixed; top: 220px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 500px; z-index: 100; display: none; border: 5px solid #0d47a1; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
         .config-overlay input, .config-overlay textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; margin-bottom: 10px; font-family: inherit; }
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
@@ -98,7 +97,7 @@
 </main>
 
 <script>
-    const CHAVE_STORAGE = 'biolab_joao_tavares_v8'; // Mesma chave para não perder dados
+    const CHAVE_STORAGE = 'biolab_joao_tavares_v8';
     let dados = { turmas: [], ti: -1, bim: 1, teacher: "RAQUEL AGUIAR" };
     const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏸', '🥋'];
 
@@ -141,14 +140,30 @@
                     let k = `${t.mi}_${dados.bim}_ativ`, chs = '';
                     for(let i=0; i<(t.totA[t.mi] || 10); i++) chs += `<div class="check-box ${(s.sc[k]||[]).includes(i)?'active':''}" onclick="toggleVisto(${si},'${k}',${i})">${i+1}</div>`;
                     let crits = (t.crits[t.mi] || []).map(c => `<div style="font-size:12px; margin-top:5px;">${c.n}: <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:45px;"></div>`).join('');
-                    let nota = calcularNota(s);
-                    let corClasse = nota < 7 ? 'grade-bad' : 'grade-good';
-                    return `<div class="student-card"><b>${s.n}</b><div class="check-grid">${chs}</div>${crits}<div style="text-align:right;">GRADE: <span class="${corClasse}">${nota.toFixed(1)}</span></div></div>`;
+                    
+                    let notaBim = calcularNota(s, dados.bim);
+                    let corBim = notaBim < 7 ? 'grade-bad' : 'grade-good';
+                    
+                    // Cálculo da Média Anual
+                    let somaAnual = 0;
+                    for(let b=1; b<=4; b++) somaAnual += calcularNota(s, b);
+                    let mediaAnual = somaAnual / 4;
+                    let corAnual = mediaAnual < 7 ? 'grade-bad' : 'grade-good';
+
+                    return `<div class="student-card">
+                        <b>${s.n}</b>
+                        <div class="check-grid">${chs}</div>
+                        ${crits}
+                        <div class="annual-box">
+                            <span>BIM GRADE: <b class="${corBim}">${notaBim.toFixed(1)}</b></span>
+                            <span>ANNUAL AVG: <b class="${corAnual}">${mediaAnual.toFixed(1)}</b></span>
+                        </div>
+                    </div>`;
                 }).join('');
 
                 const track = document.getElementById('track'); track.innerHTML = '';
                 (t.st || []).forEach((s, idx) => {
-                    let nota = calcularNota(s);
+                    let nota = calcularNota(s, dados.bim);
                     let corClasse = nota < 7 ? 'grade-bad' : 'grade-good';
                     track.innerHTML += `<div class="lane"><div class="runner" style="left:${nota*9.2}%"><span class="runner-emoji">${emojis[idx % emojis.length]}</span><div class="runner-tag">${s.n} | <span class="${corClasse}">${nota.toFixed(1)}</span></div></div></div>`;
                 });
@@ -158,10 +173,10 @@
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button onclick="dados.bim=${b};salvar()" class="nav-btn ${b===dados.bim?'active':''}">${b}º TERM</button>`).join('');
     }
 
-    function calcularNota(s) {
+    function calcularNota(s, b) {
         const t = dados.turmas[dados.ti]; if(!t || t.mi === undefined) return 0;
-        let v = ((s.sc[`${t.mi}_${dados.bim}_ativ`] || []).length / (t.totA[t.mi] || 10)) * 10;
-        let e = 0; (t.crits[t.mi] || []).forEach(c => e += parseFloat(s.sc[`${t.mi}_${dados.bim}_${c.n}`] || 0));
+        let v = ((s.sc[`${t.mi}_${b}_ativ`] || []).length / (t.totA[t.mi] || 10)) * 10;
+        let e = 0; (t.crits[t.mi] || []).forEach(c => e += parseFloat(s.sc[`${t.mi}_${b}_${c.n}`] || 0));
         let res = (v + e) / ((t.crits[t.mi] || []).length + 1);
         return isNaN(res) ? 0 : res;
     }
@@ -186,8 +201,13 @@
     function importarBackup(e) { let r = new FileReader(); r.onload = (ev) => { try { dados = JSON.parse(ev.target.result); salvar(); } catch(err) { alert('Erro!'); } }; r.readAsText(e.target.files[0]); }
     function gerarExcel() { 
         const t = dados.turmas[dados.ti]; if(!t) return;
-        let csv = "\ufeffStudent;Grade\n"; 
-        (t.st||[]).forEach(s => { csv += `${s.n};${calcularNota(s).toFixed(1).replace('.',',')}\n`; }); 
+        let csv = "\ufeffStudent;Bim Grade;Annual Avg\n"; 
+        (t.st||[]).forEach(s => { 
+            let notaB = calcularNota(s, dados.bim);
+            let somaA = 0; for(let b=1; b<=4; b++) somaA += calcularNota(s, b);
+            let mediaA = somaA / 4;
+            csv += `${s.n};${notaB.toFixed(1).replace('.',',')};${mediaA.toFixed(1).replace('.',',')}\n`; 
+        }); 
         let blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
         let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Report_${t.n}_${t.mats[t.mi]}.csv`; a.click(); 
     }
