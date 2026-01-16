@@ -21,6 +21,8 @@
         .runner-emoji { font-size: 28px; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
         .runner-tag { background: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 2px solid #0d47a1; white-space: nowrap; color: #0d47a1; }
         .config-overlay { position: fixed; top: 180px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 500px; z-index: 100; display: none; border: 5px solid #0d47a1; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        .input-group { display: flex; gap: 5px; margin-bottom: 10px; }
+        .input-group input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ddd; }
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
         .check-box { width: 32px; height: 32px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 12px; }
         .check-box.active { background: #388e3c; color: white; border-color: #1b5e20; }
@@ -32,8 +34,8 @@
 <header>
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <div>
-            <h2 style="margin:0; font-family:'Orbitron'; letter-spacing: 1px;">UE. JOÃO TAVARES DA COSTA</h2>
-            <div id="info-header" style="font-size:13px; font-weight: bold; color: #ffd700;">WELCOME! 💬 👟</div>
+            <h2 style="margin:0; font-family:'Orbitron';">UE. JOÃO TAVARES DA COSTA</h2>
+            <div id="info-header" style="font-size:13px; font-weight: bold; color: #ffd700;">CHOOSE A CLASS & SUBJECT 💬</div>
         </div>
         <div style="display:flex; gap:10px;">
             <button onclick="gerarExcel()" class="btn-action" style="background:#217346; color:white;">📊 EXCEL</button>
@@ -54,26 +56,35 @@
 <div id="p-turmas" class="config-overlay">
     <h3>Manage Classes</h3>
     <div id="class-tabs" style="margin-bottom: 10px;"></div>
-    <input type="text" id="in-cl" placeholder="+ New Class and Enter" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:10px;">
+    <div class="input-group">
+        <input type="text" id="in-cl" placeholder="New Class Name...">
+        <button onclick="addT()" class="btn-action" style="background:#0d47a1; color:white;">ADD</button>
+    </div>
 </div>
 
 <div id="p-mat" class="config-overlay">
     <h3>Subjects (Matérias)</h3>
     <div id="subject-tabs" style="margin-bottom: 10px;"></div>
-    <input type="text" id="in-mat" placeholder="+ New Subject (ex: English) and Enter" onkeypress="if(event.key==='Enter') addM()" style="width:100%; padding:10px;">
+    <div class="input-group">
+        <input type="text" id="in-mat" placeholder="New Subject (ex: English)...">
+        <button onclick="addM()" class="btn-action" style="background:#d32f2f; color:white;">ADD</button>
+    </div>
 </div>
 
 <div id="p-crit" class="config-overlay">
     <h3>Assessment Skills</h3>
-    Activity Goal (Vistos): <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px;">
-    <div id="crit-list" style="margin:10px 0;"></div>
-    <input type="text" id="in-cr" placeholder="+ New Skill and Enter" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:10px;">
+    Activity Goal (Vistos): <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px; padding:5px;">
+    <div id="crit-list" style="margin:10px 0; border-top:1px solid #eee; padding-top:10px;"></div>
+    <div class="input-group">
+        <input type="text" id="in-cr" placeholder="New Skill (ex: Speaking)...">
+        <button onclick="addC()" class="btn-action" style="background:#0d47a1; color:white;">ADD</button>
+    </div>
 </div>
 
 <div id="p-alunos" class="config-overlay">
     <h3>Student List</h3>
-    <textarea id="in-nm" placeholder="Paste names..." style="width:100%; height:80px;"></textarea>
-    <button onclick="importarAlunos()" class="btn-action" style="width:100%; background:#388e3c; color:white; margin-top:5px;">ADD STUDENTS</button>
+    <textarea id="in-nm" placeholder="Paste names here..." style="width:100%; height:80px; margin-bottom:5px; padding:10px;"></textarea>
+    <button onclick="importarAlunos()" class="btn-action" style="width:100%; background:#388e3c; color:white;">SAVE STUDENTS</button>
     <div id="lista-exclusao" style="margin-top:10px; max-height:100px; overflow-y:auto;"></div>
 </div>
 
@@ -83,7 +94,7 @@
 </main>
 
 <script>
-    const CHAVE_STORAGE = 'biolab_joao_tavares_v3';
+    const CHAVE_STORAGE = 'biolab_joao_tavares_v4';
     let dados = { turmas: [], ti: -1, bim: 1 };
     const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏸', '🥋'];
 
@@ -98,28 +109,32 @@
 
     function renderizar() {
         const t = dados.turmas[dados.ti];
-        document.getElementById('class-tabs').innerHTML = dados.turmas.map((x, i) => `<button onclick="dados.ti=${i};salvar();" class="btn-action" style="margin:2px; background:${i===dados.ti?'#0d47a1':'#eee'}; color:${i===dados.ti?'#fff':'#333'}">${x.n}</button>`).join('') || "Add a class.";
+        document.getElementById('class-tabs').innerHTML = dados.turmas.map((x, i) => `<button onclick="dados.ti=${i};salvar();" class="btn-action" style="margin:2px; background:${i===dados.ti?'#0d47a1':'#eee'}; color:${i===dados.ti?'#fff':'#333'}">${x.n}</button>`).join('') || "Add a class first.";
 
         if(t) {
-            const m = t.mats[t.mi] || "Subject";
-            document.getElementById('info-header').innerText = `${t.n} | ${m.toUpperCase()} | ${dados.bim}º TERM`;
+            const m = t.mats[t.mi];
+            document.getElementById('info-header').innerText = `${t.n} | ${m ? m.toUpperCase() : 'SELECT SUBJECT'} | ${dados.bim}º TERM`;
             
-            document.getElementById('subject-tabs').innerHTML = (t.mats || []).map((x, i) => `<button onclick="dados.turmas[dados.ti].mi=${i};salvar();" class="btn-action" style="margin:2px; background:${i===t.mi?'#d32f2f':'#eee'}; color:${i===t.mi?'#fff':'#333'}">${x}</button>`).join('');
+            document.getElementById('subject-tabs').innerHTML = (t.mats || []).map((x, i) => `<button onclick="dados.turmas[dados.ti].mi=${i};salvar();" class="btn-action" style="margin:2px; background:${i===t.mi?'#d32f2f':'#eee'}; color:${i===t.mi?'#fff':'#333'}">${x}</button>`).join('') || "Add a subject.";
 
-            document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
-                let k = `${t.mi}_${dados.bim}_ativ`, chs = '';
-                for(let i=0; i<(t.totA[t.mi] || 10); i++) chs += `<div class="check-box ${(s.sc[k]||[]).includes(i)?'active':''}" onclick="toggleVisto(${si},'${k}',${i})">${i+1}</div>`;
-                let crits = (t.crits[t.mi] || []).map(c => `<div style="font-size:12px; margin-top:5px;">${c.n}: <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:45px;"></div>`).join('');
-                let nota = calcularNota(s);
-                return `<div class="student-card"><b>${s.n}</b><div class="check-grid">${chs}</div>${crits}<div style="text-align:right; font-weight:bold; color:#0d47a1">GRADE: ${nota.toFixed(1)}</div></div>`;
-            }).join('');
+            if(t.mi !== undefined && t.mats[t.mi]) {
+                document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
+                    let k = `${t.mi}_${dados.bim}_ativ`, chs = '';
+                    for(let i=0; i<(t.totA[t.mi] || 10); i++) chs += `<div class="check-box ${(s.sc[k]||[]).includes(i)?'active':''}" onclick="toggleVisto(${si},'${k}',${i})">${i+1}</div>`;
+                    let crits = (t.crits[t.mi] || []).map(c => `<div style="font-size:12px; margin-top:5px;">${c.n}: <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:45px;"></div>`).join('');
+                    let nota = calcularNota(s);
+                    return `<div class="student-card"><b>${s.n}</b><div class="check-grid">${chs}</div>${crits}<div style="text-align:right; font-weight:bold; color:#0d47a1">GRADE: ${nota.toFixed(1)}</div></div>`;
+                }).join('');
 
-            const track = document.getElementById('track'); track.innerHTML = '';
-            (t.st || []).forEach((s, idx) => {
-                let nota = calcularNota(s);
-                track.innerHTML += `<div class="lane"><div class="runner" style="left:${nota*9.2}%"><span class="runner-emoji">${emojis[idx % emojis.length]}</span><div class="runner-tag">${s.n} | ${nota.toFixed(1)}</div></div></div>`;
-            });
-            document.getElementById('lista-exclusao').innerHTML = t.st.map((s,i) => `<div style="font-size:12px;">${s.n} <button onclick="dados.turmas[dados.ti].st.splice(${i},1);salvar()">❌</button></div>`).join('');
+                const track = document.getElementById('track'); track.innerHTML = '';
+                (t.st || []).forEach((s, idx) => {
+                    let nota = calcularNota(s);
+                    track.innerHTML += `<div class="lane"><div class="runner" style="left:${nota*9.2}%"><span class="runner-emoji">${emojis[idx % emojis.length]}</span><div class="runner-tag">${s.n} | ${nota.toFixed(1)}</div></div></div>`;
+                });
+            } else {
+                document.getElementById('stu-list').innerHTML = "<p style='padding:20px'>Please select a Subject above.</p>";
+            }
+            document.getElementById('lista-exclusao').innerHTML = t.st.map((s,i) => `<div style="font-size:12px; padding:5px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${s.n} <span onclick="dados.turmas[dados.ti].st.splice(${i},1);salvar()" style="cursor:pointer">❌</span></div>`).join('');
         }
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button onclick="dados.bim=${b};salvar()" class="nav-btn ${b===dados.bim?'active':''}">${b}º TERM</button>`).join('');
     }
@@ -131,20 +146,13 @@
         return (v + e) / ((t.crits[t.mi] || []).length + 1);
     }
 
-    function toggleVisto(si, k, idx) {
-        let s = dados.turmas[dados.ti].st[si];
-        if(!s.sc[k]) s.sc[k] = [];
-        let p = s.sc[k].indexOf(idx);
-        if(p > -1) s.sc[k].splice(p, 1); else s.sc[k].push(idx);
-        salvar();
-    }
-
+    function toggleVisto(si, k, idx) { let s = dados.turmas[dados.ti].st[si]; if(!s.sc[k]) s.sc[k] = []; let p = s.sc[k].indexOf(idx); if(p > -1) s.sc[k].splice(p, 1); else s.sc[k].push(idx); salvar(); }
     function setNotaExtra(si, n, v) { const t = dados.turmas[dados.ti]; t.st[si].sc[`${t.mi}_${dados.bim}_${n}`] = v; salvar(); }
-    function addT() { let v = document.getElementById('in-cl').value; if(v){ dados.turmas.push({n:v, mats:[], mi:0, totA:[], crits:[], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
-    function addM() { let v = document.getElementById('in-mat').value; if(v && dados.ti > -1){ const t = dados.turmas[dados.ti]; t.mats.push(v); t.totA.push(10); t.crits.push([]); salvar(); document.getElementById('in-mat').value=''; } }
-    function addC() { let v = document.getElementById('in-cr').value; const t = dados.turmas[dados.ti]; if(v && t.mats.length){ t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
-    function importarAlunos() { let n = document.getElementById('in-nm').value.split('\n'); n.forEach(x => { if(x.trim()) dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); }); salvar(); }
-    function setVistos(v) { const t = dados.turmas[dados.ti]; t.totA[t.mi] = parseInt(v); salvar(); }
+    function addT() { let v = document.getElementById('in-cl').value; if(v){ dados.turmas.push({n:v, mats:[], mi:undefined, totA:[], crits:[], st:[]}); document.getElementById('in-cl').value=''; salvar(); } }
+    function addM() { let v = document.getElementById('in-mat').value; if(v && dados.ti > -1){ const t = dados.turmas[dados.ti]; t.mats.push(v); t.totA.push(10); t.crits.push([]); t.mi = t.mats.length - 1; document.getElementById('in-mat').value=''; salvar(); } }
+    function addC() { let v = document.getElementById('in-cr').value; const t = dados.turmas[dados.ti]; if(v && t.mi !== undefined){ t.crits[t.mi].push({n:v}); document.getElementById('in-cr').value=''; salvar(); } }
+    function importarAlunos() { let n = document.getElementById('in-nm').value.split('\n'); n.forEach(x => { if(x.trim()) dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); }); document.getElementById('in-nm').value=''; salvar(); }
+    function setVistos(v) { const t = dados.turmas[dados.ti]; if(t.mi !== undefined) { t.totA[t.mi] = parseInt(v); salvar(); } }
     function exportarBackup() { let b = new Blob([JSON.stringify(dados)], {type:'application/json'}); let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'Backup_JoaoTavares.json'; a.click(); }
     function importarBackup(e) { let r = new FileReader(); r.onload = (ev) => { dados = JSON.parse(ev.target.result); salvar(); }; r.readAsText(e.target.files[0]); }
     function gerarExcel() { const t = dados.turmas[dados.ti]; let csv = "\ufeffStudent;Grade\n"; t.st.forEach(s => { csv += `${s.n};${calcularNota(s).toFixed(1)}\n`; }); let blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Grades_${t.n}.csv`; a.click(); }
