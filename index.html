@@ -9,11 +9,27 @@
         * { box-sizing: border-box; }
         body { font-family: 'Fredoka', sans-serif; margin: 0; height: 100vh; overflow: hidden; background: #f4f7f6; }
         header { background: linear-gradient(90deg, #0d47a1 0%, #d32f2f 100%); padding: 15px; color: white; border-bottom: 4px solid #ffd700; }
+        
         .teacher-name { font-size: 14px; color: #ffd700; font-weight: 600; text-transform: uppercase; margin-top: 2px; cursor: pointer; }
+        
+        /* NOVO: Destaque de Turma e Matéria Ativa */
+        .status-bar { 
+            background: rgba(0,0,0,0.2); 
+            padding: 5px 15px; 
+            border-radius: 20px; 
+            display: inline-flex; 
+            gap: 15px; 
+            margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            font-size: 13px;
+        }
+        .status-item { display: flex; align-items: center; gap: 5px; }
+        .status-label { color: #ffd700; font-weight: bold; font-size: 11px; }
+
         .nav-container { background: white; border-radius: 12px; display: flex; padding: 5px; gap: 5px; margin-top: 10px; border: 2px solid #ddd; }
         .nav-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #0d47a1; border-radius: 8px; text-transform: uppercase; font-size: 11px; }
         .nav-btn.active { background: #0d47a1; color: white; }
-        .main-content { display: flex; height: calc(100vh - 175px); padding: 15px; gap: 15px; }
+        .main-content { display: flex; height: calc(100vh - 210px); padding: 15px; gap: 15px; }
         .students-area { width: 350px; display: flex; flex-direction: column; overflow-y: auto; }
         .student-card { background: white; border-radius: 12px; margin-bottom: 8px; padding: 12px; border-left: 6px solid #d32f2f; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); }
         .track-container { flex: 1; background: #c35a44; border-radius: 25px; padding: 20px; overflow-y: auto; border: 6px solid #333; background-image: linear-gradient(90deg, transparent 94%, rgba(255,255,255,0.4) 94%); background-size: 60px 100%; }
@@ -21,23 +37,29 @@
         .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 8px; }
         .runner-emoji { font-size: 28px; }
         .runner-tag { background: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 2px solid #0d47a1; white-space: nowrap; color: #0d47a1; }
-        .config-overlay { position: fixed; top: 180px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 500px; z-index: 100; display: none; border: 5px solid #0d47a1; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        
+        .config-overlay { position: fixed; top: 220px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 500px; z-index: 100; display: none; border: 5px solid #0d47a1; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
         .config-overlay input, .config-overlay textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; margin-bottom: 10px; font-family: inherit; }
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
         .check-box { width: 32px; height: 32px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 12px; }
         .check-box.active { background: #388e3c; color: white; border-color: #1b5e20; }
         .item-list { display: flex; align-items: center; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; background: #f9f9f9; border-radius: 5px; margin-bottom: 5px; }
-        .btn-del { cursor: pointer; color: #d32f2f; font-weight: bold; font-size: 14px; padding: 0 5px; }
+        .btn-del { cursor: pointer; color: #d32f2f; font-weight: bold; }
         .btn-action { padding: 10px 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <header>
-    <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
         <div>
             <h2 style="margin:0; font-family:'Orbitron';">UE. JOÃO TAVARES DA COSTA</h2>
             <div class="teacher-name" onclick="editTeacher()">TEACHER: <span id="t-name">RAQUEL AGUIAR</span></div>
+            
+            <div class="status-bar" id="current-status">
+                <div class="status-item"><span class="status-label">CLASS:</span> <span id="st-class">---</span></div>
+                <div class="status-item"><span class="status-label">SUBJECT:</span> <span id="st-subject">---</span></div>
+            </div>
         </div>
         <div style="display:flex; gap:10px;">
             <button onclick="gerarExcel()" class="btn-action" style="background:#217346; color:white;">📊 EXCEL</button>
@@ -58,20 +80,20 @@
 <div id="p-turmas" class="config-overlay">
     <h3>Manage Classes</h3>
     <div id="class-list" style="margin-bottom: 10px; max-height: 150px; overflow-y:auto;"></div>
-    <input type="text" id="in-cl" placeholder="New Class + ENTER" onkeydown="if(event.key==='Enter') addT()">
+    <input type="text" id="in-cl" placeholder="New Class Name + ENTER" onkeydown="if(event.key==='Enter') addT()">
 </div>
 
 <div id="p-mat" class="config-overlay">
     <h3>Subjects (Matérias)</h3>
     <div id="subject-list" style="margin-bottom: 10px; max-height: 150px; overflow-y:auto;"></div>
-    <input type="text" id="in-mat" placeholder="New Subject (ex: English) + ENTER" onkeydown="if(event.key==='Enter') addM()">
+    <input type="text" id="in-mat" placeholder="New Subject + ENTER" onkeydown="if(event.key==='Enter') addM()">
 </div>
 
 <div id="p-crit" class="config-overlay">
     <h3>Assessment Skills</h3>
     <p>Activity Goal (Vistos): <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:80px;"></p>
     <div id="crit-list-config" style="margin:10px 0; max-height: 150px; overflow-y:auto;"></div>
-    <input type="text" id="in-cr" placeholder="New Skill (ex: Speaking) + ENTER" onkeydown="if(event.key==='Enter') addC()">
+    <input type="text" id="in-cr" placeholder="New Skill + ENTER" onkeydown="if(event.key==='Enter') addC()">
 </div>
 
 <div id="p-alunos" class="config-overlay">
@@ -86,14 +108,12 @@
 </main>
 
 <script>
-    const CHAVE_STORAGE = 'biolab_joao_tavares_v7';
+    const CHAVE_STORAGE = 'biolab_joao_tavares_v8';
     let dados = { turmas: [], ti: -1, bim: 1, teacher: "RAQUEL AGUIAR" };
     const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏸', '🥋'];
 
     function salvar() { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(dados)); renderizar(); }
-    
     function editTeacher() { let n = prompt("Teacher's Name:", dados.teacher); if(n) { dados.teacher = n.toUpperCase(); salvar(); } }
-
     function abrirPainel(id) {
         const p = document.getElementById(id);
         const vis = p.style.display === 'block';
@@ -105,30 +125,29 @@
         document.getElementById('t-name').innerText = dados.teacher;
         const t = dados.turmas[dados.ti];
         
-        // Renderizar Lista de Turmas para Exclusão/Seleção
+        // Atualiza Barra de Status Superior
+        document.getElementById('st-class').innerText = t ? t.n.toUpperCase() : "SELECT CLASS";
+        document.getElementById('st-subject').innerText = (t && t.mats[t.mi]) ? t.mats[t.mi].toUpperCase() : "SELECT SUBJECT";
+
+        // Listas de Configuração
         document.getElementById('class-list').innerHTML = dados.turmas.map((x, i) => `
             <div class="item-list">
-                <span onclick="dados.ti=${i};salvar();" style="cursor:pointer; font-weight:${i===dados.ti?'bold':'normal'}; color:${i===dados.ti?'#0d47a1':'#333'}">${x.n} ${i===dados.ti?'(Ativa)':''}</span>
+                <span onclick="dados.ti=${i};salvar();" style="cursor:pointer; font-weight:${i===dados.ti?'bold':'normal'}; color:${i===dados.ti?'#0d47a1':'#333'}">${x.n} ${i===dados.ti?'●':''}</span>
                 <span class="btn-del" onclick="if(confirm('Excluir turma?')) {dados.turmas.splice(${i},1); dados.ti=-1; salvar();}">❌</span>
             </div>
         `).join('');
 
         if(t) {
-            // Renderizar Lista de Matérias para Exclusão/Seleção
             document.getElementById('subject-list').innerHTML = (t.mats || []).map((x, i) => `
                 <div class="item-list">
-                    <span onclick="dados.turmas[dados.ti].mi=${i};salvar();" style="cursor:pointer; font-weight:${i===t.mi?'bold':'normal'}; color:${i===t.mi?'#d32f2f':'#333'}">${x}</span>
+                    <span onclick="dados.turmas[dados.ti].mi=${i};salvar();" style="cursor:pointer; font-weight:${i===t.mi?'bold':'normal'}; color:${i===t.mi?'#d32f2f':'#333'}">${x} ${i===t.mi?'●':''}</span>
                     <span class="btn-del" onclick="if(confirm('Excluir matéria?')){t.mats.splice(${i},1); t.totA.splice(${i},1); t.crits.splice(${i},1); t.mi=0; salvar();}">❌</span>
                 </div>
             `).join('');
 
-            // Critérios da Matéria Ativa
             if(t.mi !== undefined) {
                 document.getElementById('crit-list-config').innerHTML = (t.crits[t.mi] || []).map((c, i) => `
-                    <div class="item-list">
-                        <span>${c.n}</span>
-                        <span class="btn-del" onclick="t.crits[t.mi].splice(${i},1); salvar();">❌</span>
-                    </div>
+                    <div class="item-list"><span>${c.n}</span><span class="btn-del" onclick="t.crits[t.mi].splice(${i},1); salvar();">❌</span></div>
                 `).join('');
 
                 document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
@@ -159,22 +178,9 @@
 
     function toggleVisto(si, k, idx) { let s = dados.turmas[dados.ti].st[si]; if(!s.sc[k]) s.sc[k] = []; let p = s.sc[k].indexOf(idx); if(p > -1) s.sc[k].splice(p, 1); else s.sc[k].push(idx); salvar(); }
     function setNotaExtra(si, n, v) { const t = dados.turmas[dados.ti]; t.st[si].sc[`${t.mi}_${dados.bim}_${n}`] = v; salvar(); }
-    
-    function addT() { 
-        let v = document.getElementById('in-cl').value; 
-        if(v){ dados.turmas.push({n:v, mats:['Geral'], mi:0, totA:[10], crits:[[]], st:[]}); dados.ti = dados.turmas.length - 1; document.getElementById('in-cl').value=''; salvar(); } 
-    }
-    
-    function addM() { 
-        let v = document.getElementById('in-mat').value; 
-        if(v && dados.ti > -1){ const t = dados.turmas[dados.ti]; t.mats.push(v); t.totA.push(10); t.crits.push([]); t.mi = t.mats.length - 1; document.getElementById('in-mat').value=''; salvar(); } 
-    }
-    
-    function addC() { 
-        let v = document.getElementById('in-cr').value; 
-        const t = dados.turmas[dados.ti]; 
-        if(v && t && t.mi !== undefined){ t.crits[t.mi].push({n:v}); document.getElementById('in-cr').value=''; salvar(); } 
-    }
+    function addT() { let v = document.getElementById('in-cl').value; if(v){ dados.turmas.push({n:v, mats:['English'], mi:0, totA:[10], crits:[[]], st:[]}); dados.ti = dados.turmas.length - 1; document.getElementById('in-cl').value=''; salvar(); } }
+    function addM() { let v = document.getElementById('in-mat').value; if(v && dados.ti > -1){ const t = dados.turmas[dados.ti]; t.mats.push(v); t.totA.push(10); t.crits.push([]); t.mi = t.mats.length - 1; document.getElementById('in-mat').value=''; salvar(); } }
+    function addC() { let v = document.getElementById('in-cr').value; const t = dados.turmas[dados.ti]; if(v && t && t.mi !== undefined){ t.crits[t.mi].push({n:v}); document.getElementById('in-cr').value=''; salvar(); } }
     
     document.getElementById('in-nm').onkeydown = function(e) {
         if(e.key === 'Enter') {
@@ -187,8 +193,14 @@
 
     function setVistos(v) { const t = dados.turmas[dados.ti]; if(t && t.mi !== undefined) { t.totA[t.mi] = parseInt(v); salvar(); } }
     function exportarBackup() { let b = new Blob([JSON.stringify(dados)], {type:'application/json'}); let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'Backup_JoaoTavares.json'; a.click(); }
-    function importarBackup(e) { let r = new FileReader(); r.onload = (ev) => { try { dados = JSON.parse(ev.target.result); salvar(); } catch(err) { alert('Erro no arquivo!'); } }; r.readAsText(e.target.files[0]); }
-    function gerarExcel() { const t = dados.turmas[dados.ti]; let csv = "\ufeffStudent;Grade\n"; (t.st||[]).forEach(s => { csv += `${s.n};${calcularNota(s).toFixed(1)}\n`; }); let blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'}); let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Grades_${t.n}.csv`; a.click(); }
+    function importarBackup(e) { let r = new FileReader(); r.onload = (ev) => { try { dados = JSON.parse(ev.target.result); salvar(); } catch(err) { alert('Erro!'); } }; r.readAsText(e.target.files[0]); }
+    function gerarExcel() { 
+        const t = dados.turmas[dados.ti]; if(!t) return;
+        let csv = "\ufeffStudent;Grade\n"; 
+        (t.st||[]).forEach(s => { csv += `${s.n};${calcularNota(s).toFixed(1).replace('.',',')}\n`; }); 
+        let blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Report_${t.n}_${t.mats[t.mi]}.csv`; a.click(); 
+    }
 
     window.onload = () => { let cache = localStorage.getItem(CHAVE_STORAGE); if(cache) { dados = JSON.parse(cache); renderizar(); } };
 </script>
