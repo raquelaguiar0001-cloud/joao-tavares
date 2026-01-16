@@ -2,16 +2,19 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>UE. JOÃO TAVARES DA COSTA - Sports & English</title>
+    <title>UE. JOÃO TAVARES DA COSTA - English & Sports</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Orbitron:wght@700&display=swap');
         
         * { box-sizing: border-box; }
-        body { font-family: 'Fredoka', sans-serif; margin: 0; height: 100vh; overflow: hidden; background: #f0f2f5; }
+        body { font-family: 'Fredoka', sans-serif; margin: 0; height: 100vh; overflow: hidden; background: #f4f7f6; }
         
-        /* Header Temático - Cores Navy e Red */
+        /* Header com cores Navy e Red */
         header { 
-            background: linear-gradient(90deg, #1a237e 0%, #b71c1c 100%); 
+            background: linear-gradient(90deg, #0d47a1 0%, #d32f2f 100%); 
             padding: 15px; color: white; border-bottom: 4px solid #ffd700;
         }
 
@@ -19,57 +22,56 @@
         
         .nav-btn { 
             flex: 1; padding: 10px; border: none; background: transparent; 
-            cursor: pointer; font-weight: bold; color: #1a237e; border-radius: 8px;
-            text-transform: uppercase; font-size: 12px;
+            cursor: pointer; font-weight: bold; color: #0d47a1; border-radius: 8px;
+            text-transform: uppercase; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 5px;
         }
-        .nav-btn.active { background: #1a237e; color: white; }
+        .nav-btn.active { background: #0d47a1; color: white; }
 
         .main-content { display: flex; height: calc(100vh - 175px); padding: 15px; gap: 15px; }
         
-        /* Lista de Alunos */
+        /* Lista Lateral */
         .students-area { width: 350px; display: flex; flex-direction: column; overflow-y: auto; }
-        .student-card { background: white; border-radius: 12px; margin-bottom: 8px; padding: 12px; border-left: 5px solid #b71c1c; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); }
+        .student-card { background: white; border-radius: 12px; margin-bottom: 8px; padding: 12px; border-left: 6px solid #d32f2f; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); }
         
         /* Pista de Atletismo Realista */
         .track-container { 
-            flex: 1; background: #ae4d37; border-radius: 20px; padding: 20px; 
-            overflow-y: auto; border: 8px solid #333;
-            background-image: linear-gradient(90deg, transparent 95%, rgba(255,255,255,0.5) 95%);
-            background-size: 50px 100%;
+            flex: 1; background: #c35a44; border-radius: 25px; padding: 20px; 
+            overflow-y: auto; border: 6px solid #333;
+            background-image: linear-gradient(90deg, transparent 94%, rgba(255,255,255,0.4) 94%);
+            background-size: 60px 100%;
         }
         
         .lane { 
-            border-bottom: 2px solid rgba(255,255,255,0.8); 
-            position: relative; height: 60px; display: flex; align-items: center; 
+            border-bottom: 2px solid rgba(255,255,255,0.9); 
+            position: relative; height: 65px; display: flex; align-items: center; 
         }
 
-        .runner { position: absolute; transition: 2s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; gap: 5px; }
-        
-        .runner-emoji { font-size: 24px; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5)); }
+        .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 8px; }
+        .runner-emoji { font-size: 28px; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
         
         .runner-tag { 
-            background: white; padding: 3px 8px; border-radius: 20px; 
-            font-size: 11px; font-weight: bold; border: 2px solid #1a237e; 
-            white-space: nowrap; color: #1a237e;
+            background: white; padding: 4px 10px; border-radius: 20px; 
+            font-size: 11px; font-weight: bold; border: 2px solid #0d47a1; 
+            white-space: nowrap; color: #0d47a1; box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        /* Overlays / Popups */
+        /* Popups de Configuração */
         .config-overlay { 
             position: fixed; top: 180px; left: 50%; transform: translateX(-50%); 
-            background: white; border-radius: 15px; padding: 25px; width: 90%; 
+            background: white; border-radius: 20px; padding: 25px; width: 90%; 
             max-width: 500px; z-index: 100; display: none; 
-            border: 4px solid #1a237e; box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border: 5px solid #0d47a1; box-shadow: 0 15px 40px rgba(0,0,0,0.4); 
         }
 
-        .check-grid { display: flex; flex-wrap: wrap; gap: 4px; margin: 10px 0; }
+        .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
         .check-box { 
-            width: 30px; height: 30px; border: 2px solid #ddd; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold;
+            width: 32px; height: 32px; border: 2px solid #ddd; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; font-size: 12px;
         }
-        .check-box.active { background: #2e7d32; color: white; border-color: #1b5e20; }
+        .check-box.active { background: #388e3c; color: white; border-color: #1b5e20; }
 
-        .btn-action { padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-action:hover { opacity: 0.8; transform: scale(1.05); }
+        .btn-action { padding: 10px 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-action:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -77,20 +79,20 @@
 <header>
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <div>
-            <h2 style="margin:0; font-family:'Orbitron'; letter-spacing: 2px;">JOÃO TAVARES DA COSTA</h2>
-            <div id="info-header" style="font-size:13px; font-weight: bold; color: #ffd700;">WELCOME! SELECT A CLASS</div>
+            <h2 style="margin:0; font-family:'Orbitron'; letter-spacing: 1px;">UE. JOÃO TAVARES DA COSTA</h2>
+            <div id="info-header" style="font-size:13px; font-weight: bold; color: #ffd700;">HAVE A GOOD CLASS! 💬 👟</div>
         </div>
         <div style="display:flex; gap:10px;">
             <button onclick="gerarExcel()" class="btn-action" style="background:#217346; color:white;">📊 EXCEL REPORT</button>
-            <button onclick="exportarBackup()" class="btn-action" style="background:#fff; color:#1a237e;">💾 BACKUP</button>
-            <button onclick="document.getElementById('fileIn').click()" class="btn-action" style="background:#ffd700; color:#1a237e;">📂 IMPORT</button>
+            <button onclick="exportarBackup()" class="btn-action" style="background:#fff; color:#0d47a1;">💾 BACKUP</button>
+            <button onclick="document.getElementById('fileIn').click()" class="btn-action" style="background:#ffd700; color:#0d47a1;">📂 IMPORT</button>
             <input type="file" id="fileIn" style="display:none" onchange="importarBackup(event)">
         </div>
     </div>
     <nav class="nav-container">
-        <button class="nav-btn" onclick="abrirPainel('p-turmas')">🎓 Classes</button>
-        <button class="nav-btn" onclick="abrirPainel('p-crit')">📋 Criteria</button>
-        <button class="nav-btn" onclick="abrirPainel('p-alunos')">👥 Students</button>
+        <button class="nav-btn" onclick="abrirPainel('p-turmas')">🎓 CLASSES</button>
+        <button class="nav-btn" onclick="abrirPainel('p-crit')">📋 CRITERIA</button>
+        <button class="nav-btn" onclick="abrirPainel('p-alunos')">👥 STUDENTS</button>
         <div id="bim-tabs" style="display:flex; gap:5px; margin-left:auto"></div>
     </nav>
 </header>
@@ -98,20 +100,20 @@
 <div id="p-turmas" class="config-overlay">
     <h3>Manage Classes</h3>
     <div id="class-tabs" style="margin-bottom: 15px;"></div>
-    <input type="text" id="in-cl" placeholder="+ New Class (e.g. 9th Grade A)" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:12px; border-radius: 8px; border: 2px solid #ddd;">
+    <input type="text" id="in-cl" placeholder="+ New Class (ex: 7th Year)" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:12px; border-radius: 8px; border: 2px solid #ddd;">
 </div>
 
 <div id="p-crit" class="config-overlay">
-    <h3>Assessment Skills</h3>
-    Activity Goal (Vistos): <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px; padding:5px;">
+    <h3>Assessment Skills 💬</h3>
+    Activity Goal (Vistos): <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:65px; padding:8px; border-radius: 8px; border: 1px solid #ccc;">
     <div id="crit-list" style="margin:15px 0; border-top: 1px solid #eee; padding-top: 10px;"></div>
-    <input type="text" id="in-cr" placeholder="+ New Skill (e.g. Exam, Teamwork)" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:12px; border-radius: 8px; border: 2px solid #ddd;">
+    <input type="text" id="in-cr" placeholder="+ New Skill (ex: Speaking, Cooperation)" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:12px; border-radius: 8px; border: 2px solid #ddd;">
 </div>
 
 <div id="p-alunos" class="config-overlay">
-    <h3>Student List</h3>
-    <textarea id="in-nm" placeholder="Paste names here (one per line)..." style="width:100%; height:100px; padding:10px; border-radius: 8px;"></textarea>
-    <button onclick="importarAlunos()" class="btn-action" style="width:100%; background:#2e7d32; color:white; margin-top:10px;">ADD STUDENTS</button>
+    <h3>Student List 🏃</h3>
+    <textarea id="in-nm" placeholder="Paste student names here..." style="width:100%; height:120px; padding:10px; border-radius: 8px; border: 2px solid #ddd;"></textarea>
+    <button onclick="importarAlunos()" class="btn-action" style="width:100%; background:#388e3c; color:white; margin-top:10px;">ADD STUDENTS</button>
     <div id="lista-exclusao" style="margin-top:15px; max-height:150px; overflow-y:auto; border-top: 1px solid #eee;"></div>
 </div>
 
@@ -123,7 +125,7 @@
 <script>
     const CHAVE_STORAGE = 'biolab_joao_tavares_v2';
     let dados = { turmas: [], ti: -1, bim: 1 };
-    const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏹', '🥋'];
+    const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏸', '🥋'];
 
     function salvar() {
         localStorage.setItem(CHAVE_STORAGE, JSON.stringify(dados));
@@ -132,16 +134,16 @@
 
     function abrirPainel(id) {
         const p = document.getElementById(id);
-        const ativo = p.style.display === 'block';
+        const visualizado = p.style.display === 'block';
         document.querySelectorAll('.config-overlay').forEach(x => x.style.display = 'none');
-        if(!ativo) p.style.display = 'block';
+        if(!visualizado) p.style.display = 'block';
     }
 
     function renderizar() {
         const t = dados.turmas[dados.ti];
         document.getElementById('class-tabs').innerHTML = dados.turmas.map((x, i) => 
-            `<button onclick="dados.ti=${i};salvar();" class="btn-action" style="margin:2px; background:${i===dados.ti?'#1a237e':'#eee'}; color:${i===dados.ti?'#fff':'#333'}">${x.n}</button>`
-        ).join('') || "No classes added.";
+            `<button onclick="dados.ti=${i};salvar();" class="btn-action" style="margin:2px; background:${i===dados.ti?'#0d47a1':'#eee'}; color:${i===dados.ti?'#fff':'#333'}">${x.n}</button>`
+        ).join('') || "No classes.";
 
         if(t) {
             document.getElementById('info-header').innerText = `CLASS: ${t.n} | TERM: ${dados.bim}º BIMESTRE`;
@@ -149,19 +151,19 @@
             document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
                 let k = `0_${dados.bim}_ativ`, chs = '';
                 for(let i=0; i<(t.totA || 10); i++) chs += `<div class="check-box ${(s.sc[k]||[]).includes(i)?'active':''}" onclick="toggleVisto(${si},'${k}',${i})">${i+1}</div>`;
-                let crits = (t.crits || []).map(c => `<div style="font-size:12px; margin-top:5px;">${c.n}: <input type="number" step="0.1" value="${s.sc[`0_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:45px; border-radius:4px; border:1px solid #ccc"></div>`).join('');
+                let crits = (t.crits || []).map(c => `<div style="font-size:12px; margin-top:6px;">${c.n}: <input type="number" step="0.1" value="${s.sc[`0_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:45px; border-radius:4px; border:1px solid #ccc"></div>`).join('');
                 let nota = calcularNota(s);
-                return `<div class="student-card"><b>${s.n}</b><div class="check-grid">${chs}</div>${crits}<div style="text-align:right; margin-top:5px;"><strong>GRADE: ${nota.toFixed(1)}</strong></div></div>`;
+                return `<div class="student-card"><b>${s.n}</b><div class="check-grid">${chs}</div>${crits}<div style="text-align:right; margin-top:5px; color:#0d47a1"><strong>GRADE: ${nota.toFixed(1)}</strong></div></div>`;
             }).join('');
 
             const track = document.getElementById('track'); track.innerHTML = '';
             (t.st || []).forEach((s, idx) => {
                 let nota = calcularNota(s);
                 let emoji = emojis[idx % emojis.length];
-                track.innerHTML += `<div class="lane"><div class="runner" style="left:${nota*9}%"><span class="runner-emoji">${emoji}</span><div class="runner-tag">${s.n} | ${nota.toFixed(1)}</div></div></div>`;
+                track.innerHTML += `<div class="lane"><div class="runner" style="left:${nota*9.2}%"><span class="runner-emoji">${emoji}</span><div class="runner-tag">${s.n} | ${nota.toFixed(1)}</div></div></div>`;
             });
 
-            document.getElementById('lista-exclusao').innerHTML = t.st.map((s,i) => `<div style="padding:5px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">${s.n} <button onclick="dados.turmas[dados.ti].st.splice(${i},1);salvar()" style="background:none; border:none; cursor:pointer;">❌</button></div>`).join('');
+            document.getElementById('lista-exclusao').innerHTML = t.st.map((s,i) => `<div style="padding:6px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; font-size:12px;">${s.n} <button onclick="dados.turmas[dados.ti].st.splice(${i},1);salvar()" style="background:none; border:none; cursor:pointer;">❌</button></div>`).join('');
         }
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button onclick="dados.bim=${b};salvar()" class="nav-btn ${b===dados.bim?'active':''}">${b}º TERM</button>`).join('');
     }
@@ -189,7 +191,7 @@
     
     function exportarBackup() { 
         let b = new Blob([JSON.stringify(dados)], {type:'application/json'}); 
-        let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'Backup_Sports_English.json'; a.click(); 
+        let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'Backup_JoãoTavares_EnglishSports.json'; a.click(); 
     }
     
     function importarBackup(e) {
@@ -199,11 +201,11 @@
     }
 
     function gerarExcel() {
-        const t = dados.turmas[dados.ti]; if(!t) return alert("Select a class!");
+        const t = dados.turmas[dados.ti]; if(!t) return alert("Select a class first!");
         let csv = "\ufeffStudent;Grade\n";
         t.st.forEach(s => { csv += `${s.n};${calcularNota(s).toFixed(1)}\n`; });
         let blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Grades_${t.n}.csv`; a.click();
+        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `Report_${t.n}.csv`; a.click();
     }
 
     window.onload = () => {
