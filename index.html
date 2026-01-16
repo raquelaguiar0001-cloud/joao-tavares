@@ -18,26 +18,19 @@
         .nav-btn.active { background: #0d47a1; color: white; }
         .main-content { display: flex; height: calc(100vh - 210px); padding: 15px; gap: 15px; }
         .students-area { width: 350px; display: flex; flex-direction: column; overflow-y: auto; }
-        
-        /* Cartão do Aluno com Destaque na Nota Bimestral */
         .student-card { background: white; border-radius: 12px; margin-bottom: 8px; padding: 12px; border-left: 6px solid #d32f2f; box-shadow: 2px 2px 8px rgba(0,0,0,0.1); }
         .grade-highlight-box { margin-top: 10px; padding: 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
         .bim-label { font-size: 10px; font-weight: bold; text-transform: uppercase; display: block; }
         .bim-value { font-size: 22px; font-weight: 800; }
-        
-        /* Cores das Notas */
         .bg-bad { background: #ffebee; color: #d32f2f; }
         .bg-good { background: #e8f5e9; color: #2e7d32; }
         .text-bad { color: #d32f2f; font-weight: bold; }
         .text-good { color: #2e7d32; font-weight: bold; }
-
         .annual-info { font-size: 11px; color: #666; margin-top: 4px; text-align: right; border-top: 1px solid #eee; padding-top: 4px; }
-
         .track-container { flex: 1; background: #c35a44; border-radius: 25px; padding: 20px; overflow-y: auto; border: 6px solid #333; background-image: linear-gradient(90deg, transparent 94%, rgba(255,255,255,0.4) 94%); background-size: 60px 100%; }
         .lane { border-bottom: 2px solid rgba(255,255,255,0.9); position: relative; height: 65px; display: flex; align-items: center; }
         .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 8px; }
         .runner-tag { background: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; border: 2px solid #0d47a1; white-space: nowrap; color: #333; }
-
         .config-overlay { position: fixed; top: 220px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 25px; width: 90%; max-width: 500px; z-index: 100; display: none; border: 5px solid #0d47a1; box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
         .config-overlay input, .config-overlay textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; margin-bottom: 10px; font-family: inherit; }
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
@@ -211,31 +204,37 @@
     function exportarBackup() { let b = new Blob([JSON.stringify(dados)], {type:'application/json'}); let a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'Backup_JoaoTavares.json'; a.click(); }
     function importarBackup(e) { let r = new FileReader(); r.onload = (ev) => { try { dados = JSON.parse(ev.target.result); salvar(); } catch(err) { alert('Erro!'); } }; r.readAsText(e.target.files[0]); }
 
+    // NOVO: Função Excel Organizada por Blocos (Matéria Abaixo de Matéria)
     function gerarExcel() { 
         const t = dados.turmas[dados.ti]; if(!t) return;
-        let cabecalho = "\ufeffSTUDENT";
-        t.mats.forEach(m => {
-            cabecalho += `;${m} (1B);${m} (2B);${m} (3B);${m} (4B);${m} (AVG)`;
-        });
-        cabecalho += "\n";
-        let corpo = "";
-        (t.st || []).forEach(s => {
-            corpo += `${s.n}`;
-            t.mats.forEach((m, mi) => {
+        let csv = "\ufeff"; 
+
+        t.mats.forEach((m, mi) => {
+            // Título da Matéria
+            csv += `SUBJECT: ${m.toUpperCase()}\n`;
+            // Cabeçalho da Tabela
+            csv += `STUDENT;1º TERM;2º TERM;3º TERM;4º TERM;ANNUAL AVG\n`;
+
+            (t.st || []).forEach(s => {
                 let somaAnual = 0;
+                let linhaAlun = `${s.n}`;
                 for(let b=1; b<=4; b++) {
                     let n = calcularNota(s, b, mi);
                     somaAnual += n;
-                    corpo += `;${n.toFixed(1).replace('.',',')}`;
+                    linhaAlun += `;${n.toFixed(1).replace('.',',')}`;
                 }
-                corpo += `;${(somaAnual/4).toFixed(1).replace('.',',')}`;
+                linhaAlun += `;${(somaAnual/4).toFixed(1).replace('.',',')}\n`;
+                csv += linhaAlun;
             });
-            corpo += "\n";
+
+            // Adiciona Linhas vazias para separar as matérias
+            csv += `\n\n`;
         });
-        let blob = new Blob([cabecalho + corpo], {type: 'text/csv;charset=utf-8;'});
+
+        let blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
         let a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `FULL_REPORT_${t.n}.csv`;
+        a.download = `ORGANIZED_REPORT_${t.n}.csv`;
         a.click(); 
     }
 
