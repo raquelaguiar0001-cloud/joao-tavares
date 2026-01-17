@@ -22,6 +22,7 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* CABEÇALHO ORIGINAL MANTIDO */
         header { 
             background: linear-gradient(90deg, rgba(13,71,161,0.9) 0%, rgba(211,47,47,0.9) 100%); 
             backdrop-filter: blur(10px); padding: 15px; color: white; border-bottom: 4px solid #ffd700;
@@ -35,11 +36,16 @@
         .nav-container { 
             background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(5px);
             border-radius: 12px; display: flex; padding: 5px; gap: 5px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.3);
+            align-items: center;
         }
 
         .nav-btn { flex: 1; padding: 10px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #0d47a1; border-radius: 8px; text-transform: uppercase; font-size: 11px; }
         .nav-btn:hover { background: rgba(13,71,161,0.1); transform: translateY(-2px); }
         .nav-btn.active { background: #0d47a1; color: white; box-shadow: 0 4px 10px rgba(13,71,161,0.3); }
+
+        /* CONTROLES DE ZOOM E MAXIMIZAR */
+        .zoom-controls { display: flex; gap: 2px; background: rgba(0,0,0,0.1); border-radius: 6px; padding: 2px; margin: 0 5px; }
+        .zoom-btn { border: none; background: white; cursor: pointer; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 14px; }
 
         .main-content { display: flex; height: calc(100vh - 215px); padding: 15px; gap: 15px; position: relative; z-index: 5; }
         .students-area { width: 360px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; }
@@ -50,11 +56,18 @@
             border-left: 6px solid #d32f2f; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-        /* PISTA COMPACTADA */
         .track-container { flex: 1; background: #c35a44; border-radius: 25px; padding: 10px; overflow-y: auto; border: 8px solid #333; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); position: relative; }
-        .track-container.expanded { flex: none; width: 100%; height: calc(100vh - 185px); position: absolute; top: 0; left: 0; z-index: 100; border-radius: 0; }
         
-        .lane { border-bottom: 1px solid rgba(255,255,255,0.15); position: relative; height: 38px; display: flex; align-items: center; }
+        /* ESTILO MAXIMIZADO */
+        body.max-view header { display: none; }
+        body.max-view .students-area { display: none; }
+        body.max-view .main-content { height: 100vh; padding: 0; }
+        body.max-view .track-container { border-radius: 0; border: none; }
+        
+        .btn-restore { position: fixed; bottom: 20px; right: 20px; z-index: 200; background: #0d47a1; color: white; border: 4px solid #ffd700; padding: 10px 20px; border-radius: 50px; font-weight: bold; cursor: pointer; display: none; }
+        body.max-view .btn-restore { display: block; }
+
+        .lane { border-bottom: 1px solid rgba(255,255,255,0.15); position: relative; display: flex; align-items: center; }
         .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 5px; }
 
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 10px 0; }
@@ -80,6 +93,8 @@
 </head>
 <body onclick="fecharAoClicarFora(event)">
 
+<button class="btn-restore" onclick="toggleMax()">🔙 RETURN TO PANEL</button>
+
 <header onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:flex-start;">
         <div>
@@ -102,49 +117,59 @@
         <button class="nav-btn" onclick="abrirPainel(event, 'p-mat')">📚 SUBJECTS</button>
         <button class="nav-btn" onclick="abrirPainel(event, 'p-crit')">📋 CRITERIA</button>
         <button class="nav-btn" onclick="abrirPainel(event, 'p-alunos')">👥 STUDENTS</button>
+        
+        <div class="zoom-controls">
+            <button class="zoom-btn" onclick="adjustZoom(-4)">-</button>
+            <span style="font-size: 10px; font-weight: bold; color: #555; padding: 0 4px;">TRACK</span>
+            <button class="zoom-btn" onclick="adjustZoom(4)">+</button>
+        </div>
+
+        <button class="nav-btn" onclick="toggleMax()" style="background: #1a2a3a; color: #ffd700; flex: 0.6;">📺 MAXIMIZE</button>
+
         <div id="bim-tabs" style="display:flex; gap:5px; margin-left:auto"></div>
     </nav>
 </header>
 
 <main class="main-content">
     <aside class="students-area" id="stu-list"></aside>
-    <section class="track-container" id="track">
-        <button style="position:absolute; top:10px; right:10px; z-index:10;" onclick="toggleTrackExpansion(event)">🔄</button>
-    </section>
+    <section class="track-container" id="track"></section>
 </main>
 
 <div id="p-turmas" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Manage Classes</h3>
-    <div id="class-list"></div>
+    <div id="class-list" style="max-height: 200px; overflow-y: auto;"></div>
     <input type="text" id="in-cl" placeholder="New Class Name + ENTER" onkeydown="if(event.key==='Enter') addT()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <div id="p-mat" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Subjects</h3>
-    <div id="subject-list"></div>
+    <div id="subject-list" style="max-height: 200px; overflow-y: auto;"></div>
     <input type="text" id="in-mat" placeholder="New Subject + ENTER" onkeydown="if(event.key==='Enter') addM()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Criteria</h3>
     <p>Activity Goal (Vistos): <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:80px;"></p>
-    <div id="crit-list-config"></div>
+    <div id="crit-list-config" style="max-height: 180px; overflow-y: auto;"></div>
     <input type="text" id="in-cr" placeholder="New Criterion + ENTER" onkeydown="if(event.key==='Enter') addC()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Student List</h3>
-    <textarea id="in-nm" placeholder="Paste names and ENTER..." style="width:100%; height:80px;"></textarea>
+    <textarea id="in-nm" placeholder="Paste names and press ENTER..." style="width:100%; height:80px;"></textarea>
     <div id="lista-exclusao" style="max-height:200px; overflow-y:auto; margin-top:10px; border-top:1px solid #eee;"></div>
 </div>
 
 <script>
     const CHAVE_STORAGE = 'biolab_joao_tavares_v8';
-    let dados = { turmas: [], ti: -1, bim: 1, teacher: "RAQUEL AGUIAR" };
+    let dados = { turmas: [], ti: -1, bim: 1, teacher: "RAQUEL AGUIAR", zoom: 38 };
     const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏸', '🥋'];
 
     function salvar() { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(dados)); renderizar(); }
     
+    function toggleMax() { document.body.classList.toggle('max-view'); }
+    function adjustZoom(val) { dados.zoom = Math.max(20, Math.min(100, (dados.zoom || 38) + val)); salvar(); }
+
     function abrirPainel(e, id) {
         if(e) e.stopPropagation();
         fecharTodos();
@@ -203,24 +228,25 @@
                 </div>`;
             }).join('');
 
-            const track = document.getElementById('track');
-            track.innerHTML = '<button style="position:absolute; top:10px; right:10px; z-index:10;" onclick="toggleTrackExpansion(event)">🔄</button>' + 
-            (t.st || []).map((s, idx) => {
+            const track = document.getElementById('track'); track.innerHTML = '';
+            const zoomAt = dados.zoom || 38;
+            (t.st || []).forEach((s, idx) => {
                 let n = calcularNota(s, dados.bim, t.mi);
-                return `<div class="lane"><div class="runner" style="left:${n*9.2}%">
-                    <span style="font-size:22px;">${emojis[idx % emojis.length]}</span>
-                    <div style="background:white; padding:1px 6px; border-radius:15px; font-size:9px; font-weight:bold; border:1px solid #0d47a1; white-space:nowrap;">
+                let lane = document.createElement('div'); lane.className = 'lane'; lane.style.height = zoomAt + 'px';
+                lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
+                    <span style="font-size:${zoomAt*0.6}px;">${emojis[idx % emojis.length]}</span>
+                    <div style="background:white; padding:1px 6px; border-radius:15px; font-size:${Math.max(8, zoomAt*0.25)}px; font-weight:bold; border:1px solid #0d47a1; white-space:nowrap;">
                         ${s.n} | <span class="${n < 7 ? 'score-red' : 'score-green'}">${n.toFixed(1)}</span>
                     </div>
-                </div></div>`;
-            }).join('');
+                </div>`;
+                track.appendChild(lane);
+            });
 
             document.getElementById('lista-exclusao').innerHTML = t.st.map((s,i) => `<div class="item-list"><span>${s.n}</span><button class="btn-del" onclick="excluirAluno(event, ${i})">❌</button></div>`).join('');
         }
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button onclick="event.stopPropagation(); dados.bim=${b};salvar()" class="nav-btn ${b===dados.bim?'active':''}">${b}º TERM</button>`).join('');
     }
 
-    function toggleTrackExpansion(e) { e.stopPropagation(); document.getElementById('track').classList.toggle('expanded'); document.querySelector('.students-area').style.display = document.getElementById('track').classList.contains('expanded') ? 'none' : 'flex'; }
     function calcularNota(s, b, mi) { const t = dados.turmas[dados.ti]; if(!t || mi === undefined) return 0; let v = ((s.sc[`${mi}_${b}_ativ`] || []).length / (t.totA[mi] || 10)) * 10; let e = 0; (t.crits[mi] || []).forEach(c => e += parseFloat(s.sc[`${mi}_${b}_${c.n}`] || 0)); let res = (v + e) / ((t.crits[mi] || []).length + 1); return isNaN(res) ? 0 : res; }
     function toggleVisto(si, k, idx) { let s = dados.turmas[dados.ti].st[si]; if(!s.sc[k]) s.sc[k] = []; let p = s.sc[k].indexOf(idx); if(p > -1) s.sc[k].splice(p, 1); else s.sc[k].push(idx); salvar(); }
     function setNotaExtra(si, n, v) { dados.turmas[dados.ti].st[si].sc[`${dados.turmas[dados.ti].mi}_${dados.bim}_${n}`] = v; salvar(); }
