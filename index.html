@@ -12,7 +12,7 @@
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Orbitron:wght@700&display=swap');
-        * { box-sizing: border-box; transition: all 0.25s ease; }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
         
         body { 
             font-family: 'Fredoka', sans-serif; margin: 0; height: 100vh; display: flex; flex-direction: column; 
@@ -22,8 +22,8 @@
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         header { 
-            background: linear-gradient(90deg, rgba(13,71,161,0.9) 0%, rgba(211,47,47,0.9) 100%); 
-            backdrop-filter: blur(10px); padding: 10px 15px; color: white; border-bottom: 4px solid #ffd700;
+            background: linear-gradient(90deg, #0d47a1 0%, #d32f2f 100%); 
+            padding: 10px 15px; color: white; border-bottom: 4px solid #ffd700;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 10; flex-shrink: 0;
         }
 
@@ -36,7 +36,7 @@
         }
 
         .nav-btn { flex: 1; padding: 8px; border: none; background: transparent; cursor: pointer; font-weight: bold; color: #0d47a1; border-radius: 8px; text-transform: uppercase; font-size: 10px; }
-        .nav-btn.active { background: #0d47a1; color: white; }
+        .nav-btn.active { background: #0d47a1 !important; color: white !important; }
 
         .main-content { display: flex; flex: 1; padding: 15px; gap: 15px; overflow: hidden; }
         .students-area { width: 340px; display: flex; flex-direction: column; overflow-y: auto; }
@@ -56,7 +56,7 @@
         .check-box { width: 28px; height: 28px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; background: white; }
         .check-box.active { background: #388e3c; color: white; border-color: #1b5e20; }
 
-        .config-overlay { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 20px; width: 90%; max-width: 450px; z-index: 1000; display: none; border: 4px solid #0d47a1; box-shadow: 0 10px 50px rgba(0,0,0,0.4); }
+        .config-overlay { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 20px; width: 90%; max-width: 450px; z-index: 1000; display: none; border: 4px solid #0d47a1; box-shadow: 0 10px 50px rgba(0,0,0,0.4); }
         .item-list { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; align-items: center; }
         .btn-del { color: #d32f2f; cursor: pointer; background: #ffebee; border: none; padding: 4px 8px; border-radius: 5px; }
         #loading { position: fixed; inset: 0; background: white; display: flex; align-items: center; justify-content: center; z-index: 9999; }
@@ -141,47 +141,60 @@
     const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏸', '🥋'];
 
     db.ref('biolab_joao_tavares').on('value', (snap) => {
-        if(snap.val()) dados = snap.val();
+        if(snap.val()) {
+            dados = snap.val();
+            if (!dados.turmas) dados.turmas = [];
+        }
         document.getElementById('loading').style.display = 'none';
         renderizar();
     });
 
     function salvar() { db.ref('biolab_joao_tavares').set(dados); }
-
     function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
 
     function getNota(aluno, bim, mIdx) {
         const t = dados.turmas[dados.ti]; if(!t) return 0;
-        let kA = `${mIdx}_${bim}_ativ`, totA = t.totA[mIdx] || 10;
+        let kA = `${mIdx}_${bim}_ativ`, totA = (t.totA && t.totA[mIdx]) || 10;
+        if (!aluno.sc) aluno.sc = {};
         let nVistos = ((aluno.sc[kA] || []).length / totA) * 10;
-        let nExtra = 0, crits = t.crits[mIdx] || [];
+        let nExtra = 0, crits = (t.crits && t.crits[mIdx]) || [];
         crits.forEach(c => nExtra += parseFloat(aluno.sc[`${mIdx}_${bim}_${c.n}`] || 0));
         let res = (nVistos + nExtra) / (crits.length + 1);
         return isNaN(res) ? 0 : res;
     }
 
     function renderizar() {
+        if (!dados.turmas) dados.turmas = [];
         const t = dados.turmas[dados.ti];
+
+        // Atualiza Lista de Turmas
+        document.getElementById('class-list').innerHTML = dados.turmas.map((x,i)=>`<div class="item-list"><span onclick="dados.ti=${i};salvar()" style="${i===dados.ti?'font-weight:bold;color:#0d47a1':''}">${x.n}</span><button class="btn-del" onclick="if(confirm('Delete?')){dados.turmas.splice(${i},1);salvar()}">❌</button></div>`).join('');
+
         if(!t) {
-            document.getElementById('class-list').innerHTML = (dados.turmas||[]).map((x,i)=>`<div class="item-list"><span onclick="dados.ti=${i};salvar()">${x.n}</span><button class="btn-del" onclick="dados.turmas.splice(${i},1);salvar()">❌</button></div>`).join('');
+            document.getElementById('txt-turma').innerText = "---";
+            document.getElementById('txt-materia').innerText = "---";
+            document.getElementById('stu-list').innerHTML = "";
+            document.getElementById('track').innerHTML = "";
             return;
         }
 
         document.getElementById('txt-turma').innerText = t.n;
-        document.getElementById('txt-materia').innerText = t.mats[t.mi];
-        document.getElementById('tot-at').value = t.totA[t.mi] || 10;
+        document.getElementById('txt-materia').innerText = (t.mats && t.mats[t.mi]) || "---";
+        document.getElementById('tot-at').value = (t.totA && t.totA[t.mi]) || 10;
 
-        document.getElementById('class-list').innerHTML = dados.turmas.map((x,i)=>`<div class="item-list"><span onclick="dados.ti=${i};salvar()" style="${i===dados.ti?'font-weight:bold;color:#0d47a1':''}">${x.n}</span><button class="btn-del" onclick="dados.turmas.splice(${i},1);salvar()">❌</button></div>`).join('');
-        document.getElementById('subject-list').innerHTML = t.mats.map((m,i)=>`<div class="item-list"><span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="${i===t.mi?'font-weight:bold;color:#0d47a1':''}">${m}</span><button class="btn-del" onclick="t.mats.splice(${i},1);t.mi=0;salvar()">❌</button></div>`).join('');
-        document.getElementById('crit-list').innerHTML = (t.crits[t.mi] || []).map((c,i)=>`<div class="item-list"><span>${c.n}</span><button class="btn-del" onclick="t.crits[t.mi].splice(${i},1);salvar()">❌</button></div>`).join('');
+        // Paineis
+        document.getElementById('subject-list').innerHTML = (t.mats || []).map((m,i)=>`<div class="item-list"><span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="${i===t.mi?'font-weight:bold;color:#0d47a1':''}">${m}</span><button class="btn-del" onclick="t.mats.splice(${i},1);t.mi=0;salvar()">❌</button></div>`).join('');
+        document.getElementById('crit-list').innerHTML = (t.crits && t.crits[t.mi] || []).map((c,i)=>`<div class="item-list"><span>${c.n}</span><button class="btn-del" onclick="t.crits[t.mi].splice(${i},1);salvar()">❌</button></div>`).join('');
         document.getElementById('del-stu-list').innerHTML = (t.st || []).map((s,i)=>`<div class="item-list"><span>${s.n}</span><button class="btn-del" onclick="t.st.splice(${i},1);salvar()">❌</button></div>`).join('');
 
+        // Alunos e Pista
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
+            if (!s.sc) s.sc = {};
             let nB = getNota(s, dados.bim, t.mi);
-            let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = t.totA[t.mi] || 10;
+            let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = (t.totA && t.totA[t.mi]) || 10;
             for(let i=0; i<tot; i++) chs += `<div class="check-box ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
-            let critsH = (t.crits[t.mi] || []).map(c => `
+            let critsH = (t.crits && t.crits[t.mi] || []).map(c => `
                 <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:5px;">
                     <span>${c.n}</span>
                     <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" style="width:40px;">
@@ -193,20 +206,20 @@
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
             let lane = document.createElement('div'); lane.className = 'lane'; lane.style.height = '38px';
-            lane.innerHTML = `<div class="runner" style="left:${n*9.2}%"><span style="font-size:22px">${emojis[i%emojis.length]}</span><div style="background:white; padding:2px 5px; border-radius:10px; font-size:10px; font-weight:bold; border:1px solid #0d47a1;">${s.n} | ${n.toFixed(1)}</div></div>`;
+            lane.innerHTML = `<div class="runner" style="left:${n*9.2}%"><span style="font-size:22px">${emojis[i%emojis.length]}</span><div style="background:white; padding:2px 5px; border-radius:10px; font-size:10px; font-weight:bold; border:1px solid #0d47a1; white-space:nowrap;">${s.n} | ${n.toFixed(1)}</div></div>`;
             track.appendChild(lane);
         });
 
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º TERM</button>`).join('');
     }
 
-    function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
-    function upN(si, k, v) { dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
-    function setVistos(v) { dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
-    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['English'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); } }
-    function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; t.mats.push(v); t.totA.push(10); t.crits.push([]); t.mi=t.mats.length-1; salvar(); } }
-    function addC() { let v=document.getElementById('in-cr').value; if(v){ dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].push({n:v}); salvar(); } }
-    function addStus() { let n=document.getElementById('in-nm').value.split('\n'); n.forEach(x=>{ if(x.trim()) dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); }); salvar(); }
+    function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
+    function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
+    function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
+    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['English'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
+    function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); t.totA.push(10); t.crits.push([]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
+    function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
+    function addStus() { let n=document.getElementById('in-nm').value.split('\n'); n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); document.getElementById('in-nm').value=''; salvar(); }
     
     function exportarExcelCompleto() {
         const t = dados.turmas[dados.ti]; if(!t) return;
@@ -226,7 +239,7 @@
     }
 
     function exportarBackup() { let b=new Blob([JSON.stringify(dados)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='Backup_JTavares.json'; a.click(); }
-    function importarBackup(e) { let fr=new FileReader(); fr.onload=(ev)=>{ try { dados=JSON.parse(ev.target.result); salvar(); } catch(e){alert("Erro ao ler arquivo");} }; fr.readAsText(e.target.files[0]); }
+    function importarBackup(e) { let fr=new FileReader(); fr.onload=(ev)=>{ try { dados=JSON.parse(ev.target.result); salvar(); } catch(e){alert("Error reading file");} }; fr.readAsText(e.target.files[0]); }
 </script>
 </body>
 </html>
