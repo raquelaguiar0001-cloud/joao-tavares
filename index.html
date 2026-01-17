@@ -153,6 +153,13 @@
     function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
 
+    // --- FUNÇÕES DE EXCLUSÃO CORRIGIDAS ---
+    function delT(i) { if(confirm('Excluir esta turma permanentemente?')){ dados.turmas.splice(i, 1); dados.ti = 0; salvar(); } }
+    function delM(i) { if(confirm('Excluir esta matéria?')){ dados.turmas[dados.ti].mats.splice(i, 1); dados.turmas[dados.ti].mi = 0; salvar(); } }
+    function delS(i) { if(confirm('Remover este aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
+    function delC(i) { dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i, 1); salvar(); }
+    // -------------------------------------
+
     function getNota(aluno, bim, mIdx) {
         const t = dados.turmas[dados.ti]; if(!t) return 0;
         let kA = `${mIdx}_${bim}_ativ`, totA = (t.totA && t.totA[mIdx]) || 10;
@@ -172,7 +179,7 @@
         document.getElementById('class-list').innerHTML = dados.turmas.map((x,i)=>`
             <div class="item-list">
                 <span onclick="dados.ti=${i};salvar()" style="${i===dados.ti?'font-weight:bold;color:#0d47a1':''}">${x.n}</span>
-                <button class="btn-del" onclick="if(confirm('Delete class?')){dados.turmas.splice(${i},1);dados.ti=0;salvar()}">❌</button>
+                <button class="btn-del" onclick="delT(${i})">❌</button>
             </div>`).join('');
 
         if(!t) {
@@ -191,21 +198,21 @@
         document.getElementById('subject-list').innerHTML = (t.mats || []).map((m,i)=>`
             <div class="item-list">
                 <span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="${i===t.mi?'font-weight:bold;color:#0d47a1':''}">${m}</span>
-                <button class="btn-del" onclick="if(confirm('Delete subject?')){t.mats.splice(${i},1);t.mi=0;salvar()}">❌</button>
+                <button class="btn-del" onclick="delM(${i})">❌</button>
             </div>`).join('');
 
         // Criterios
         document.getElementById('crit-list').innerHTML = (t.crits && t.crits[t.mi] || []).map((c,i)=>`
             <div class="item-list">
                 <span>${c.n}</span>
-                <button class="btn-del" onclick="t.crits[t.mi].splice(${i},1);salvar()">❌</button>
+                <button class="btn-del" onclick="delC(${i})">❌</button>
             </div>`).join('');
 
         // Lista Exclusão Alunos
         document.getElementById('del-stu-list').innerHTML = (t.st || []).map((s,i)=>`
             <div class="item-list">
                 <span>${s.n}</span>
-                <button class="btn-del" onclick="if(confirm('Delete student?')){t.st.splice(${i},1);salvar()}">❌</button>
+                <button class="btn-del" onclick="delS(${i})">❌</button>
             </div>`).join('');
 
         // Cartões
