@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>BIOLAB - UE. JOÃO TAVARES DA COSTA</title>
+    <title>UE. JOÃO TAVARES DA COSTA</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
 
@@ -153,12 +153,10 @@
     function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
 
-    // --- FUNÇÕES DE EXCLUSÃO CORRIGIDAS ---
     function delT(i) { if(confirm('Excluir esta turma permanentemente?')){ dados.turmas.splice(i, 1); dados.ti = 0; salvar(); } }
     function delM(i) { if(confirm('Excluir esta matéria?')){ dados.turmas[dados.ti].mats.splice(i, 1); dados.turmas[dados.ti].mi = 0; salvar(); } }
     function delS(i) { if(confirm('Remover este aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
     function delC(i) { dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i, 1); salvar(); }
-    // -------------------------------------
 
     function getNota(aluno, bim, mIdx) {
         const t = dados.turmas[dados.ti]; if(!t) return 0;
@@ -175,7 +173,6 @@
         if (!dados.turmas) dados.turmas = [];
         const t = dados.turmas[dados.ti];
 
-        // Turmas
         document.getElementById('class-list').innerHTML = dados.turmas.map((x,i)=>`
             <div class="item-list">
                 <span onclick="dados.ti=${i};salvar()" style="${i===dados.ti?'font-weight:bold;color:#0d47a1':''}">${x.n}</span>
@@ -194,28 +191,24 @@
         document.getElementById('txt-materia').innerText = (t.mats && t.mats[t.mi]) || "---";
         document.getElementById('tot-at').value = (t.totA && t.totA[t.mi]) || 10;
 
-        // Materias
         document.getElementById('subject-list').innerHTML = (t.mats || []).map((m,i)=>`
             <div class="item-list">
                 <span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="${i===t.mi?'font-weight:bold;color:#0d47a1':''}">${m}</span>
                 <button class="btn-del" onclick="delM(${i})">❌</button>
             </div>`).join('');
 
-        // Criterios
         document.getElementById('crit-list').innerHTML = (t.crits && t.crits[t.mi] || []).map((c,i)=>`
             <div class="item-list">
                 <span>${c.n}</span>
                 <button class="btn-del" onclick="delC(${i})">❌</button>
             </div>`).join('');
 
-        // Lista Exclusão Alunos
         document.getElementById('del-stu-list').innerHTML = (t.st || []).map((s,i)=>`
             <div class="item-list">
                 <span>${s.n}</span>
                 <button class="btn-del" onclick="delS(${i})">❌</button>
             </div>`).join('');
 
-        // Cartões
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             if (!s.sc) s.sc = {};
             let nB = getNota(s, dados.bim, t.mi);
@@ -229,7 +222,6 @@
             return `<div class="student-card"><b>${s.n}</b> | <span style="color:${nB<7?'#d32f2f':'#388e3c'}; font-weight:bold;">${nB.toFixed(1)}</span><div class="check-grid">${chs}</div>${critsH}</div>`;
         }).join('');
 
-        // Pista
         const track = document.getElementById('track'); track.innerHTML = '';
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
