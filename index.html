@@ -49,13 +49,10 @@
             border-radius: 12px; margin-bottom: 12px; padding: 15px; 
             border-left: 6px solid #d32f2f; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .student-card:hover { transform: translateY(-5px) scale(1.01); box-shadow: 0 8px 20px rgba(0,0,0,0.12); background: #fff; }
 
         .track-container { flex: 1; background: #c35a44; border-radius: 25px; padding: 20px; overflow-y: auto; border: 8px solid #333; box-shadow: inset 0 0 30px rgba(0,0,0,0.5); position: relative; }
         .track-container.expanded { flex: none; width: 100%; height: calc(100vh - 185px); position: absolute; top: 0; left: 0; z-index: 100; border-radius: 0; }
-        .track-expand-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.3); border: none; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: bold; cursor: pointer; color: white; }
-        .track-expand-btn:hover { background: rgba(255,255,255,0.5); }
-
+        
         .lane { border-bottom: 1px solid rgba(255,255,255,0.2); position: relative; height: 60px; display: flex; align-items: center; }
         .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 8px; }
 
@@ -69,16 +66,11 @@
             z-index: 2000; display: none; border: 6px solid #0d47a1; 
             box-shadow: 0 20px 60px rgba(0,0,0,0.5); 
         }
-        .config-overlay input, .config-overlay textarea { width: 100%; padding: 12px; border-radius: 8px; border: 2px solid #ddd; margin-bottom: 10px; font-family: inherit; }
         
-        .item-list { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
-        .item-list:hover { background: #f0f0f0; }
-        .btn-del { cursor: pointer; color: #d32f2f; font-weight: bold; padding: 5px; }
-        .btn-del:hover { background: #ffebee; border-radius: 50%; }
+        .item-list { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+        .btn-del { cursor: pointer; color: #d32f2f; font-weight: bold; padding: 5px 10px; border-radius: 50%; }
+        .btn-del:hover { background: #ffebee; }
         
-        .btn-action { padding: 10px 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
-        
-        /* CORES DE NOTA SOLICITADAS */
         .score-red { color: #d32f2f !important; }
         .score-green { color: #2e7d32 !important; }
         .grade-highlight-box { display: flex; flex-direction: column; align-items: center; padding: 5px; border-radius: 8px; margin-top: 5px; }
@@ -99,9 +91,9 @@
             </div>
         </div>
         <div style="display:flex; gap:10px;">
-            <button onclick="gerarExcel()" class="btn-action" style="background:#217346; color:white;">📊 EXCEL</button>
-            <button onclick="exportarBackup()" class="btn-action" style="background:#fff; color:#0d47a1;">💾 BACKUP</button>
-            <button onclick="document.getElementById('fileIn').click()" class="btn-action" style="background:#ffd700; color:#0d47a1;">📂 IMPORT</button>
+            <button onclick="gerarExcel()" style="background:#217346; color:white; padding:10px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;">📊 EXCEL</button>
+            <button onclick="exportarBackup()" style="background:#fff; color:#0d47a1; padding:10px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;">💾 BACKUP</button>
+            <button onclick="document.getElementById('fileIn').click()" style="background:#ffd700; color:#0d47a1; padding:10px; border-radius:10px; border:none; cursor:pointer; font-weight:bold;">📂 IMPORT</button>
             <input type="file" id="fileIn" style="display:none" onchange="importarBackup(event)">
         </div>
     </div>
@@ -117,33 +109,33 @@
 <main class="main-content">
     <aside class="students-area" id="stu-list"></aside>
     <section class="track-container" id="track">
-        <button class="track-expand-btn" onclick="toggleTrackExpansion(event)">🔄</button>
+        <button style="position:absolute; top:10px; right:10px; z-index:10;" onclick="toggleTrackExpansion(event)">🔄</button>
     </section>
 </main>
 
 <div id="p-turmas" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Manage Classes</h3>
-    <div id="class-list" style="max-height:200px; overflow-y:auto; margin-bottom:10px;"></div>
-    <input type="text" id="in-cl" placeholder="New Class Name + ENTER" onkeydown="if(event.key==='Enter') addT()">
+    <div id="class-list"></div>
+    <input type="text" id="in-cl" placeholder="New Class Name + ENTER" onkeydown="if(event.key==='Enter') addT()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <div id="p-mat" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Subjects</h3>
-    <div id="subject-list" style="max-height:200px; overflow-y:auto; margin-bottom:10px;"></div>
-    <input type="text" id="in-mat" placeholder="New Subject + ENTER" onkeydown="if(event.key==='Enter') addM()">
+    <div id="subject-list"></div>
+    <input type="text" id="in-mat" placeholder="New Subject + ENTER" onkeydown="if(event.key==='Enter') addM()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Criteria</h3>
     <p>Activity Goal (Vistos): <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:80px;"></p>
-    <div id="crit-list-config" style="max-height:150px; overflow-y:auto; margin-bottom:10px;"></div>
-    <input type="text" id="in-cr" placeholder="New Criterion + ENTER" onkeydown="if(event.key==='Enter') addC()">
+    <div id="crit-list-config"></div>
+    <input type="text" id="in-cr" placeholder="New Criterion + ENTER" onkeydown="if(event.key==='Enter') addC()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Student List</h3>
-    <textarea id="in-nm" placeholder="Paste names and ENTER..." style="height:100px;"></textarea>
-    <div id="lista-exclusao" style="max-height:150px; overflow-y:auto; border-top:1px solid #eee; margin-top:10px;"></div>
+    <textarea id="in-nm" placeholder="Paste names and ENTER..." style="width:100%; height:80px;"></textarea>
+    <div id="lista-exclusao" style="max-height:200px; overflow-y:auto; margin-top:10px; border-top:1px solid #eee;"></div>
 </div>
 
 <script>
@@ -155,17 +147,11 @@
     
     function abrirPainel(e, id) {
         e.stopPropagation();
-        const p = document.getElementById(id);
-        const jaAberto = p.style.display === 'block';
         fecharTodos();
-        if(!jaAberto) p.style.display = 'block';
+        document.getElementById(id).style.display = 'block';
     }
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
-    function fecharAoClicarFora(e) {
-        if (!e.target.closest('.config-overlay') && !e.target.closest('header')) {
-            fecharTodos();
-        }
-    }
+    function fecharAoClicarFora(e) { if (!e.target.closest('.config-overlay') && !e.target.closest('header')) fecharTodos(); }
 
     function renderizar() {
         document.getElementById('t-name').innerText = dados.teacher;
@@ -173,79 +159,74 @@
         document.getElementById('st-class').innerText = t ? t.n.toUpperCase() : "---";
         document.getElementById('st-subject').innerText = (t && t.mats[t.mi]) ? t.mats[t.mi].toUpperCase() : "---";
 
+        // Render Turmas
         document.getElementById('class-list').innerHTML = dados.turmas.map((x, i) => `
             <div class="item-list" style="background:${i===dados.ti?'#e3f2fd':''}">
                 <span onclick="dados.ti=${i};salvar();" style="cursor:pointer; flex:1;">${x.n}</span>
-                <span class="btn-del" onclick="event.stopPropagation(); if(confirm('Excluir turma?')){dados.turmas.splice(${i},1); dados.ti=-1; salvar();}">❌</span>
+                <span class="btn-del" onclick="if(confirm('Delete Class?')){dados.turmas.splice(${i},1); dados.ti=-1; salvar();}">❌</span>
             </div>
         `).join('');
 
         if(t) {
+            // Render Matérias
             document.getElementById('subject-list').innerHTML = t.mats.map((m, i) => `
                 <div class="item-list" style="background:${i===t.mi?'#fff9c4':''}">
                     <span onclick="dados.turmas[dados.ti].mi=${i};salvar();" style="cursor:pointer; flex:1;">${m}</span>
-                    <span class="btn-del" onclick="event.stopPropagation(); if(confirm('Excluir matéria?')){t.mats.splice(${i},1); t.totA.splice(${i},1); t.crits.splice(${i},1); t.mi=0; salvar();}">❌</span>
+                    <span class="btn-del" onclick="if(confirm('Delete Subject?')){t.mats.splice(${i},1); t.totA.splice(${i},1); t.crits.splice(${i},1); t.mi=0; salvar();}">❌</span>
                 </div>
             `).join('');
 
-            if(t.mi !== undefined) {
-                document.getElementById('crit-list-config').innerHTML = (t.crits[t.mi] || []).map((c, i) => `
-                    <div class="item-list">
-                        <span style="flex:1;">${c.n}</span>
-                        <span class="btn-del" onclick="event.stopPropagation(); if(confirm('Excluir critério?')){t.crits[${t.mi}].splice(${i},1); salvar();}">❌</span>
+            // Render Critérios
+            document.getElementById('crit-list-config').innerHTML = (t.crits[t.mi] || []).map((c, i) => `
+                <div class="item-list">
+                    <span style="flex:1;">${c.n}</span>
+                    <span class="btn-del" onclick="if(confirm('Delete Criterion?')){t.crits[t.mi].splice(${i},1); salvar();}">❌</span>
+                </div>
+            `).join('');
+            document.getElementById('tot-at').value = t.totA[t.mi] || 10;
+
+            // Render Alunos (Cartões)
+            document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
+                let k = `${t.mi}_${dados.bim}_ativ`;
+                let chs = '';
+                for(let i=0; i<(t.totA[t.mi] || 10); i++) chs += `<div class="check-box ${(s.sc[k]||[]).includes(i)?'active':''}" onclick="toggleVisto(${si},'${k}',${i})">${i+1}</div>`;
+                
+                let critsHTML = (t.crits[t.mi] || []).map(c => `
+                    <div style="font-size:12px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
+                        <span>${c.n}:</span>
+                        <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:50px; text-align:center;">
                     </div>
                 `).join('');
-                document.getElementById('tot-at').value = t.totA[t.mi] || 10;
+                
+                let nB = calcularNota(s, dados.bim, t.mi);
+                let sA = 0; for(let b=1; b<=4; b++) sA += calcularNota(s, b, t.mi);
+                let anualAvg = sA / 4;
 
-                document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
-                    let k = `${t.mi}_${dados.bim}_ativ`;
-                    let chs = '';
-                    for(let i=0; i<(t.totA[t.mi] || 10); i++) chs += `<div class="check-box ${(s.sc[k]||[]).includes(i)?'active':''}" onclick="toggleVisto(${si},'${k}',${i})">${i+1}</div>`;
-                    let crits = (t.crits[t.mi] || []).map(c => `
-                        <div style="font-size:12px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
-                            <span>${c.n}:</span>
-                            <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:50px; text-align:center; border:1px solid #ddd;">
-                        </div>
-                    `).join('');
-                    
-                    let nB = calcularNota(s, dados.bim, t.mi);
-                    let sA = 0; for(let b=1; b<=4; b++) sA += calcularNota(s, b, t.mi);
-                    let anualAvg = sA / 4;
-                    
-                    // Aplicação de cores
-                    let colorClass = nB < 7 ? 'score-red' : 'score-green';
-                    let boxBgClass = nB < 7 ? 'bg-bad' : 'bg-good';
-                    let anualColor = anualAvg < 7 ? 'score-red' : 'score-green';
+                return `<div class="student-card">
+                    <b>${s.n}</b><div class="check-grid">${chs}</div>${critsHTML}
+                    <div class="grade-highlight-box ${nB < 7 ? 'bg-bad' : 'bg-good'}">
+                        <span style="font-size:22px; font-weight:800;" class="${nB < 7 ? 'score-red' : 'score-green'}">${nB.toFixed(1)}</span>
+                    </div>
+                    <div style="font-size:11px; margin-top:8px; text-align:right;">AVG: <b class="${anualAvg < 7 ? 'score-red' : 'score-green'}">${anualAvg.toFixed(1)}</b></div>
+                </div>`;
+            }).join('');
 
-                    return `<div class="student-card">
-                        <b>${s.n}</b><div class="check-grid">${chs}</div>${crits}
-                        <div class="grade-highlight-box ${boxBgClass}">
-                            <span style="font-size:10px; font-weight:bold; color:#555;">TERM GRADE</span>
-                            <span style="font-size:22px; font-weight:800;" class="${colorClass}">${nB.toFixed(1)}</span>
-                        </div>
-                        <div style="font-size:11px; margin-top:8px; text-align:right;">ANNUAL AVG: <b class="${anualColor}">${anualAvg.toFixed(1)}</b></div>
-                    </div>`;
-                }).join('');
+            // Render Pista
+            const track = document.getElementById('track');
+            const btExp = '<button style="position:absolute; top:10px; right:10px; z-index:10;" onclick="toggleTrackExpansion(event)">🔄</button>';
+            track.innerHTML = btExp + (t.st || []).map((s, idx) => {
+                let n = calcularNota(s, dados.bim, t.mi);
+                return `<div class="lane"><div class="runner" style="left:${n*9.2}%">
+                    <span style="font-size:28px;">${emojis[idx % emojis.length]}</span>
+                    <div style="background:white; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:bold; border:2px solid #0d47a1; white-space:nowrap;">
+                        ${s.n} | <span class="${n < 7 ? 'score-red' : 'score-green'}">${n.toFixed(1)}</span>
+                    </div>
+                </div></div>`;
+            }).join('');
 
-                const track = document.getElementById('track'); track.innerHTML = '';
-                track.innerHTML += `<button class="track-expand-btn" onclick="toggleTrackExpansion(event)">🔄</button>`;
-                (t.st || []).forEach((s, idx) => {
-                    let n = calcularNota(s, dados.bim, t.mi);
-                    let emojiColorClass = n < 7 ? 'score-red' : 'score-green';
-                    
-                    track.innerHTML += `<div class="lane"><div class="runner" style="left:${n*9.2}%">
-                        <span style="font-size:28px;">${emojis[idx % emojis.length]}</span>
-                        <div style="background:white; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:bold; border:2px solid #0d47a1; white-space:nowrap;">
-                            ${s.n} | <span class="${emojiColorClass}">${n.toFixed(1)}</span>
-                        </div>
-                    </div></div>`;
-                });
-            }
+            // Lista de Exclusão de Alunos
             document.getElementById('lista-exclusao').innerHTML = t.st.map((s,i) => `
-                <div class="item-list">
-                    <span style="flex:1;">${s.n}</span>
-                    <span class="btn-del" onclick="event.stopPropagation(); if(confirm('Excluir aluno?')){dados.turmas[dados.ti].st.splice(${i},1); salvar();}">❌</span>
-                </div>
+                <div class="item-list"><span>${s.n}</span><span class="btn-del" onclick="if(confirm('Delete Student?')){t.st.splice(${i},1); salvar();}">❌</span></div>
             `).join('');
         }
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button onclick="event.stopPropagation(); dados.bim=${b};salvar()" class="nav-btn ${b===dados.bim?'active':''}">${b}º TERM</button>`).join('');
@@ -287,15 +268,11 @@
     
     function gerarExcel() { 
         const t = dados.turmas[dados.ti]; if(!t) return;
-        let csv = "\ufeff"; 
-        t.mats.forEach((m, mi) => {
-            csv += `SUBJECT: ${m.toUpperCase()}\nSTUDENT;1º TERM;2º TERM;3º TERM;4º TERM;ANNUAL AVG\n`;
-            (t.st || []).forEach(s => {
-                let sA = 0; let lin = `${s.n}`;
-                for(let b=1; b<=4; b++) { let n = calcularNota(s, b, mi); sA += n; lin += `;${n.toFixed(1).replace('.',',')}`; }
-                csv += `${lin};${(sA/4).toFixed(1).replace('.',',')}\n`;
-            });
-            csv += `\n\n`;
+        let csv = "\ufeffSTUDENT;1º TERM;2º TERM;3º TERM;4º TERM;ANNUAL AVG\n"; 
+        (t.st || []).forEach(s => {
+            let sA = 0; let lin = `${s.n}`;
+            for(let b=1; b<=4; b++) { let n = calcularNota(s, b, t.mi); sA += n; lin += `;${n.toFixed(1).replace('.',',')}`; }
+            csv += `${lin};${(sA/4).toFixed(1).replace('.',',')}\n`;
         });
         let blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
         let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `REPORT_${t.n}.csv`; a.click(); 
