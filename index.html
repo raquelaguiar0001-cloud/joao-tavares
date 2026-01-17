@@ -68,8 +68,8 @@
         }
         
         .item-list { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
-        .btn-del { cursor: pointer; color: #d32f2f; font-weight: bold; padding: 5px 10px; border-radius: 50%; }
-        .btn-del:hover { background: #ffebee; }
+        .btn-del { cursor: pointer; color: #d32f2f; font-weight: bold; padding: 5px 12px; border-radius: 8px; background: #ffebee; border: none; font-size: 14px; }
+        .btn-del:hover { background: #ffcdd2; color: #b71c1c; }
         
         .score-red { color: #d32f2f !important; }
         .score-green { color: #2e7d32 !important; }
@@ -146,12 +146,51 @@
     function salvar() { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(dados)); renderizar(); }
     
     function abrirPainel(e, id) {
-        e.stopPropagation();
+        if(e) e.stopPropagation();
         fecharTodos();
         document.getElementById(id).style.display = 'block';
     }
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
     function fecharAoClicarFora(e) { if (!e.target.closest('.config-overlay') && !e.target.closest('header')) fecharTodos(); }
+
+    function excluirTurma(e, index) {
+        e.stopPropagation();
+        if(confirm('Delete Class?')) {
+            dados.turmas.splice(index, 1);
+            if(dados.ti === index) dados.ti = -1;
+            else if(dados.ti > index) dados.ti--;
+            salvar();
+        }
+    }
+
+    function excluirMateria(e, index) {
+        e.stopPropagation();
+        const t = dados.turmas[dados.ti];
+        if(confirm('Delete Subject?')) {
+            t.mats.splice(index, 1);
+            t.totA.splice(index, 1);
+            t.crits.splice(index, 1);
+            t.mi = 0;
+            salvar();
+        }
+    }
+
+    function excluirCriterio(e, index) {
+        e.stopPropagation();
+        const t = dados.turmas[dados.ti];
+        if(confirm('Delete Criterion?')) {
+            t.crits[t.mi].splice(index, 1);
+            salvar();
+        }
+    }
+
+    function excluirAluno(e, index) {
+        e.stopPropagation();
+        if(confirm('Delete Student?')) {
+            dados.turmas[dados.ti].st.splice(index, 1);
+            salvar();
+        }
+    }
 
     function renderizar() {
         document.getElementById('t-name').innerText = dados.teacher;
@@ -159,44 +198,45 @@
         document.getElementById('st-class').innerText = t ? t.n.toUpperCase() : "---";
         document.getElementById('st-subject').innerText = (t && t.mats[t.mi]) ? t.mats[t.mi].toUpperCase() : "---";
 
-        // Render Turmas
+        // Turmas
         document.getElementById('class-list').innerHTML = dados.turmas.map((x, i) => `
             <div class="item-list" style="background:${i===dados.ti?'#e3f2fd':''}">
-                <span onclick="dados.ti=${i};salvar();" style="cursor:pointer; flex:1;">${x.n}</span>
-                <span class="btn-del" onclick="if(confirm('Delete Class?')){dados.turmas.splice(${i},1); dados.ti=-1; salvar();}">❌</span>
+                <span onclick="dados.ti=${i};salvar();" style="cursor:pointer; flex:1; font-weight:bold;">${x.n}</span>
+                <button class="btn-del" onclick="excluirTurma(event, ${i})">❌</button>
             </div>
         `).join('');
 
         if(t) {
-            // Render Matérias
+            // Matérias
             document.getElementById('subject-list').innerHTML = t.mats.map((m, i) => `
                 <div class="item-list" style="background:${i===t.mi?'#fff9c4':''}">
                     <span onclick="dados.turmas[dados.ti].mi=${i};salvar();" style="cursor:pointer; flex:1;">${m}</span>
-                    <span class="btn-del" onclick="if(confirm('Delete Subject?')){t.mats.splice(${i},1); t.totA.splice(${i},1); t.crits.splice(${i},1); t.mi=0; salvar();}">❌</span>
+                    <button class="btn-del" onclick="excluirMateria(event, ${i})">❌</button>
                 </div>
             `).join('');
 
-            // Render Critérios
+            // Critérios
             document.getElementById('crit-list-config').innerHTML = (t.crits[t.mi] || []).map((c, i) => `
                 <div class="item-list">
                     <span style="flex:1;">${c.n}</span>
-                    <span class="btn-del" onclick="if(confirm('Delete Criterion?')){t.crits[t.mi].splice(${i},1); salvar();}">❌</span>
+                    <button class="btn-del" onclick="excluirCriterio(event, ${i})">❌</button>
                 </div>
             `).join('');
             document.getElementById('tot-at').value = t.totA[t.mi] || 10;
 
-            // Render Alunos (Cartões)
+            // Cartões de Alunos
             document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
                 let k = `${t.mi}_${dados.bim}_ativ`;
                 let chs = '';
                 for(let i=0; i<(t.totA[t.mi] || 10); i++) chs += `<div class="check-box ${(s.sc[k]||[]).includes(i)?'active':''}" onclick="toggleVisto(${si},'${k}',${i})">${i+1}</div>`;
                 
-                let critsHTML = (t.crits[t.mi] || []).map(c => `
-                    <div style="font-size:12px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
+                let critsHTML = (t.crits[t.mi] || []).map(c => {
+                    let keyN = `${t.mi}_${dados.bim}_${c.n}`;
+                    return `<div style="font-size:12px; margin-top:5px; display:flex; justify-content:space-between; align-items:center;">
                         <span>${c.n}:</span>
-                        <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:50px; text-align:center;">
-                    </div>
-                `).join('');
+                        <input type="number" step="0.1" value="${s.sc[keyN]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:50px; text-align:center;">
+                    </div>`;
+                }).join('');
                 
                 let nB = calcularNota(s, dados.bim, t.mi);
                 let sA = 0; for(let b=1; b<=4; b++) sA += calcularNota(s, b, t.mi);
@@ -211,10 +251,10 @@
                 </div>`;
             }).join('');
 
-            // Render Pista
+            // Pista
             const track = document.getElementById('track');
-            const btExp = '<button style="position:absolute; top:10px; right:10px; z-index:10;" onclick="toggleTrackExpansion(event)">🔄</button>';
-            track.innerHTML = btExp + (t.st || []).map((s, idx) => {
+            track.innerHTML = '<button style="position:absolute; top:10px; right:10px; z-index:10;" onclick="toggleTrackExpansion(event)">🔄</button>' + 
+            (t.st || []).map((s, idx) => {
                 let n = calcularNota(s, dados.bim, t.mi);
                 return `<div class="lane"><div class="runner" style="left:${n*9.2}%">
                     <span style="font-size:28px;">${emojis[idx % emojis.length]}</span>
@@ -224,9 +264,9 @@
                 </div></div>`;
             }).join('');
 
-            // Lista de Exclusão de Alunos
+            // Alunos no painel de exclusão
             document.getElementById('lista-exclusao').innerHTML = t.st.map((s,i) => `
-                <div class="item-list"><span>${s.n}</span><span class="btn-del" onclick="if(confirm('Delete Student?')){t.st.splice(${i},1); salvar();}">❌</span></div>
+                <div class="item-list"><span>${s.n}</span><button class="btn-del" onclick="excluirAluno(event, ${i})">❌</button></div>
             `).join('');
         }
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button onclick="event.stopPropagation(); dados.bim=${b};salvar()" class="nav-btn ${b===dados.bim?'active':''}">${b}º TERM</button>`).join('');
