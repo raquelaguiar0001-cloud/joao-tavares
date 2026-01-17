@@ -77,8 +77,13 @@
         .btn-del:hover { background: #ffebee; border-radius: 50%; }
         
         .btn-action { padding: 10px 18px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
-        .bg-bad { background: #ffebee; color: #d32f2f; }
-        .bg-good { background: #e8f5e9; color: #2e7d32; }
+        
+        /* CORES DE NOTA SOLICITADAS */
+        .score-red { color: #d32f2f !important; }
+        .score-green { color: #2e7d32 !important; }
+        .grade-highlight-box { display: flex; flex-direction: column; align-items: center; padding: 5px; border-radius: 8px; margin-top: 5px; }
+        .bg-bad { background: #ffebee; }
+        .bg-good { background: #e8f5e9; }
     </style>
 </head>
 <body onclick="fecharAoClicarFora(event)">
@@ -152,12 +157,11 @@
         e.stopPropagation();
         const p = document.getElementById(id);
         const jaAberto = p.style.display === 'block';
-        fecharTodos(); // Fecha todos os outros antes de abrir um novo
+        fecharTodos();
         if(!jaAberto) p.style.display = 'block';
     }
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
     function fecharAoClicarFora(e) {
-        // Verifica se o clique foi fora de um painel de configuração
         if (!e.target.closest('.config-overlay') && !e.target.closest('header')) {
             fecharTodos();
         }
@@ -203,24 +207,37 @@
                             <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="setNotaExtra(${si},'${c.n}',this.value)" style="width:50px; text-align:center; border:1px solid #ddd;">
                         </div>
                     `).join('');
+                    
                     let nB = calcularNota(s, dados.bim, t.mi);
                     let sA = 0; for(let b=1; b<=4; b++) sA += calcularNota(s, b, t.mi);
+                    let anualAvg = sA / 4;
+                    
+                    // Aplicação de cores
+                    let colorClass = nB < 7 ? 'score-red' : 'score-green';
+                    let boxBgClass = nB < 7 ? 'bg-bad' : 'bg-good';
+                    let anualColor = anualAvg < 7 ? 'score-red' : 'score-green';
+
                     return `<div class="student-card">
                         <b>${s.n}</b><div class="check-grid">${chs}</div>${crits}
-                        <div class="grade-highlight-box ${nB < 7 ? 'bg-bad' : 'bg-good'}">
-                            <span style="font-size:10px; font-weight:bold;">TERM GRADE</span>
-                            <span style="font-size:22px; font-weight:800;">${nB.toFixed(1)}</span>
+                        <div class="grade-highlight-box ${boxBgClass}">
+                            <span style="font-size:10px; font-weight:bold; color:#555;">TERM GRADE</span>
+                            <span style="font-size:22px; font-weight:800;" class="${colorClass}">${nB.toFixed(1)}</span>
                         </div>
-                        <div style="font-size:11px; margin-top:8px; text-align:right;">ANNUAL AVG: <b>${(sA/4).toFixed(1)}</b></div>
+                        <div style="font-size:11px; margin-top:8px; text-align:right;">ANNUAL AVG: <b class="${anualColor}">${anualAvg.toFixed(1)}</b></div>
                     </div>`;
                 }).join('');
 
                 const track = document.getElementById('track'); track.innerHTML = '';
+                track.innerHTML += `<button class="track-expand-btn" onclick="toggleTrackExpansion(event)">🔄</button>`;
                 (t.st || []).forEach((s, idx) => {
                     let n = calcularNota(s, dados.bim, t.mi);
+                    let emojiColorClass = n < 7 ? 'score-red' : 'score-green';
+                    
                     track.innerHTML += `<div class="lane"><div class="runner" style="left:${n*9.2}%">
                         <span style="font-size:28px;">${emojis[idx % emojis.length]}</span>
-                        <div style="background:white; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:bold; border:2px solid #0d47a1; white-space:nowrap;">${s.n} | ${n.toFixed(1)}</div>
+                        <div style="background:white; padding:2px 8px; border-radius:20px; font-size:10px; font-weight:bold; border:2px solid #0d47a1; white-space:nowrap;">
+                            ${s.n} | <span class="${emojiColorClass}">${n.toFixed(1)}</span>
+                        </div>
                     </div></div>`;
                 });
             }
