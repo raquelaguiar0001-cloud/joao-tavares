@@ -27,8 +27,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 10; flex-shrink: 0;
         }
 
-        .status-bar { background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px; display: inline-flex; gap: 15px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.3); font-size: 13px; }
-        .status-label { color: #ffd700; font-weight: bold; font-size: 11px; margin-right: 5px; }
+        .status-bar { background: rgba(0,0,0,0.2); padding: 5px 12px; border-radius: 20px; display: inline-flex; gap: 12px; margin-top: 8px; border: 1px solid rgba(255,255,255,0.3); font-size: 12px; }
+        .status-label { color: #ffd700; font-weight: bold; font-size: 10px; margin-right: 4px; text-transform: uppercase; }
 
         .nav-container { 
             background: rgba(255, 255, 255, 0.7); border-radius: 10px; display: flex; padding: 5px; gap: 5px; margin-top: 8px; 
@@ -79,8 +79,9 @@
             <h2 style="margin:0; font-family:'Orbitron'; font-size: 18px;">UE. JOÃO TAVARES DA COSTA</h2>
             <div style="font-size:12px; color:#ffd700; font-weight:bold;">TEACHER: RAQUEL AGUIAR</div>
             <div class="status-bar">
-                <span><span class="status-label">CLASS:</span><span id="txt-turma">---</span></span>
-                <span><span class="status-label">SUBJECT:</span><span id="txt-materia">---</span></span>
+                <span><span class="status-label">TURMA:</span><span id="txt-turma">---</span></span>
+                <span><span class="status-label">MATÉRIA:</span><span id="txt-materia">---</span></span>
+                <span><span class="status-label">ALUNOS:</span><span id="txt-total-alunos">0</span></span>
             </div>
         </div>
         <div style="display:flex; gap:8px;">
@@ -91,10 +92,10 @@
         </div>
     </div>
     <nav class="nav-container">
-        <button class="nav-btn" onclick="abrirPainel('p-turmas')">🎓 CLASSES</button>
-        <button class="nav-btn" onclick="abrirPainel('p-mat')">📚 SUBJECTS</button>
-        <button class="nav-btn" onclick="abrirPainel('p-alunos')">👥 STUDENTS</button>
-        <button class="nav-btn" onclick="abrirPainel('p-crit')">📋 CRITERIA</button>
+        <button class="nav-btn" onclick="abrirPainel('p-turmas')">🎓 TURMAS</button>
+        <button class="nav-btn" onclick="abrirPainel('p-mat')">📚 MATÉRIAS</button>
+        <button class="nav-btn" onclick="abrirPainel('p-alunos')">👥 ALUNOS</button>
+        <button class="nav-btn" onclick="abrirPainel('p-crit')">📋 CRITÉRIOS</button>
         <div id="bim-tabs" style="display:flex; gap:3px; margin-left:auto;"></div>
     </nav>
 </header>
@@ -108,29 +109,29 @@
 </main>
 
 <div id="p-turmas" class="config-overlay" onclick="event.stopPropagation()">
-    <h3>Manage Classes</h3>
+    <h3>Gerenciar Turmas</h3>
     <div id="class-list"></div>
-    <input type="text" id="in-cl" placeholder="+ New Class" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:10px; margin-top:10px;">
+    <input type="text" id="in-cl" placeholder="+ Nova Turma" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <div id="p-mat" class="config-overlay" onclick="event.stopPropagation()">
-    <h3>Subjects</h3>
+    <h3>Matérias</h3>
     <div id="subject-list"></div>
-    <input type="text" id="in-mat" placeholder="+ New Subject" onkeypress="if(event.key==='Enter') addM()" style="width:100%; padding:10px; margin-top:10px;">
+    <input type="text" id="in-mat" placeholder="+ Nova Matéria" onkeypress="if(event.key==='Enter') addM()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
-    <h3>Students</h3>
-    <textarea id="in-nm" placeholder="Paste names here..." style="width:100%; height:80px;"></textarea>
-    <button onclick="addStus()" style="width:100%; background:#d32f2f; color:white; border:none; padding:10px; margin:5px 0; border-radius:8px;">SAVE STUDENTS</button>
+    <h3>Alunos</h3>
+    <textarea id="in-nm" placeholder="Cole os nomes aqui..." style="width:100%; height:80px;"></textarea>
+    <button onclick="addStus()" style="width:100%; background:#d32f2f; color:white; border:none; padding:10px; margin:5px 0; border-radius:8px;">SALVAR ALUNOS</button>
     <div id="del-stu-list" style="max-height:150px; overflow-y:auto;"></div>
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
-    <h3>Criteria</h3>
+    <h3>Critérios Extras</h3>
     <p>Vistos Totais: <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px;"></p>
     <div id="crit-list"></div>
-    <input type="text" id="in-cr" placeholder="+ New Criterion" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:10px; margin-top:10px;">
+    <input type="text" id="in-cr" placeholder="+ Novo Critério" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:10px; margin-top:10px;">
 </div>
 
 <script>
@@ -186,6 +187,7 @@
         if(!t) {
             document.getElementById('txt-turma').innerText = "---";
             document.getElementById('txt-materia').innerText = "---";
+            document.getElementById('txt-total-alunos').innerText = "0";
             document.getElementById('stu-list').innerHTML = "";
             document.getElementById('lanes-box').innerHTML = "";
             return;
@@ -193,6 +195,7 @@
 
         document.getElementById('txt-turma').innerText = t.n;
         document.getElementById('txt-materia').innerText = (t.mats && t.mats[t.mi]) || "---";
+        document.getElementById('txt-total-alunos').innerText = t.st ? t.st.length : 0;
         document.getElementById('tot-at').value = (t.totA && t.totA[t.mi]) || 10;
 
         document.getElementById('subject-list').innerHTML = (t.mats || []).map((m,i)=>`
@@ -229,7 +232,7 @@
                     <span style="font-weight:bold; flex:1;">${s.n}</span>
                     <div style="text-align:right">
                         <div class="score-bim" style="color:${nB<7?'#d32f2f':'#388e3c'}">${nB.toFixed(1)}</div>
-                        <div class="score-anual" style="color:${nA<7?'#d32f2f':'#388e3c'}">AVG: ${nA.toFixed(1)}</div>
+                        <div class="score-anual" style="color:${nA<7?'#d32f2f':'#388e3c'}">MÉDIA ANUAL: ${nA.toFixed(1)}</div>
                     </div>
                 </div>
                 <div class="check-grid">${chs}</div>${critsH}
@@ -244,13 +247,13 @@
             lanesBox.appendChild(lane);
         });
 
-        document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º TERM</button>`).join('');
+        document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
     }
 
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
-    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['English'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
+    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
     function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
     function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
     function addStus() { let n=document.getElementById('in-nm').value.split('\n'); n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); document.getElementById('in-nm').value=''; salvar(); }
@@ -261,15 +264,15 @@
 
     function exportarExcelCompleto() {
         const t = dados.turmas[dados.ti]; if(!t) return;
-        let csv = "\ufeffSTUDENT;1º TERM;2º TERM;3º TERM;4º TERM;ANNUAL AVG\n";
+        let csv = "\ufeffALUNO;1º BIM;2º BIM;3º BIM;4º BIM;MÉDIA ANUAL\n";
         t.st.forEach(s => {
             let n1=getNota(s,1,t.mi), n2=getNota(s,2,t.mi), n3=getNota(s,3,t.mi), n4=getNota(s,4,t.mi);
             csv += `${s.n};${n1.toFixed(1)};${n2.toFixed(1)};${n3.toFixed(1)};${n4.toFixed(1)};${((n1+n2+n3+n4)/4).toFixed(1)}\n`;
         });
-        let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'})); a.download = `REPORT_${t.n}.csv`; a.click();
+        let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'})); a.download = `RELATORIO_${t.n}.csv`; a.click();
     }
-    function exportarBackup() { let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(dados)],{type:'application/json'})); a.download='Backup_JTavares.json'; a.click(); }
-    function importarBackup(e) { let fr=new FileReader(); fr.onload=(ev)=>{ try { dados=JSON.parse(ev.target.result); salvar(); } catch(e){alert("Error");} }; fr.readAsText(e.target.files[0]); }
+    function exportarBackup() { let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(dados)],{type:'application/json'})); a.download='Backup_Escola.json'; a.click(); }
+    function importarBackup(e) { let fr=new FileReader(); fr.onload=(ev)=>{ try { dados=JSON.parse(ev.target.result); salvar(); } catch(e){alert("Erro ao importar");} }; fr.readAsText(e.target.files[0]); }
 </script>
 </body>
 </html>
