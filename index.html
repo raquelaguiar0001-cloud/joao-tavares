@@ -48,19 +48,12 @@
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* Estilo para Pista Maximizada */
-        .track-container.full {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            z-index: 9999; border-radius: 0; border: none;
-        }
+        .track-container.full { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; border-radius: 0; border: none; }
 
         .lane { border-bottom: 1px solid rgba(255,255,255,0.15); position: relative; display: flex; align-items: center; width: 100%; height: 38px; }
         .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 5px; }
 
-        .btn-zoom {
-            position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border: none;
-            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10001; font-size: 18px;
-        }
+        .btn-zoom { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10001; font-size: 18px; }
 
         .check-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
         .check-box { width: 28px; height: 28px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; background: white; }
@@ -70,6 +63,10 @@
         .item-list { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; align-items: center; }
         .btn-del { color: #d32f2f; cursor: pointer; background: #ffebee; border: none; padding: 4px 8px; border-radius: 5px; font-weight: bold; }
         #loading { position: fixed; inset: 0; background: white; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+        
+        .score-display { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .score-bim { font-size: 18px; font-weight: bold; }
+        .score-anual { font-size: 11px; font-weight: 600; opacity: 0.8; }
     </style>
 </head>
 <body onclick="fecharTodos()">
@@ -149,7 +146,7 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    let dados = { turmas: [], ti: 0, bim: 1, zoom: 38 };
+    let dados = { turmas: [], ti: 0, bim: 1 };
     const emojis = ['🏃', '👟', '🏀', '⚽', '🏐', '🎾', '🏈', '🛹', '🏸', '🥋'];
 
     db.ref('biolab_joao_tavares').on('value', (snap) => {
@@ -162,13 +159,8 @@
     });
 
     function salvar() { db.ref('biolab_joao_tavares').set(dados); }
-    function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
-
-    function delT(i) { if(confirm('Excluir esta turma permanentemente?')){ dados.turmas.splice(i, 1); dados.ti = 0; salvar(); } }
-    function delM(i) { if(confirm('Excluir esta matéria?')){ dados.turmas[dados.ti].mats.splice(i, 1); dados.turmas[dados.ti].mi = 0; salvar(); } }
-    function delS(i) { if(confirm('Remover este aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
-    function delC(i) { dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i, 1); salvar(); }
+    function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
 
     function getNota(aluno, bim, mIdx) {
         const t = dados.turmas[dados.ti]; if(!t) return 0;
@@ -185,7 +177,6 @@
         if (!dados.turmas) dados.turmas = [];
         const t = dados.turmas[dados.ti];
 
-        // Listas de Configuração
         document.getElementById('class-list').innerHTML = dados.turmas.map((x,i)=>`
             <div class="item-list">
                 <span onclick="dados.ti=${i};salvar()" style="${i===dados.ti?'font-weight:bold;color:#0d47a1':''}">${x.n}</span>
@@ -222,10 +213,9 @@
                 <button class="btn-del" onclick="delS(${i})">❌</button>
             </div>`).join('');
 
-        // Cartões de Alunos
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
-            if (!s.sc) s.sc = {};
             let nB = getNota(s, dados.bim, t.mi);
+            let nA = (getNota(s,1,t.mi)+getNota(s,2,t.mi)+getNota(s,3,t.mi)+getNota(s,4,t.mi))/4;
             let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = (t.totA && t.totA[t.mi]) || 10;
             for(let i=0; i<tot; i++) chs += `<div class="check-box ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
             let critsH = (t.crits && t.crits[t.mi] || []).map(c => `
@@ -233,15 +223,24 @@
                     <span>${c.n}</span>
                     <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" style="width:40px;">
                 </div>`).join('');
-            return `<div class="student-card"><b>${s.n}</b> | <span style="color:${nB<7?'#d32f2f':'#388e3c'}; font-weight:bold;">${nB.toFixed(1)}</span><div class="check-grid">${chs}</div>${critsH}</div>`;
+            
+            return `<div class="student-card">
+                <div class="score-display">
+                    <span style="font-weight:bold; flex:1;">${s.n}</span>
+                    <div style="text-align:right">
+                        <div class="score-bim" style="color:${nB<7?'#d32f2f':'#388e3c'}">${nB.toFixed(1)}</div>
+                        <div class="score-anual" style="color:${nA<7?'#d32f2f':'#388e3c'}">AVG: ${nA.toFixed(1)}</div>
+                    </div>
+                </div>
+                <div class="check-grid">${chs}</div>${critsH}
+            </div>`;
         }).join('');
 
-        // Pista de Corrida
         const lanesBox = document.getElementById('lanes-box'); lanesBox.innerHTML = '';
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
             let lane = document.createElement('div'); lane.className = 'lane';
-            lane.innerHTML = `<div class="runner" style="left:${n*9.2}%"><span style="font-size:22px">${emojis[i%emojis.length]}</span><div style="background:white; padding:2px 5px; border-radius:10px; font-size:10px; font-weight:bold; border:1px solid #0d47a1; white-space:nowrap;">${s.n} | ${n.toFixed(1)}</div></div>`;
+            lane.innerHTML = `<div class="runner" style="left:${n*9.2}%"><span style="font-size:22px">${emojis[i%emojis.length]}</span><div style="background:white; padding:2px 5px; border-radius:10px; font-size:10px; font-weight:bold; border:1px solid #0d47a1; color:${n<7?'#d32f2f':'#388e3c'}; white-space:nowrap;">${s.n} | ${n.toFixed(1)}</div></div>`;
             lanesBox.appendChild(lane);
         });
 
@@ -255,26 +254,22 @@
     function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
     function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
     function addStus() { let n=document.getElementById('in-nm').value.split('\n'); n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); document.getElementById('in-nm').value=''; salvar(); }
-    
+    function delT(i) { if(confirm('Excluir esta turma permanentemente?')){ dados.turmas.splice(i, 1); dados.ti = 0; salvar(); } }
+    function delM(i) { if(confirm('Excluir esta matéria?')){ dados.turmas[dados.ti].mats.splice(i, 1); dados.turmas[dados.ti].mi = 0; salvar(); } }
+    function delS(i) { if(confirm('Remover este aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
+    function delC(i) { dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i, 1); salvar(); }
+
     function exportarExcelCompleto() {
         const t = dados.turmas[dados.ti]; if(!t) return;
-        let csv = "\ufeff";
-        t.mats.forEach((materia, mIdx) => {
-            csv += `SUBJECT: ${materia.toUpperCase()}\n`;
-            csv += "STUDENT;1º TERM;2º TERM;3º TERM;4º TERM;ANNUAL AVG\n";
-            t.st.forEach(s => {
-                let n1=getNota(s,1,mIdx), n2=getNota(s,2,mIdx), n3=getNota(s,3,mIdx), n4=getNota(s,4,mIdx);
-                let anual = (n1+n2+n3+n4)/4;
-                csv += `${s.n};${n1.toFixed(1)};${n2.toFixed(1)};${n3.toFixed(1)};${n4.toFixed(1)};${anual.toFixed(1)}\n`;
-            });
-            csv += "\n\n";
+        let csv = "\ufeffSTUDENT;1º TERM;2º TERM;3º TERM;4º TERM;ANNUAL AVG\n";
+        t.st.forEach(s => {
+            let n1=getNota(s,1,t.mi), n2=getNota(s,2,t.mi), n3=getNota(s,3,t.mi), n4=getNota(s,4,t.mi);
+            csv += `${s.n};${n1.toFixed(1)};${n2.toFixed(1)};${n3.toFixed(1)};${n4.toFixed(1)};${((n1+n2+n3+n4)/4).toFixed(1)}\n`;
         });
-        let blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
-        let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `REPORT_${t.n}.csv`; a.click();
+        let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'})); a.download = `REPORT_${t.n}.csv`; a.click();
     }
-
-    function exportarBackup() { let b=new Blob([JSON.stringify(dados)],{type:'application/json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='Backup_JTavares.json'; a.click(); }
-    function importarBackup(e) { let fr=new FileReader(); fr.onload=(ev)=>{ try { dados=JSON.parse(ev.target.result); salvar(); } catch(e){alert("Error reading file");} }; fr.readAsText(e.target.files[0]); }
+    function exportarBackup() { let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(dados)],{type:'application/json'})); a.download='Backup_JTavares.json'; a.click(); }
+    function importarBackup(e) { let fr=new FileReader(); fr.onload=(ev)=>{ try { dados=JSON.parse(ev.target.result); salvar(); } catch(e){alert("Error");} }; fr.readAsText(e.target.files[0]); }
 </script>
 </body>
 </html>
