@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>UE. JOÃO TAVARES DA COSTA</title>
     
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏃</text></svg>">
 
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
@@ -43,14 +43,24 @@
 
         .student-card { background: white; border-radius: 12px; margin-bottom: 12px; padding: 12px; border-left: 6px solid #d32f2f; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
 
-        .track-container { flex: 1; background: #c35a44; border-radius: 25px; padding: 10px; overflow-y: auto; border: 8px solid #333; position: relative; }
+        .track-container { 
+            flex: 1; background: #c35a44; border-radius: 25px; padding: 10px; overflow-y: auto; border: 8px solid #333; position: relative; 
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         
-        body.max-view header, body.max-view .students-area { display: none; }
-        body.max-view .main-content { height: 100vh; padding: 0; }
-        body.max-view .track-container { border-radius: 0; border: none; }
+        /* Estilo para Pista Maximizada */
+        .track-container.full {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            z-index: 9999; border-radius: 0; border: none;
+        }
 
-        .lane { border-bottom: 1px solid rgba(255,255,255,0.15); position: relative; display: flex; align-items: center; width: 100%; }
+        .lane { border-bottom: 1px solid rgba(255,255,255,0.15); position: relative; display: flex; align-items: center; width: 100%; height: 38px; }
         .runner { position: absolute; transition: 2.5s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 5px; }
+
+        .btn-zoom {
+            position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border: none;
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10001; font-size: 18px;
+        }
 
         .check-grid { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
         .check-box { width: 28px; height: 28px; border: 2px solid #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 10px; background: white; }
@@ -88,14 +98,16 @@
         <button class="nav-btn" onclick="abrirPainel('p-mat')">📚 SUBJECTS</button>
         <button class="nav-btn" onclick="abrirPainel('p-alunos')">👥 STUDENTS</button>
         <button class="nav-btn" onclick="abrirPainel('p-crit')">📋 CRITERIA</button>
-        <button class="nav-btn" onclick="document.body.classList.toggle('max-view')" style="background:#1a2a3a; color:#ffd700;">📺 MAX</button>
         <div id="bim-tabs" style="display:flex; gap:3px; margin-left:auto;"></div>
     </nav>
 </header>
 
 <main class="main-content">
     <aside class="students-area" id="stu-list"></aside>
-    <section class="track-container" id="track"></section>
+    <section class="track-container" id="track">
+        <button class="btn-zoom" onclick="event.stopPropagation(); this.parentElement.classList.toggle('full')">🔍</button>
+        <div id="lanes-box"></div>
+    </section>
 </main>
 
 <div id="p-turmas" class="config-overlay" onclick="event.stopPropagation()">
@@ -173,6 +185,7 @@
         if (!dados.turmas) dados.turmas = [];
         const t = dados.turmas[dados.ti];
 
+        // Listas de Configuração
         document.getElementById('class-list').innerHTML = dados.turmas.map((x,i)=>`
             <div class="item-list">
                 <span onclick="dados.ti=${i};salvar()" style="${i===dados.ti?'font-weight:bold;color:#0d47a1':''}">${x.n}</span>
@@ -183,7 +196,7 @@
             document.getElementById('txt-turma').innerText = "---";
             document.getElementById('txt-materia').innerText = "---";
             document.getElementById('stu-list').innerHTML = "";
-            document.getElementById('track').innerHTML = "";
+            document.getElementById('lanes-box').innerHTML = "";
             return;
         }
 
@@ -209,6 +222,7 @@
                 <button class="btn-del" onclick="delS(${i})">❌</button>
             </div>`).join('');
 
+        // Cartões de Alunos
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             if (!s.sc) s.sc = {};
             let nB = getNota(s, dados.bim, t.mi);
@@ -222,12 +236,13 @@
             return `<div class="student-card"><b>${s.n}</b> | <span style="color:${nB<7?'#d32f2f':'#388e3c'}; font-weight:bold;">${nB.toFixed(1)}</span><div class="check-grid">${chs}</div>${critsH}</div>`;
         }).join('');
 
-        const track = document.getElementById('track'); track.innerHTML = '';
+        // Pista de Corrida
+        const lanesBox = document.getElementById('lanes-box'); lanesBox.innerHTML = '';
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
-            let lane = document.createElement('div'); lane.className = 'lane'; lane.style.height = '38px';
+            let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%"><span style="font-size:22px">${emojis[i%emojis.length]}</span><div style="background:white; padding:2px 5px; border-radius:10px; font-size:10px; font-weight:bold; border:1px solid #0d47a1; white-space:nowrap;">${s.n} | ${n.toFixed(1)}</div></div>`;
-            track.appendChild(lane);
+            lanesBox.appendChild(lane);
         });
 
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º TERM</button>`).join('');
