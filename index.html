@@ -19,68 +19,84 @@
             font-family: 'Fredoka', sans-serif; 
             margin: 0; height: 100vh; display: flex; flex-direction: column; 
             background: #f8f0fb;
-            background-image: linear-gradient(135deg, #f8f0fb 0%, #e8d5f0 100%);
+            background-image: linear-gradient(135deg, #f8f0fb 0%, #e1bee7 100%);
             overflow: hidden; color: #2e004f;
+        }
+
+        /* CONFIGURAÇÃO DOS EMOJIS FLUTUANTES - ESCOLA 2 */
+        .emoji-bg {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 32px;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.2));
+            animation: floatRandom linear infinite;
+        }
+
+        @keyframes floatRandom {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(120px, 40px) rotate(90deg); }
+            50% { transform: translate(240px, 0px) rotate(180deg); }
+            75% { transform: translate(120px, -40px) rotate(270deg); }
+            100% { transform: translate(0, 0) rotate(360deg); }
         }
 
         header { 
             background: rgba(255, 255, 255, 0.85); 
             backdrop-filter: blur(12px);
             padding: 15px; margin: 10px; border-radius: 22px;
-            border: 2px solid #d1b3e0; 
+            border: 2px solid #ce93d8; /* Lilás mais definido */
             box-shadow: 0 10px 25px rgba(74, 20, 140, 0.08);
-            z-index: 10; flex-shrink: 0;
+            z-index: 10; flex-shrink: 0; position: relative; overflow: hidden;
         }
 
-        .header-main { display: flex; justify-content: space-between; align-items: center; }
-        .school-info h2 { margin: 0; font-family: 'Orbitron'; font-size: 19px; color: #4a148c; }
+        .header-main { position: relative; z-index: 5; display: flex; justify-content: space-between; align-items: center; }
+        .school-info h2 { margin: 0; font-family: 'Orbitron'; font-size: 19px; color: #6a1b9a; }
         .teacher-tag { font-size: 11px; color: #c2185b; font-weight: 700; text-transform: uppercase; }
 
         .status-bar { 
+            position: relative; z-index: 5;
             background: #ffffff; padding: 8px 18px; border-radius: 30px; 
-            display: inline-flex; gap: 15px; margin-top: 10px; border: 2px solid #9c27b0; font-size: 11px;
+            display: inline-flex; gap: 15px; margin-top: 10px; border: 2px solid #ab47bc; font-size: 11px;
         }
 
-        .nav-container { display: flex; gap: 8px; margin-top: 12px; background: #f0e1f7; padding: 5px; border-radius: 15px; }
+        .nav-container { position: relative; z-index: 5; display: flex; gap: 8px; margin-top: 12px; background: #f0e1f7; padding: 5px; border-radius: 15px; }
         .nav-btn { flex: 1; padding: 11px; border: none; background: transparent; color: #6a1b9a; font-weight: 700; cursor: pointer; border-radius: 10px; font-size: 10px; text-transform: uppercase; }
-        .nav-btn.active { background: #6a1b9a; color: white; box-shadow: 0 5px 12px rgba(106, 27, 154, 0.2); }
+        .nav-btn.active { background: #ab47bc; color: white; box-shadow: 0 5px 12px rgba(106, 27, 154, 0.2); }
 
         .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; height: calc(100vh - 180px); }
-        
         .students-area { width: 360px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; height: 100%; }
         
-        /* PISTA COM ESPAÇO EXTRA NO FINAL */
         .track-container { 
             flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 30px; border: 2px dashed #ce93d8;
-            position: relative; overflow-y: scroll; /* Força a barra de rolagem aparecer */
+            position: relative; overflow-y: scroll;
             overflow-x: hidden;
             background-image: radial-gradient(#d1b3e0 1.2px, transparent 1.2px); background-size: 35px 35px;
             height: 100%;
         }
 
-        #lanes-box { 
-            min-height: 100%; 
-            padding: 20px 0 150px 0; /* Aumentei o padding inferior para 150px */
-            display: flex; 
-            flex-direction: column; 
-        }
-
-        .student-card { 
-            background: white; border-radius: 18px; margin-bottom: 12px; padding: 15px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; border-left: 10px solid #ddd;
-        }
-
+        #lanes-box { min-height: 100%; padding: 20px 0 150px 0; display: flex; flex-direction: column; }
+        .student-card { background: white; border-radius: 18px; margin-bottom: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; border-left: 10px solid #ddd; }
         .lane { position: relative; height: 55px; min-height: 55px; width: 100%; border-bottom: 1px solid rgba(171, 71, 188, 0.1); display: flex; align-items: center; }
         .runner { position: absolute; z-index: 5; display: flex; align-items: center; gap: 8px; transition: left 2s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
-        .runner-tag { background: #4a148c; color: white; padding: 4px 12px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ba68c8; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .runner-tag { background: #6a1b9a; color: white; padding: 4px 12px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ce93d8; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
         .check-box { width: 30px; height: 30px; border: 2px solid #e1bee7; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: bold; background: white; }
         .check-box.active { background: #4caf50; color: white; border-color: #388e3c; }
 
-        .config-overlay { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 460px; z-index: 1000; display: none; border: 5px solid #6a1b9a; }
+        .config-overlay { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 460px; z-index: 1000; display: none; border: 5px solid #ab47bc; }
+        .delete-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #f0e1f7; }
+        .btn-x { background: none; border: none; color: #ff4757; font-weight: bold; cursor: pointer; font-size: 16px; }
 
-        #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; color: #4a148c; font-family: 'Orbitron'; }
+        #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; color: #6a1b9a; font-family: 'Orbitron'; }
     </style>
 </head>
 <body onclick="fecharTodos()">
@@ -88,6 +104,7 @@
 <div id="loading"><b>🚀 SINCRONIZANDO PISTAS...</b></div>
 
 <header onclick="event.stopPropagation()">
+    <div id="emoji-container" class="emoji-bg"></div>
     <div class="header-main">
         <div class="school-info">
             <h2>UE. JOÃO TAVARES DA COSTA</h2>
@@ -101,7 +118,7 @@
         <div style="display:flex; gap:8px;">
             <button onclick="exportarExcelCompleto()" style="background:#2e7d32; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer; font-size:11px;">📊 EXCEL</button>
             <button onclick="document.getElementById('importFile').click()" style="background:#f39c12; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer; font-size:11px;">📂 SUBIR BK</button>
-            <button onclick="exportarBackup()" style="background:#6a1b9a; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer; font-size:11px;">💾 BK</button>
+            <button onclick="exportarBackup()" style="background:#ab47bc; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer; font-size:11px;">💾 BK</button>
             <input type="file" id="importFile" style="display:none" onchange="importarBackup(this)">
         </div>
     </div>
@@ -122,26 +139,26 @@
 </main>
 
 <div id="p-turmas" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#4a148c">Turmas</h3>
+    <h3 style="font-family:'Orbitron'; color:#6a1b9a">Turmas</h3>
     <div id="class-list-del"></div>
     <input type="text" id="in-cl" placeholder="+ Nova Turma" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:12px; margin-top:10px; border-radius:12px; border:1px solid #ddd;">
 </div>
 
 <div id="p-mat" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#4a148c">Matérias</h3>
+    <h3 style="font-family:'Orbitron'; color:#6a1b9a">Matérias</h3>
     <div id="subject-list-del"></div>
     <input type="text" id="in-mat" placeholder="+ Nova Matéria" onkeypress="if(event.key==='Enter') addM()" style="width:100%; padding:12px; margin-top:10px; border-radius:12px; border:1px solid #ddd;">
 </div>
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#4a148c">Alunos</h3>
+    <h3 style="font-family:'Orbitron'; color:#6a1b9a">Alunos</h3>
     <textarea id="in-nm" placeholder="Nomes..." style="width:100%; height:100px; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
-    <button onclick="addStus()" style="width:100%; background:#4a148c; color:white; border:none; padding:12px; margin:10px 0; border-radius:12px; font-weight:bold;">ADICIONAR</button>
+    <button onclick="addStus()" style="width:100%; background:#6a1b9a; color:white; border:none; padding:12px; margin:10px 0; border-radius:12px; font-weight:bold;">ADICIONAR</button>
     <div id="stu-list-del" style="max-height:200px; overflow-y:auto;"></div>
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#4a148c">Critérios</h3>
+    <h3 style="font-family:'Orbitron'; color:#6a1b9a">Critérios</h3>
     <div style="background:#f3e5f5; padding:10px; border-radius:10px; margin-bottom:10px; font-weight:bold;">
         Vistos: <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px;">
     </div>
@@ -164,6 +181,21 @@
     const db = firebase.database();
     let dados = { turmas: [], ti: 0, bim: 1 };
     const emojis = ['🚀', '🛸', '🪐', '👾', '🌍', '🛰️', '☄️', '⚛️', '🔭', '🧪'];
+
+    function initEmojiFloat() {
+        const container = document.getElementById('emoji-container');
+        for (let i = 0; i < 15; i++) {
+            const span = document.createElement('span');
+            span.className = 'floating-emoji';
+            span.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            span.style.left = Math.random() * 100 + '%';
+            span.style.top = Math.random() * 100 + '%';
+            span.style.animationDuration = (12 + Math.random() * 18) + 's';
+            span.style.animationDelay = (Math.random() * 5) + 's';
+            container.appendChild(span);
+        }
+    }
+    initEmojiFloat();
 
     db.ref('biolab_joao_tavares').on('value', (snap) => {
         if(snap.val()) { dados = snap.val(); if (!dados.turmas) dados.turmas = []; }
@@ -222,7 +254,7 @@
             return `<div class="student-card" style="border-left-color: ${nB < 7 ? '#d32f2f' : '#2e7d32'}">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <b style="color:#2e004f">${s.n}</b>
-                    <div class="${nB < 7 ? 'score-red':'score-green'}" style="font-size:22px; font-weight:900;">${nB.toFixed(1)}</div>
+                    <div style="font-size:22px; font-weight:900; color:${nB < 7 ? '#d32f2f' : '#2e7d32'}">${nB.toFixed(1)}</div>
                 </div>
                 <div class="check-grid">${chs}</div>
                 ${(t.crits && t.crits[t.mi] || []).map(c => `
