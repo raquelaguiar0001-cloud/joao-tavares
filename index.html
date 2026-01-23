@@ -45,47 +45,42 @@
         .nav-btn { flex: 1; padding: 11px; border: none; background: transparent; color: #6a1b9a; font-weight: 700; cursor: pointer; border-radius: 10px; font-size: 10px; text-transform: uppercase; }
         .nav-btn.active { background: #6a1b9a; color: white; box-shadow: 0 5px 12px rgba(106, 27, 154, 0.2); }
 
-        .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; }
-        .students-area { width: 360px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; }
+        .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; height: calc(100vh - 180px); }
         
+        .students-area { width: 360px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; height: 100%; }
+        
+        /* PISTA CORRIGIDA */
+        .track-container { 
+            flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 30px; border: 2px dashed #ce93d8;
+            position: relative; overflow-y: auto; /* Rolagem vertical ativa */
+            overflow-x: hidden;
+            background-image: radial-gradient(#d1b3e0 1.2px, transparent 1.2px); background-size: 35px 35px;
+            height: 100%;
+        }
+
+        #lanes-box { min-height: 100%; padding: 20px 0; display: flex; flex-direction: column; }
+
         .student-card { 
             background: white; border-radius: 18px; margin-bottom: 12px; padding: 15px; 
             box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; border-left: 10px solid #ddd;
         }
-        .student-card:hover { transform: scale(1.01); box-shadow: 0 6px 15px rgba(74, 20, 140, 0.1); }
 
-        .score-red { color: #d32f2f !important; }
-        .score-green { color: #2e7d32 !important; }
-
-        .track-container { 
-            flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 30px; border: 2px dashed #ce93d8;
-            position: relative; overflow: hidden; background-image: radial-gradient(#d1b3e0 1.2px, transparent 1.2px); background-size: 35px 35px;
-        }
-
-        .lane { position: relative; height: 48px; display: flex; align-items: center; border-bottom: 1px solid rgba(171, 71, 188, 0.08); width: 100%; }
+        .lane { position: relative; height: 55px; min-height: 55px; width: 100%; border-bottom: 1px solid rgba(171, 71, 188, 0.1); display: flex; align-items: center; }
         .runner { position: absolute; z-index: 5; display: flex; align-items: center; gap: 8px; transition: left 2s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
-        .runner-tag { background: #4a148c; color: white; padding: 3px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ba68c8; white-space: nowrap; }
+        .runner-tag { background: #4a148c; color: white; padding: 4px 12px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ba68c8; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
         .check-box { width: 30px; height: 30px; border: 2px solid #e1bee7; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: bold; background: white; }
         .check-box.active { background: #4caf50; color: white; border-color: #388e3c; }
 
-        .config-overlay { 
-            position: fixed; top: 110px; left: 50%; transform: translateX(-50%); 
-            background: white; border-radius: 25px; padding: 25px; 
-            width: 90%; max-width: 460px; z-index: 1000; display: none; 
-            border: 5px solid #6a1b9a; box-shadow: 0 25px 80px rgba(0,0,0,0.15); 
-        }
-
-        .delete-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f0f0f0; align-items: center; }
-        .btn-x { color: white; background: #e53935; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; }
+        .config-overlay { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 460px; z-index: 1000; display: none; border: 5px solid #6a1b9a; }
 
         #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; color: #4a148c; font-family: 'Orbitron'; }
     </style>
 </head>
 <body onclick="fecharTodos()">
 
-<div id="loading"><b>🚀 SINCRONIZANDO JOÃO TAVARES...</b></div>
+<div id="loading"><b>🚀 SINCRONIZANDO PISTAS...</b></div>
 
 <header onclick="event.stopPropagation()">
     <div class="header-main">
@@ -95,6 +90,7 @@
             <div class="status-bar">
                 <span><b>TURMA:</b> <span id="txt-turma">---</span></span>
                 <span><b>MATÉRIA:</b> <span id="txt-materia">---</span></span>
+                <span><b>ALUNOS:</b> <span id="txt-total-alunos" style="color:#c2185b; font-weight:900;">0</span></span>
             </div>
         </div>
         <div style="display:flex; gap:8px;">
@@ -115,8 +111,8 @@
 
 <main class="main-content">
     <aside class="students-area" id="stu-list"></aside>
-    <section class="track-container" id="track">
-        <div id="lanes-box" style="padding: 20px 0;"></div>
+    <section class="track-container">
+        <div id="lanes-box"></div>
     </section>
 </main>
 
@@ -134,15 +130,15 @@
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
     <h3 style="font-family:'Orbitron'; color:#4a148c">Alunos</h3>
-    <textarea id="in-nm" placeholder="Cole os nomes..." style="width:100%; height:100px; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
+    <textarea id="in-nm" placeholder="Nomes..." style="width:100%; height:100px; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
     <button onclick="addStus()" style="width:100%; background:#4a148c; color:white; border:none; padding:12px; margin:10px 0; border-radius:12px; font-weight:bold;">ADICIONAR</button>
-    <div id="stu-list-del" style="max-height:200px; overflow-y:auto; background:#fdf7ff; border-radius:12px;"></div>
+    <div id="stu-list-del" style="max-height:200px; overflow-y:auto;"></div>
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
     <h3 style="font-family:'Orbitron'; color:#4a148c">Critérios</h3>
     <div style="background:#f3e5f5; padding:10px; border-radius:10px; margin-bottom:10px; font-weight:bold;">
-        Vistos Totais: <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px;">
+        Vistos: <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px;">
     </div>
     <div id="crit-list-del"></div>
     <input type="text" id="in-cr" placeholder="+ Novo Critério" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:12px; margin-top:10px; border-radius:12px; border:1px solid #ddd;">
@@ -211,6 +207,7 @@
 
         document.getElementById('txt-turma').innerText = t.n;
         document.getElementById('txt-materia').innerText = (t.mats && t.mats[t.mi]) || "---";
+        document.getElementById('txt-total-alunos').innerText = (t.st || []).length;
         document.getElementById('tot-at').value = (t.totA && t.totA[t.mi]) || 10;
 
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
@@ -236,7 +233,7 @@
             let n = getNota(s, dados.bim, t.mi);
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
-                <span style="font-size:25px">${emojis[i%emojis.length]}</span>
+                <span style="font-size:26px;">${emojis[i%emojis.length]}</span>
                 <div class="runner-tag">${s.n} | ${n.toFixed(1)}</div>
             </div>`;
             lanesBox.appendChild(lane);
@@ -248,7 +245,7 @@
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
-    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Sua Matéria'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
+    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
     function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
     function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
     function addStus() { let n=document.getElementById('in-nm').value.split('\n'); n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); document.getElementById('in-nm').value=''; salvar(); }
