@@ -72,7 +72,7 @@
         }
 
         #lanes-box { min-height: 100%; padding: 20px 0 150px 0; display: flex; flex-direction: column; }
-        .student-card { background: white; border-radius: 18px; margin-bottom: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; border-left: 10px solid #ddd; }
+        .student-card { background: white; border-radius: 18px; margin-bottom: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; }
         .lane { position: relative; height: 55px; min-height: 55px; width: 100%; border-bottom: 1px solid rgba(171, 71, 188, 0.1); display: flex; align-items: center; }
         .runner { position: absolute; z-index: 5; display: flex; align-items: center; gap: 8px; transition: left 2s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
         .runner-tag { background: #6a1b9a; color: white; padding: 4px 12px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 3px solid #ce93d8; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
@@ -142,8 +142,8 @@
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
     <h3 style="font-family:'Orbitron'; color:#6a1b9a">Alunos</h3>
-    <textarea id="in-nm" placeholder="Cole a lista de nomes aqui..." style="width:100%; height:100px; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
-    <button onclick="addStus()" style="width:100%; background:#6a1b9a; color:white; border:none; padding:12px; margin:10px 0; border-radius:12px; font-weight:bold; cursor:pointer;">ADICIONAR ALUNOS</button>
+    <textarea id="in-nm" placeholder="Nomes..." style="width:100%; height:100px; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
+    <button onclick="addStus()" style="width:100%; background:#6a1b9a; color:white; border:none; padding:12px; margin:10px 0; border-radius:12px; font-weight:bold; cursor:pointer;">ADICIONAR</button>
     <div id="stu-list-del" style="max-height:200px; overflow-y:auto;"></div>
 </div>
 
@@ -268,7 +268,10 @@
 
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             let nB = getNota(s, dados.bim, t.mi);
-            let corDinamica = nB < 7 ? '#ff4757' : '#2ecc71'; // Vermelho ou Verde
+            let n1 = getNota(s, 1, t.mi), n2 = getNota(s, 2, t.mi), n3 = getNota(s, 3, t.mi), n4 = getNota(s, 4, t.mi);
+            let mediaAnual = (n1 + n2 + n3 + n4) / 4;
+            
+            let corDinamica = nB < 7 ? '#ff4757' : '#2ecc71';
             
             let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = (t.totA && t.totA[t.mi]) || 10;
             if (!s.sc) s.sc = {};
@@ -277,7 +280,10 @@
             return `<div class="student-card" style="border-left: 10px solid ${corDinamica}">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <b style="color:#2e004f">${s.n}</b>
-                    <div style="font-size:22px; font-weight:900; color:${corDinamica}">${nB.toFixed(1)}</div>
+                    <div style="text-align:right">
+                        <div style="font-size:22px; font-weight:900; color:${corDinamica}">${nB.toFixed(1)}</div>
+                        <div style="font-size:10px; color:#666; font-weight:700;">ANUAL: ${mediaAnual.toFixed(1)}</div>
+                    </div>
                 </div>
                 <div class="check-grid">${chs}</div>
                 ${(t.crits && t.crits[t.mi] || []).map(c => `
@@ -303,7 +309,6 @@
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
     }
 
-    // HANDLERS
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
