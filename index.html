@@ -62,7 +62,7 @@
         .nav-btn { flex: 1; padding: 11px; border: none; background: transparent; color: #6a1b9a; font-weight: 700; cursor: pointer; border-radius: 10px; font-size: 10px; text-transform: uppercase; }
         .nav-btn.active { background: #ab47bc; color: white; box-shadow: 0 5px 12px rgba(106, 27, 154, 0.2); }
 
-        .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; height: calc(100vh - 180px); }
+        .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; }
         .students-area { width: 360px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; height: 100%; }
         
         .track-container { 
@@ -75,15 +75,15 @@
         .student-card { background: white; border-radius: 18px; margin-bottom: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; border-left: 10px solid #ddd; }
         .lane { position: relative; height: 55px; min-height: 55px; width: 100%; border-bottom: 1px solid rgba(171, 71, 188, 0.1); display: flex; align-items: center; }
         .runner { position: absolute; z-index: 5; display: flex; align-items: center; gap: 8px; transition: left 2s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
-        .runner-tag { background: #6a1b9a; color: white; padding: 4px 12px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ce93d8; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+        .runner-tag { background: #6a1b9a; color: white; padding: 4px 12px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 3px solid #ce93d8; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
         .check-box { width: 30px; height: 30px; border: 2px solid #e1bee7; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: bold; background: white; }
         .check-box.active { background: #4caf50; color: white; border-color: #388e3c; }
 
-        .config-overlay { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 460px; z-index: 1000; display: none; border: 5px solid #ab47bc; }
+        .config-overlay { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 460px; z-index: 1000; display: none; border: 5px solid #ab47bc; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
         .delete-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #f0e1f7; }
-        .btn-move { background: #f0e1f7; border: none; border-radius: 5px; cursor: pointer; padding: 2px 8px; font-weight: bold; margin-left: 5px; }
+        .btn-move { background: #f0e1f7; border: none; border-radius: 5px; cursor: pointer; padding: 2px 8px; font-weight: bold; margin-left: 5px; color: #6a1b9a; }
         .btn-x { background: none; border: none; color: #ff4757; font-weight: bold; cursor: pointer; font-size: 16px; margin-left: 10px; }
 
         #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; color: #6a1b9a; font-family: 'Orbitron'; }
@@ -142,15 +142,15 @@
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
     <h3 style="font-family:'Orbitron'; color:#6a1b9a">Alunos</h3>
-    <textarea id="in-nm" placeholder="Nomes..." style="width:100%; height:100px; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
-    <button onclick="addStus()" style="width:100%; background:#6a1b9a; color:white; border:none; padding:12px; margin:10px 0; border-radius:12px; font-weight:bold;">ADICIONAR</button>
+    <textarea id="in-nm" placeholder="Cole a lista de nomes aqui..." style="width:100%; height:100px; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
+    <button onclick="addStus()" style="width:100%; background:#6a1b9a; color:white; border:none; padding:12px; margin:10px 0; border-radius:12px; font-weight:bold; cursor:pointer;">ADICIONAR ALUNOS</button>
     <div id="stu-list-del" style="max-height:200px; overflow-y:auto;"></div>
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
     <h3 style="font-family:'Orbitron'; color:#6a1b9a">Critérios</h3>
-    <div style="background:#f3e5f5; padding:10px; border-radius:10px; margin-bottom:10px; font-weight:bold;">
-        Vistos: <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px;">
+    <div style="background:#f3e5f5; padding:12px; border-radius:15px; margin-bottom:10px; font-weight:bold; color:#6a1b9a;">
+        Vistos Totais: <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px; padding:5px; border-radius:8px; border:1px solid #ab47bc;">
     </div>
     <div id="crit-list-del"></div>
     <input type="text" id="in-cr" placeholder="+ Novo Critério" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:12px; margin-top:10px; border-radius:12px; border:1px solid #ddd;">
@@ -268,12 +268,16 @@
 
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             let nB = getNota(s, dados.bim, t.mi);
+            let corDinamica = nB < 7 ? '#ff4757' : '#2ecc71'; // Vermelho ou Verde
+            
             let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = (t.totA && t.totA[t.mi]) || 10;
+            if (!s.sc) s.sc = {};
             for(let i=0; i<tot; i++) chs += `<div class="check-box ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
-            return `<div class="student-card" style="border-left-color: ${nB < 7 ? '#d32f2f' : '#2e7d32'}">
+            
+            return `<div class="student-card" style="border-left: 10px solid ${corDinamica}">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
                     <b style="color:#2e004f">${s.n}</b>
-                    <div style="font-size:22px; font-weight:900; color:${nB < 7 ? '#d32f2f' : '#2e7d32'}">${nB.toFixed(1)}</div>
+                    <div style="font-size:22px; font-weight:900; color:${corDinamica}">${nB.toFixed(1)}</div>
                 </div>
                 <div class="check-grid">${chs}</div>
                 ${(t.crits && t.crits[t.mi] || []).map(c => `
@@ -287,10 +291,11 @@
         const lanesBox = document.getElementById('lanes-box'); lanesBox.innerHTML = '';
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
+            let corDinamica = n < 7 ? '#ff4757' : '#2ecc71';
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
                 <span style="font-size:26px;">${emojis[i%emojis.length]}</span>
-                <div class="runner-tag">${s.n} | ${n.toFixed(1)}</div>
+                <div class="runner-tag" style="border-color: ${corDinamica}; border-width: 3px;">${s.n} | ${n.toFixed(1)}</div>
             </div>`;
             lanesBox.appendChild(lane);
         });
@@ -305,36 +310,33 @@
     function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
     function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
     function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
-    function addStus() { let n=document.getElementById('in-nm').value.split('\n'); n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); document.getElementById('in-nm').value=''; salvar(); }
+    function addStus() { 
+        let n=document.getElementById('in-nm').value.split('\n'); 
+        n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); 
+        dados.turmas[dados.ti].st.sort((a,b)=>a.n.localeCompare(b.n));
+        document.getElementById('in-nm').value=''; salvar(); 
+    }
+
     function delT(i) { if(confirm('Excluir turma?')){ dados.turmas.splice(i, 1); dados.ti = 0; salvar(); } }
     function delM(i) { if(confirm('Excluir matéria?')){ dados.turmas[dados.ti].mats.splice(i, 1); dados.turmas[dados.ti].mi = 0; salvar(); } }
     function delS(i) { if(confirm('Remover aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
     function delC(i) { if(confirm('Remover critério?')){ dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i, 1); salvar(); } }
-    
-    // EXPORTAÇÃO EXCEL ATUALIZADA - TODAS AS MATÉRIAS
+
     function exportarExcelCompleto() {
         const t = dados.turmas[dados.ti]; if(!t) return;
-        let csv = "\ufeff"; // BOM para UTF-8
-
+        let csv = "\ufeff"; 
         t.mats.forEach((materiaNome, mIdx) => {
             csv += `MATÉRIA: ${materiaNome.toUpperCase()}\n`;
             csv += "ALUNO;1º BIM;2º BIM;3º BIM;4º BIM;MÉDIA FINAL\n";
-            
             t.st.forEach(s => {
-                let n1 = getNota(s, 1, mIdx);
-                let n2 = getNota(s, 2, mIdx);
-                let n3 = getNota(s, 3, mIdx);
-                let n4 = getNota(s, 4, mIdx);
+                let n1 = getNota(s, 1, mIdx), n2 = getNota(s, 2, mIdx), n3 = getNota(s, 3, mIdx), n4 = getNota(s, 4, mIdx);
                 let media = (n1 + n2 + n3 + n4) / 4;
                 csv += `${s.n};${n1.toFixed(1)};${n2.toFixed(1)};${n3.toFixed(1)};${n4.toFixed(1)};${media.toFixed(1)}\n`;
             });
-            csv += "\n\n"; // Espaço entre matérias
+            csv += "\n\n"; 
         });
-
-        let a = document.createElement('a');
-        a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8;'}));
-        a.download = `RELATORIO_COMPLETO_${t.n}.csv`;
-        a.click();
+        let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8;'}));
+        a.download = `RELATORIO_JT_${t.n}.csv`; a.click();
     }
 
     function exportarBackup() { let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(dados)],{type:'application/json'})); a.download='Backup_JT.json'; a.click(); }
@@ -343,10 +345,8 @@
         reader.onload = function() {
             try {
                 const json = JSON.parse(reader.result);
-                if(confirm("Deseja substituir TODOS os dados atuais pelos do backup?")) {
-                    dados = json; salvar(); alert("Backup restaurado com sucesso!");
-                }
-            } catch(e) { alert("Arquivo de backup inválido."); }
+                if(confirm("Substituir dados atuais?")) { dados = json; salvar(); }
+            } catch(e) { alert("Backup inválido."); }
         };
         reader.readAsText(input.files[0]);
     }
