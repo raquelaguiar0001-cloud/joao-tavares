@@ -197,14 +197,12 @@
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
     function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
 
-    // FUNÇÕES DE MOVER ITENS
     function moverT(idx, dir) {
         let n = idx + dir;
         if (n >= 0 && n < dados.turmas.length) {
             let item = dados.turmas.splice(idx, 1)[0];
             dados.turmas.splice(n, 0, item);
-            dados.ti = n; 
-            salvar();
+            dados.ti = n; salvar();
         }
     }
 
@@ -214,16 +212,14 @@
         if (n >= 0 && n < t.mats.length) {
             let m = t.mats.splice(idx, 1)[0];
             t.mats.splice(n, 0, m);
-            // Mover também dados relacionados
             let v = t.totA.splice(idx, 1)[0]; t.totA.splice(n, 0, v);
             let c = t.crits.splice(idx, 1)[0]; t.crits.splice(n, 0, c);
-            t.mi = n;
-            salvar();
+            t.mi = n; salvar();
         }
     }
 
     function getNota(aluno, bim, mIdx) {
-        const t = dados.turmas[dados.ti]; if(!t) return 0;
+        const t = dados.turmas[dados.ti]; if(!t || !t.mats[mIdx]) return 0;
         let kA = `${mIdx}_${bim}_ativ`, totA = (t.totA && t.totA[mIdx]) || 10;
         if (!aluno.sc) aluno.sc = {};
         let nVistos = ((aluno.sc[kA] || []).length / totA) * 10;
@@ -302,6 +298,7 @@
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
     }
 
+    // HANDLERS
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
@@ -314,15 +311,32 @@
     function delS(i) { if(confirm('Remover aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
     function delC(i) { if(confirm('Remover critério?')){ dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i, 1); salvar(); } }
     
+    // EXPORTAÇÃO EXCEL ATUALIZADA - TODAS AS MATÉRIAS
     function exportarExcelCompleto() {
         const t = dados.turmas[dados.ti]; if(!t) return;
-        let csv = "\ufeffALUNO;1B;2B;3B;4B;MEDIA\n";
-        t.st.forEach(s => {
-            let n1=getNota(s,1,t.mi), n2=getNota(s,2,t.mi), n3=getNota(s,3,t.mi), n4=getNota(s,4,t.mi);
-            csv += `${s.n};${n1.toFixed(1)};${n2.toFixed(1)};${n3.toFixed(1)};${n4.toFixed(1)};${((n1+n2+n3+n4)/4).toFixed(1)}\n`;
+        let csv = "\ufeff"; // BOM para UTF-8
+
+        t.mats.forEach((materiaNome, mIdx) => {
+            csv += `MATÉRIA: ${materiaNome.toUpperCase()}\n`;
+            csv += "ALUNO;1º BIM;2º BIM;3º BIM;4º BIM;MÉDIA FINAL\n";
+            
+            t.st.forEach(s => {
+                let n1 = getNota(s, 1, mIdx);
+                let n2 = getNota(s, 2, mIdx);
+                let n3 = getNota(s, 3, mIdx);
+                let n4 = getNota(s, 4, mIdx);
+                let media = (n1 + n2 + n3 + n4) / 4;
+                csv += `${s.n};${n1.toFixed(1)};${n2.toFixed(1)};${n3.toFixed(1)};${n4.toFixed(1)};${media.toFixed(1)}\n`;
+            });
+            csv += "\n\n"; // Espaço entre matérias
         });
-        let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'})); a.download = `NOTAS_JT_${t.n}.csv`; a.click();
+
+        let a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8;'}));
+        a.download = `RELATORIO_COMPLETO_${t.n}.csv`;
+        a.click();
     }
+
     function exportarBackup() { let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(dados)],{type:'application/json'})); a.download='Backup_JT.json'; a.click(); }
     function importarBackup(input) {
         const reader = new FileReader();
