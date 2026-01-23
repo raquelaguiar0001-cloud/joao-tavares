@@ -13,83 +13,79 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Orbitron:wght@700&display=swap');
         
-        * { box-sizing: border-box; transition: all 0.3s ease; }
+        * { box-sizing: border-box; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         
         body { 
             font-family: 'Fredoka', sans-serif; 
             margin: 0; height: 100vh; display: flex; flex-direction: column; 
-            /* Lilás mais claro e suave */
-            background: #f3e5f5;
-            background-image: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
-            overflow: hidden; color: #4a148c;
+            background: #f8f0fb;
+            background-image: linear-gradient(135deg, #f8f0fb 0%, #e8d5f0 100%);
+            overflow: hidden; color: #2e004f;
         }
 
         header { 
-            background: rgba(255, 255, 255, 0.6); 
-            backdrop-filter: blur(10px);
-            padding: 15px; margin: 10px; border-radius: 20px;
-            border: 1px solid rgba(155, 89, 182, 0.2); 
-            box-shadow: 0 8px 32px rgba(155, 89, 182, 0.1);
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(12px);
+            padding: 15px; margin: 10px; border-radius: 22px;
+            border: 2px solid #d1b3e0; 
+            box-shadow: 0 10px 25px rgba(74, 20, 140, 0.08);
             z-index: 10; flex-shrink: 0;
         }
 
         .header-main { display: flex; justify-content: space-between; align-items: center; }
-        .school-info h2 { margin: 0; font-family: 'Orbitron'; font-size: 18px; color: #6a1b9a; }
-        .teacher-tag { font-size: 11px; color: #d81b60; font-weight: bold; text-transform: uppercase; }
+        .school-info h2 { margin: 0; font-family: 'Orbitron'; font-size: 19px; color: #4a148c; }
+        .teacher-tag { font-size: 11px; color: #c2185b; font-weight: 700; text-transform: uppercase; }
 
         .status-bar { 
-            background: rgba(255, 255, 255, 0.5); padding: 8px 15px; border-radius: 30px; 
-            display: inline-flex; gap: 15px; margin-top: 10px; border: 1px solid #ce93d8; font-size: 11px;
+            background: #ffffff; padding: 8px 18px; border-radius: 30px; 
+            display: inline-flex; gap: 15px; margin-top: 10px; border: 2px solid #9c27b0; font-size: 11px;
         }
-        .status-label { color: #8e24aa; font-weight: bold; margin-right: 5px; }
 
-        .nav-container { display: flex; gap: 8px; margin-top: 12px; background: rgba(255, 255, 255, 0.4); padding: 5px; border-radius: 12px; }
-        .nav-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #7b1fa2; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 10px; text-transform: uppercase; }
-        .nav-btn.active { background: #ab47bc; color: white; box-shadow: 0 4px 12px rgba(171, 71, 188, 0.3); }
+        .nav-container { display: flex; gap: 8px; margin-top: 12px; background: #f0e1f7; padding: 5px; border-radius: 15px; }
+        .nav-btn { flex: 1; padding: 11px; border: none; background: transparent; color: #6a1b9a; font-weight: 700; cursor: pointer; border-radius: 10px; font-size: 10px; text-transform: uppercase; }
+        .nav-btn.active { background: #6a1b9a; color: white; box-shadow: 0 5px 12px rgba(106, 27, 154, 0.2); }
 
         .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; }
-        .students-area { width: 350px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; }
+        .students-area { width: 360px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; }
         
         .student-card { 
-            background: white; color: #333; border-radius: 18px; 
-            margin-bottom: 12px; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 8px solid #ddd;
+            background: white; border-radius: 18px; margin-bottom: 12px; padding: 15px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; border-left: 10px solid #ddd;
         }
+        .student-card:hover { transform: scale(1.01); box-shadow: 0 6px 15px rgba(74, 20, 140, 0.1); }
 
-        .score-red { color: #e53935 !important; }
-        .score-green { color: #43a047 !important; }
+        .score-red { color: #d32f2f !important; }
+        .score-green { color: #2e7d32 !important; }
 
         .track-container { 
-            flex: 1; background: rgba(255, 255, 255, 0.3); border-radius: 30px; border: 2px solid rgba(171, 71, 188, 0.1);
-            position: relative; overflow: hidden;
-            background-image: radial-gradient(#e1bee7 1px, transparent 1px);
-            background-size: 30px 30px;
+            flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 30px; border: 2px dashed #ce93d8;
+            position: relative; overflow: hidden; background-image: radial-gradient(#d1b3e0 1.2px, transparent 1.2px); background-size: 35px 35px;
         }
 
-        .lane { position: relative; height: 45px; display: flex; align-items: center; border-bottom: 1px solid rgba(171, 71, 188, 0.05); width: 100%; }
-        .runner { position: absolute; z-index: 5; display: flex; align-items: center; gap: 8px; transition: left 2s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .runner-emoji { font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
-        .runner-tag { background: white; color: #4a148c; padding: 3px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ce93d8; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .lane { position: relative; height: 48px; display: flex; align-items: center; border-bottom: 1px solid rgba(171, 71, 188, 0.08); width: 100%; }
+        .runner { position: absolute; z-index: 5; display: flex; align-items: center; gap: 8px; transition: left 2s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
+        .runner-tag { background: #4a148c; color: white; padding: 3px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ba68c8; white-space: nowrap; }
 
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-        .check-box { width: 30px; height: 30px; border: 2px solid #e1bee7; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: bold; background: white; color: #8e24aa; }
-        .check-box.active { background: #66bb6a; color: white; border-color: #43a047; }
+        .check-box { width: 30px; height: 30px; border: 2px solid #e1bee7; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: bold; background: white; }
+        .check-box.active { background: #4caf50; color: white; border-color: #388e3c; }
 
         .config-overlay { 
-            position: fixed; top: 100px; left: 50%; transform: translateX(-50%); 
-            background: white; color: #333; border-radius: 25px; padding: 25px; 
-            width: 90%; max-width: 450px; z-index: 1000; display: none; 
-            border: 5px solid #ab47bc; box-shadow: 0 20px 60px rgba(0,0,0,0.15); 
+            position: fixed; top: 110px; left: 50%; transform: translateX(-50%); 
+            background: white; border-radius: 25px; padding: 25px; 
+            width: 90%; max-width: 460px; z-index: 1000; display: none; 
+            border: 5px solid #6a1b9a; box-shadow: 0 25px 80px rgba(0,0,0,0.15); 
         }
 
-        .delete-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; align-items: center; font-size: 13px; }
-        .btn-x { color: #e53935; cursor: pointer; font-weight: bold; background: #ffebee; border: none; padding: 5px 10px; border-radius: 5px; }
+        .delete-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #f0f0f0; align-items: center; }
+        .btn-x { color: white; background: #e53935; border: none; padding: 5px 10px; border-radius: 8px; cursor: pointer; }
 
-        #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; color: #7b1fa2; font-family: 'Orbitron'; }
+        #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; color: #4a148c; font-family: 'Orbitron'; }
     </style>
 </head>
 <body onclick="fecharTodos()">
 
-<div id="loading"><b>✨ CARREGANDO JOÃO TAVARES...</b></div>
+<div id="loading"><b>🚀 SINCRONIZANDO JOÃO TAVARES...</b></div>
 
 <header onclick="event.stopPropagation()">
     <div class="header-main">
@@ -97,13 +93,15 @@
             <h2>UE. JOÃO TAVARES DA COSTA</h2>
             <div class="teacher-tag">PROF(A) RAQUEL AGUIAR</div>
             <div class="status-bar">
-                <span><span class="status-label">TURMA:</span><span id="txt-turma">---</span></span>
-                <span><span class="status-label">MATÉRIA:</span><span id="txt-materia">---</span></span>
+                <span><b>TURMA:</b> <span id="txt-turma">---</span></span>
+                <span><b>MATÉRIA:</b> <span id="txt-materia">---</span></span>
             </div>
         </div>
-        <div style="display:flex; gap:10px;">
-            <button onclick="exportarExcelCompleto()" style="background:#43a047; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer;">📊 EXCEL</button>
-            <button onclick="exportarBackup()" style="background:#ab47bc; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer;">💾 BK</button>
+        <div style="display:flex; gap:8px;">
+            <button onclick="exportarExcelCompleto()" style="background:#2e7d32; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer; font-size:11px;">📊 EXCEL</button>
+            <button onclick="document.getElementById('importFile').click()" style="background:#f39c12; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer; font-size:11px;">📂 SUBIR BK</button>
+            <button onclick="exportarBackup()" style="background:#6a1b9a; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer; font-size:11px;">💾 BK</button>
+            <input type="file" id="importFile" style="display:none" onchange="importarBackup(this)">
         </div>
     </div>
     <nav class="nav-container">
@@ -123,31 +121,31 @@
 </main>
 
 <div id="p-turmas" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#7b1fa2">Gerenciar Turmas</h3>
+    <h3 style="font-family:'Orbitron'; color:#4a148c">Turmas</h3>
     <div id="class-list-del"></div>
-    <input type="text" id="in-cl" placeholder="+ Nova Turma e Enter" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px; border:1px solid #ddd;">
+    <input type="text" id="in-cl" placeholder="+ Nova Turma" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:12px; margin-top:10px; border-radius:12px; border:1px solid #ddd;">
 </div>
 
 <div id="p-mat" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#7b1fa2">Matérias da Turma</h3>
+    <h3 style="font-family:'Orbitron'; color:#4a148c">Matérias</h3>
     <div id="subject-list-del"></div>
-    <input type="text" id="in-mat" placeholder="+ Nova Matéria" onkeypress="if(event.key==='Enter') addM()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px; border:1px solid #ddd;">
+    <input type="text" id="in-mat" placeholder="+ Nova Matéria" onkeypress="if(event.key==='Enter') addM()" style="width:100%; padding:12px; margin-top:10px; border-radius:12px; border:1px solid #ddd;">
 </div>
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#7b1fa2">Lista de Alunos</h3>
-    <textarea id="in-nm" placeholder="Nomes (um por linha)..." style="width:100%; height:100px; padding:10px; border-radius:10px; border:1px solid #ddd;"></textarea>
-    <button onclick="addStus()" style="width:100%; background:#7b1fa2; color:white; border:none; padding:12px; margin:10px 0; border-radius:10px; font-weight:bold;">ADICIONAR</button>
-    <div id="stu-list-del" style="max-height:200px; overflow-y:auto; background:#f3e5f5; border-radius:10px;"></div>
+    <h3 style="font-family:'Orbitron'; color:#4a148c">Alunos</h3>
+    <textarea id="in-nm" placeholder="Cole os nomes..." style="width:100%; height:100px; padding:12px; border-radius:12px; border:1px solid #ddd;"></textarea>
+    <button onclick="addStus()" style="width:100%; background:#4a148c; color:white; border:none; padding:12px; margin:10px 0; border-radius:12px; font-weight:bold;">ADICIONAR</button>
+    <div id="stu-list-del" style="max-height:200px; overflow-y:auto; background:#fdf7ff; border-radius:12px;"></div>
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#7b1fa2">Critérios e Vistos</h3>
-    <div style="background:#f3e5f5; padding:10px; border-radius:10px; margin-bottom:10px; color:#4a148c;">
+    <h3 style="font-family:'Orbitron'; color:#4a148c">Critérios</h3>
+    <div style="background:#f3e5f5; padding:10px; border-radius:10px; margin-bottom:10px; font-weight:bold;">
         Vistos Totais: <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px;">
     </div>
     <div id="crit-list-del"></div>
-    <input type="text" id="in-cr" placeholder="+ Novo Critério" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px; border:1px solid #ddd;">
+    <input type="text" id="in-cr" placeholder="+ Novo Critério" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:12px; margin-top:10px; border-radius:12px; border:1px solid #ddd;">
 </div>
 
 <script>
@@ -193,7 +191,7 @@
 
         document.getElementById('class-list-del').innerHTML = dados.turmas.map((x,i)=>`
             <div class="delete-item">
-                <span onclick="dados.ti=${i};salvar()" style="cursor:pointer; ${i===dados.ti?'font-weight:bold;color:#7b1fa2':''}">${x.n}</span>
+                <span onclick="dados.ti=${i};salvar()" style="cursor:pointer; font-weight:${i===dados.ti?'700':'400'}">${x.n}</span>
                 <button class="btn-x" onclick="delT(${i})">✖</button>
             </div>`).join('');
 
@@ -201,7 +199,7 @@
 
         document.getElementById('subject-list-del').innerHTML = (t.mats || []).map((m,i)=>`
             <div class="delete-item">
-                <span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="cursor:pointer; ${i===t.mi?'font-weight:bold;color:#7b1fa2':''}">${m}</span>
+                <span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="cursor:pointer; font-weight:${i===t.mi?'700':'400'}">${m}</span>
                 <button class="btn-x" onclick="delM(${i})">✖</button>
             </div>`).join('');
 
@@ -217,19 +215,18 @@
 
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             let nB = getNota(s, dados.bim, t.mi);
-            let corNota = nB < 7 ? 'score-red' : 'score-green';
             let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = (t.totA && t.totA[t.mi]) || 10;
             for(let i=0; i<tot; i++) chs += `<div class="check-box ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
-            return `<div class="student-card" style="border-left-color: ${nB < 7 ? '#e53935' : '#43a047'}">
+            return `<div class="student-card" style="border-left-color: ${nB < 7 ? '#d32f2f' : '#2e7d32'}">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <b style="color:#4a148c">${s.n}</b>
-                    <div class="${corNota}" style="font-size:20px; font-weight:bold;">${nB.toFixed(1)}</div>
+                    <b style="color:#2e004f">${s.n}</b>
+                    <div class="${nB < 7 ? 'score-red':'score-green'}" style="font-size:22px; font-weight:900;">${nB.toFixed(1)}</div>
                 </div>
                 <div class="check-grid">${chs}</div>
                 ${(t.crits && t.crits[t.mi] || []).map(c => `
-                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:8px; background:#f3e5f5; padding:4px; border-radius:5px; color:#4a148c;">
+                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:8px; background:#fdf7ff; padding:6px; border-radius:8px; border:1px solid #f0e1f7;">
                         <span>${c.n}</span>
-                        <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" style="width:40px; border:1px solid #ce93d8; border-radius:4px; text-align:center;">
+                        <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" style="width:45px; border:2px solid #ce93d8; border-radius:5px; text-align:center;">
                     </div>`).join('')}
             </div>`;
         }).join('');
@@ -239,8 +236,8 @@
             let n = getNota(s, dados.bim, t.mi);
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
-                <span class="runner-emoji">${emojis[i%emojis.length]}</span>
-                <div class="runner-tag" style="border-color: ${n < 7 ? '#e53935' : '#43a047'}; color: ${n < 7 ? '#e53935' : '#43a047'}">${s.n} | ${n.toFixed(1)}</div>
+                <span style="font-size:25px">${emojis[i%emojis.length]}</span>
+                <div class="runner-tag">${s.n} | ${n.toFixed(1)}</div>
             </div>`;
             lanesBox.appendChild(lane);
         });
@@ -248,11 +245,10 @@
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
     }
 
-    // FUNÇÕES DE LÓGICA (MANTIDAS)
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
-    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
+    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Sua Matéria'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
     function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
     function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
     function addStus() { let n=document.getElementById('in-nm').value.split('\n'); n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); document.getElementById('in-nm').value=''; salvar(); }
@@ -260,6 +256,7 @@
     function delM(i) { if(confirm('Excluir matéria?')){ dados.turmas[dados.ti].mats.splice(i, 1); dados.turmas[dados.ti].mi = 0; salvar(); } }
     function delS(i) { if(confirm('Remover aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
     function delC(i) { if(confirm('Remover critério?')){ dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i, 1); salvar(); } }
+    
     function exportarExcelCompleto() {
         const t = dados.turmas[dados.ti]; if(!t) return;
         let csv = "\ufeffALUNO;1B;2B;3B;4B;MEDIA\n";
@@ -269,7 +266,21 @@
         });
         let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'})); a.download = `NOTAS_JT_${t.n}.csv`; a.click();
     }
+    
     function exportarBackup() { let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(dados)],{type:'application/json'})); a.download='Backup_JT.json'; a.click(); }
+    
+    function importarBackup(input) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            try {
+                const json = JSON.parse(reader.result);
+                if(confirm("Deseja substituir TODOS os dados atuais pelos do backup?")) {
+                    dados = json; salvar(); alert("Backup restaurado com sucesso!");
+                }
+            } catch(e) { alert("Arquivo de backup inválido."); }
+        };
+        reader.readAsText(input.files[0]);
+    }
 </script>
 </body>
 </html>
