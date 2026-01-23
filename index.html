@@ -23,19 +23,13 @@
             overflow: hidden; color: #2e004f;
         }
 
-        /* CONFIGURAÇÃO DOS EMOJIS FLUTUANTES - ESCOLA 2 */
         .emoji-bg {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 1;
-            overflow: hidden;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; overflow: hidden;
         }
 
         .floating-emoji {
-            position: absolute;
-            font-size: 32px;
-            opacity: 0.7;
+            position: absolute; font-size: 32px; opacity: 0.7;
             filter: drop-shadow(0 0 5px rgba(106, 27, 154, 0.2));
             animation: floatRandom linear infinite;
         }
@@ -49,11 +43,9 @@
         }
 
         header { 
-            background: rgba(255, 255, 255, 0.85); 
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
             padding: 15px; margin: 10px; border-radius: 22px;
-            border: 2px solid #ce93d8; /* Lilás mais definido */
-            box-shadow: 0 10px 25px rgba(74, 20, 140, 0.08);
+            border: 2px solid #ce93d8; box-shadow: 0 10px 25px rgba(74, 20, 140, 0.08);
             z-index: 10; flex-shrink: 0; position: relative; overflow: hidden;
         }
 
@@ -62,8 +54,7 @@
         .teacher-tag { font-size: 11px; color: #c2185b; font-weight: 700; text-transform: uppercase; }
 
         .status-bar { 
-            position: relative; z-index: 5;
-            background: #ffffff; padding: 8px 18px; border-radius: 30px; 
+            position: relative; z-index: 5; background: #ffffff; padding: 8px 18px; border-radius: 30px; 
             display: inline-flex; gap: 15px; margin-top: 10px; border: 2px solid #ab47bc; font-size: 11px;
         }
 
@@ -76,10 +67,8 @@
         
         .track-container { 
             flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 30px; border: 2px dashed #ce93d8;
-            position: relative; overflow-y: scroll;
-            overflow-x: hidden;
-            background-image: radial-gradient(#d1b3e0 1.2px, transparent 1.2px); background-size: 35px 35px;
-            height: 100%;
+            position: relative; overflow-y: scroll; overflow-x: hidden;
+            background-image: radial-gradient(#d1b3e0 1.2px, transparent 1.2px); background-size: 35px 35px; height: 100%;
         }
 
         #lanes-box { min-height: 100%; padding: 20px 0 150px 0; display: flex; flex-direction: column; }
@@ -94,7 +83,8 @@
 
         .config-overlay { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 460px; z-index: 1000; display: none; border: 5px solid #ab47bc; }
         .delete-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #f0e1f7; }
-        .btn-x { background: none; border: none; color: #ff4757; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .btn-move { background: #f0e1f7; border: none; border-radius: 5px; cursor: pointer; padding: 2px 8px; font-weight: bold; margin-left: 5px; }
+        .btn-x { background: none; border: none; color: #ff4757; font-weight: bold; cursor: pointer; font-size: 16px; margin-left: 10px; }
 
         #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; color: #6a1b9a; font-family: 'Orbitron'; }
     </style>
@@ -207,6 +197,31 @@
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
     function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
 
+    // FUNÇÕES DE MOVER ITENS
+    function moverT(idx, dir) {
+        let n = idx + dir;
+        if (n >= 0 && n < dados.turmas.length) {
+            let item = dados.turmas.splice(idx, 1)[0];
+            dados.turmas.splice(n, 0, item);
+            dados.ti = n; 
+            salvar();
+        }
+    }
+
+    function moverM(idx, dir) {
+        let t = dados.turmas[dados.ti];
+        let n = idx + dir;
+        if (n >= 0 && n < t.mats.length) {
+            let m = t.mats.splice(idx, 1)[0];
+            t.mats.splice(n, 0, m);
+            // Mover também dados relacionados
+            let v = t.totA.splice(idx, 1)[0]; t.totA.splice(n, 0, v);
+            let c = t.crits.splice(idx, 1)[0]; t.crits.splice(n, 0, c);
+            t.mi = n;
+            salvar();
+        }
+    }
+
     function getNota(aluno, bim, mIdx) {
         const t = dados.turmas[dados.ti]; if(!t) return 0;
         let kA = `${mIdx}_${bim}_ativ`, totA = (t.totA && t.totA[mIdx]) || 10;
@@ -225,7 +240,11 @@
         document.getElementById('class-list-del').innerHTML = dados.turmas.map((x,i)=>`
             <div class="delete-item">
                 <span onclick="dados.ti=${i};salvar()" style="cursor:pointer; font-weight:${i===dados.ti?'700':'400'}">${x.n}</span>
-                <button class="btn-x" onclick="delT(${i})">✖</button>
+                <div>
+                    <button class="btn-move" onclick="moverT(${i}, -1)">↑</button>
+                    <button class="btn-move" onclick="moverT(${i}, 1)">↓</button>
+                    <button class="btn-x" onclick="delT(${i})">✖</button>
+                </div>
             </div>`).join('');
 
         if(!t) return;
@@ -233,7 +252,11 @@
         document.getElementById('subject-list-del').innerHTML = (t.mats || []).map((m,i)=>`
             <div class="delete-item">
                 <span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="cursor:pointer; font-weight:${i===t.mi?'700':'400'}">${m}</span>
-                <button class="btn-x" onclick="delM(${i})">✖</button>
+                <div>
+                    <button class="btn-move" onclick="moverM(${i}, -1)">↑</button>
+                    <button class="btn-move" onclick="moverM(${i}, 1)">↓</button>
+                    <button class="btn-x" onclick="delM(${i})">✖</button>
+                </div>
             </div>`).join('');
 
         document.getElementById('stu-list-del').innerHTML = (t.st || []).map((s,i)=>`
@@ -300,9 +323,7 @@
         });
         let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv'})); a.download = `NOTAS_JT_${t.n}.csv`; a.click();
     }
-    
     function exportarBackup() { let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(dados)],{type:'application/json'})); a.download='Backup_JT.json'; a.click(); }
-    
     function importarBackup(input) {
         const reader = new FileReader();
         reader.onload = function() {
