@@ -18,73 +18,78 @@
         body { 
             font-family: 'Fredoka', sans-serif; 
             margin: 0; height: 100vh; display: flex; flex-direction: column; 
-            background: #0b0118;
-            background-image: radial-gradient(circle at center, #240b36 0%, #0b0118 100%);
-            overflow: hidden; color: white;
+            /* Lilás mais claro e suave */
+            background: #f3e5f5;
+            background-image: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            overflow: hidden; color: #4a148c;
         }
 
         header { 
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.6); 
+            backdrop-filter: blur(10px);
             padding: 15px; margin: 10px; border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            border: 1px solid rgba(155, 89, 182, 0.2); 
+            box-shadow: 0 8px 32px rgba(155, 89, 182, 0.1);
             z-index: 10; flex-shrink: 0;
         }
 
         .header-main { display: flex; justify-content: space-between; align-items: center; }
-        .school-info h2 { margin: 0; font-family: 'Orbitron'; font-size: 18px; color: #fff; }
-        .teacher-tag { font-size: 11px; color: #e91e63; font-weight: bold; text-transform: uppercase; }
+        .school-info h2 { margin: 0; font-family: 'Orbitron'; font-size: 18px; color: #6a1b9a; }
+        .teacher-tag { font-size: 11px; color: #d81b60; font-weight: bold; text-transform: uppercase; }
 
         .status-bar { 
-            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 30px; 
-            display: inline-flex; gap: 15px; margin-top: 10px; border: 1px solid rgba(233, 30, 99, 0.3); font-size: 11px;
+            background: rgba(255, 255, 255, 0.5); padding: 8px 15px; border-radius: 30px; 
+            display: inline-flex; gap: 15px; margin-top: 10px; border: 1px solid #ce93d8; font-size: 11px;
         }
-        .status-label { color: #ffeb3b; font-weight: bold; margin-right: 5px; }
+        .status-label { color: #8e24aa; font-weight: bold; margin-right: 5px; }
 
-        .nav-container { display: flex; gap: 8px; margin-top: 12px; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 12px; }
-        .nav-btn { flex: 1; padding: 10px; border: none; background: transparent; color: white; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 10px; text-transform: uppercase; }
-        .nav-btn.active { background: #e91e63; box-shadow: 0 0 15px #e91e63; }
+        .nav-container { display: flex; gap: 8px; margin-top: 12px; background: rgba(255, 255, 255, 0.4); padding: 5px; border-radius: 12px; }
+        .nav-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #7b1fa2; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 10px; text-transform: uppercase; }
+        .nav-btn.active { background: #ab47bc; color: white; box-shadow: 0 4px 12px rgba(171, 71, 188, 0.3); }
 
         .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; }
         .students-area { width: 350px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; }
         
         .student-card { 
-            background: rgba(255, 255, 255, 0.95); color: #1a1a2e; border-radius: 18px; 
-            margin-bottom: 12px; padding: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-left: 8px solid #ccc;
+            background: white; color: #333; border-radius: 18px; 
+            margin-bottom: 12px; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 8px solid #ddd;
         }
 
-        .score-red { color: #ff4757 !important; }
-        .score-green { color: #2ed573 !important; }
+        .score-red { color: #e53935 !important; }
+        .score-green { color: #43a047 !important; }
 
         .track-container { 
-            flex: 1; background: rgba(0, 0, 0, 0.4); border-radius: 30px; border: 2px solid rgba(255,255,255,0.1);
-            position: relative; overflow: hidden; background-image: url('https://www.transparenttextures.com/patterns/stardust.png');
+            flex: 1; background: rgba(255, 255, 255, 0.3); border-radius: 30px; border: 2px solid rgba(171, 71, 188, 0.1);
+            position: relative; overflow: hidden;
+            background-image: radial-gradient(#e1bee7 1px, transparent 1px);
+            background-size: 30px 30px;
         }
 
-        .lane { position: relative; height: 45px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); width: 100%; }
+        .lane { position: relative; height: 45px; display: flex; align-items: center; border-bottom: 1px solid rgba(171, 71, 188, 0.05); width: 100%; }
         .runner { position: absolute; z-index: 5; display: flex; align-items: center; gap: 8px; transition: left 2s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .runner-emoji { font-size: 24px; }
-        .runner-tag { background: white; color: #1a1a2e; padding: 3px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ccc; white-space: nowrap; }
+        .runner-emoji { font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+        .runner-tag { background: white; color: #4a148c; padding: 3px 10px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 2px solid #ce93d8; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-        .check-box { width: 30px; height: 30px; border: 2px solid #ddd; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: bold; background: #f8f9fa; }
-        .check-box.active { background: #2ed573; color: white; border-color: #27ae60; }
+        .check-box { width: 30px; height: 30px; border: 2px solid #e1bee7; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: bold; background: white; color: #8e24aa; }
+        .check-box.active { background: #66bb6a; color: white; border-color: #43a047; }
 
         .config-overlay { 
             position: fixed; top: 100px; left: 50%; transform: translateX(-50%); 
             background: white; color: #333; border-radius: 25px; padding: 25px; 
             width: 90%; max-width: 450px; z-index: 1000; display: none; 
-            border: 5px solid #e91e63; box-shadow: 0 20px 60px rgba(0,0,0,0.6); 
+            border: 5px solid #ab47bc; box-shadow: 0 20px 60px rgba(0,0,0,0.15); 
         }
 
         .delete-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; align-items: center; font-size: 13px; }
-        .btn-x { color: red; cursor: pointer; font-weight: bold; background: #fee; border: none; padding: 5px 10px; border-radius: 5px; }
+        .btn-x { color: #e53935; cursor: pointer; font-weight: bold; background: #ffebee; border: none; padding: 5px 10px; border-radius: 5px; }
 
-        #loading { position: fixed; inset: 0; background: #0b0118; display: flex; align-items: center; justify-content: center; z-index: 9999; color: white; font-family: 'Orbitron'; }
+        #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; color: #7b1fa2; font-family: 'Orbitron'; }
     </style>
 </head>
 <body onclick="fecharTodos()">
 
-<div id="loading"><b>🚀 SINCRONIZANDO JOÃO TAVARES...</b></div>
+<div id="loading"><b>✨ CARREGANDO JOÃO TAVARES...</b></div>
 
 <header onclick="event.stopPropagation()">
     <div class="header-main">
@@ -97,8 +102,8 @@
             </div>
         </div>
         <div style="display:flex; gap:10px;">
-            <button onclick="exportarExcelCompleto()" style="background:#27ae60; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer;">📊 EXCEL</button>
-            <button onclick="exportarBackup()" style="background:#e91e63; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer;">💾 BK</button>
+            <button onclick="exportarExcelCompleto()" style="background:#43a047; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer;">📊 EXCEL</button>
+            <button onclick="exportarBackup()" style="background:#ab47bc; color:white; padding:10px 15px; border-radius:12px; border:none; font-weight:bold; cursor:pointer;">💾 BK</button>
         </div>
     </div>
     <nav class="nav-container">
@@ -118,31 +123,31 @@
 </main>
 
 <div id="p-turmas" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#e91e63">Gerenciar Turmas</h3>
+    <h3 style="font-family:'Orbitron'; color:#7b1fa2">Gerenciar Turmas</h3>
     <div id="class-list-del"></div>
-    <input type="text" id="in-cl" placeholder="+ Nova Turma e Enter" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px;">
+    <input type="text" id="in-cl" placeholder="+ Nova Turma e Enter" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px; border:1px solid #ddd;">
 </div>
 
 <div id="p-mat" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#e91e63">Matérias da Turma</h3>
+    <h3 style="font-family:'Orbitron'; color:#7b1fa2">Matérias da Turma</h3>
     <div id="subject-list-del"></div>
-    <input type="text" id="in-mat" placeholder="+ Nova Matéria" onkeypress="if(event.key==='Enter') addM()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px;">
+    <input type="text" id="in-mat" placeholder="+ Nova Matéria" onkeypress="if(event.key==='Enter') addM()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px; border:1px solid #ddd;">
 </div>
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#e91e63">Lista de Alunos</h3>
-    <textarea id="in-nm" placeholder="Cole os nomes (um por linha)..." style="width:100%; height:100px; padding:10px; border-radius:10px;"></textarea>
-    <button onclick="addStus()" style="width:100%; background:#e91e63; color:white; border:none; padding:12px; margin:10px 0; border-radius:10px; font-weight:bold;">ADICIONAR</button>
-    <div id="stu-list-del" style="max-height:200px; overflow-y:auto; background:#f9f9f9; border-radius:10px;"></div>
+    <h3 style="font-family:'Orbitron'; color:#7b1fa2">Lista de Alunos</h3>
+    <textarea id="in-nm" placeholder="Nomes (um por linha)..." style="width:100%; height:100px; padding:10px; border-radius:10px; border:1px solid #ddd;"></textarea>
+    <button onclick="addStus()" style="width:100%; background:#7b1fa2; color:white; border:none; padding:12px; margin:10px 0; border-radius:10px; font-weight:bold;">ADICIONAR</button>
+    <div id="stu-list-del" style="max-height:200px; overflow-y:auto; background:#f3e5f5; border-radius:10px;"></div>
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
-    <h3 style="font-family:'Orbitron'; color:#e91e63">Critérios e Vistos</h3>
-    <div style="background:#eee; padding:10px; border-radius:10px; margin-bottom:10px;">
+    <h3 style="font-family:'Orbitron'; color:#7b1fa2">Critérios e Vistos</h3>
+    <div style="background:#f3e5f5; padding:10px; border-radius:10px; margin-bottom:10px; color:#4a148c;">
         Vistos Totais: <input type="number" id="tot-at" onchange="setVistos(this.value)" style="width:60px;">
     </div>
     <div id="crit-list-del"></div>
-    <input type="text" id="in-cr" placeholder="+ Novo Critério" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px;">
+    <input type="text" id="in-cr" placeholder="+ Novo Critério" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:12px; margin-top:10px; border-radius:10px; border:1px solid #ddd;">
 </div>
 
 <script>
@@ -186,10 +191,9 @@
         if (!dados.turmas) dados.turmas = [];
         const t = dados.turmas[dados.ti];
 
-        // Listas de exclusão (Onde você apaga)
         document.getElementById('class-list-del').innerHTML = dados.turmas.map((x,i)=>`
             <div class="delete-item">
-                <span onclick="dados.ti=${i};salvar()" style="cursor:pointer; ${i===dados.ti?'font-weight:bold;color:#e91e63':''}">${x.n}</span>
+                <span onclick="dados.ti=${i};salvar()" style="cursor:pointer; ${i===dados.ti?'font-weight:bold;color:#7b1fa2':''}">${x.n}</span>
                 <button class="btn-x" onclick="delT(${i})">✖</button>
             </div>`).join('');
 
@@ -197,7 +201,7 @@
 
         document.getElementById('subject-list-del').innerHTML = (t.mats || []).map((m,i)=>`
             <div class="delete-item">
-                <span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="cursor:pointer; ${i===t.mi?'font-weight:bold;color:#e91e63':''}">${m}</span>
+                <span onclick="dados.turmas[dados.ti].mi=${i};salvar()" style="cursor:pointer; ${i===t.mi?'font-weight:bold;color:#7b1fa2':''}">${m}</span>
                 <button class="btn-x" onclick="delM(${i})">✖</button>
             </div>`).join('');
 
@@ -207,39 +211,36 @@
         document.getElementById('crit-list-del').innerHTML = (t.crits && t.crits[t.mi] || []).map((c,i)=>`
             <div class="delete-item"><span>${c.n}</span><button class="btn-x" onclick="delC(${i})">✖</button></div>`).join('');
 
-        // Info do Header
         document.getElementById('txt-turma').innerText = t.n;
         document.getElementById('txt-materia').innerText = (t.mats && t.mats[t.mi]) || "---";
         document.getElementById('tot-at').value = (t.totA && t.totA[t.mi]) || 10;
 
-        // Cards dos Alunos
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             let nB = getNota(s, dados.bim, t.mi);
             let corNota = nB < 7 ? 'score-red' : 'score-green';
             let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = (t.totA && t.totA[t.mi]) || 10;
             for(let i=0; i<tot; i++) chs += `<div class="check-box ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
-            return `<div class="student-card" style="border-left-color: ${nB < 7 ? '#ff4757' : '#2ed573'}">
+            return `<div class="student-card" style="border-left-color: ${nB < 7 ? '#e53935' : '#43a047'}">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <b>${s.n}</b>
+                    <b style="color:#4a148c">${s.n}</b>
                     <div class="${corNota}" style="font-size:20px; font-weight:bold;">${nB.toFixed(1)}</div>
                 </div>
                 <div class="check-grid">${chs}</div>
                 ${(t.crits && t.crits[t.mi] || []).map(c => `
-                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:8px; background:#f5f5f5; padding:4px; border-radius:5px;">
+                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:8px; background:#f3e5f5; padding:4px; border-radius:5px; color:#4a148c;">
                         <span>${c.n}</span>
-                        <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" style="width:40px;">
+                        <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" style="width:40px; border:1px solid #ce93d8; border-radius:4px; text-align:center;">
                     </div>`).join('')}
             </div>`;
         }).join('');
 
-        // Pista
         const lanesBox = document.getElementById('lanes-box'); lanesBox.innerHTML = '';
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
                 <span class="runner-emoji">${emojis[i%emojis.length]}</span>
-                <div class="runner-tag" style="border-color: ${n < 7 ? '#ff4757' : '#2ed573'}">${s.n} | ${n.toFixed(1)}</div>
+                <div class="runner-tag" style="border-color: ${n < 7 ? '#e53935' : '#43a047'}; color: ${n < 7 ? '#e53935' : '#43a047'}">${s.n} | ${n.toFixed(1)}</div>
             </div>`;
             lanesBox.appendChild(lane);
         });
@@ -247,6 +248,7 @@
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
     }
 
+    // FUNÇÕES DE LÓGICA (MANTIDAS)
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
