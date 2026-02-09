@@ -276,7 +276,6 @@
                 chs += `<div class="check-box-std ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
             }
 
-            // MODIFICAÇÃO SOLICITADA: EXIBIR TODOS OS CRITÉRIOS DA MATÉRIA COM INICIAL
             let critsMat = (t.crits && t.crits[t.mi]) || [];
             let inputsCrit = critsMat.map(c => `
                 <div class="crit-box-c">
@@ -323,9 +322,22 @@
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
+    
     function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[{n:'C'}]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
     function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([{n:'C'}]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
-    function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
+    
+    function addC() { 
+        let v = document.getElementById('in-cr').value; 
+        if(v) { 
+            const t = dados.turmas[dados.ti]; 
+            if(!t.crits) t.crits = []; 
+            if(!t.crits[t.mi]) t.crits[t.mi] = []; 
+            t.crits[t.mi].push({n: v}); 
+            salvar(); 
+            document.getElementById('in-cr').value = ''; 
+        } 
+    }
+
     function addStus() { 
         let n=document.getElementById('in-nm').value.split('\n'); 
         n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim().toUpperCase(), sc:{}}); } }); 
