@@ -305,13 +305,29 @@
         }).join('');
 
         const lanesBox = document.getElementById('lanes-box'); lanesBox.innerHTML = '';
+        
+        // NOVO: Lógica para diferenciar alunos com nomes iguais na pista
+        const counts = {};
+        (t.st || []).forEach(s => {
+            let pNome = s.n.split(' ')[0];
+            counts[pNome] = (counts[pNome] || 0) + 1;
+        });
+
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
             let corDinamica = n < 7 ? '#ff4757' : '#2ecc71';
+            let partes = s.n.split(' ');
+            let nomeExibicao = partes[0];
+            
+            // Se houver mais de um aluno com o mesmo primeiro nome, adiciona o sobrenome
+            if (counts[partes[0]] > 1 && partes[1]) {
+                nomeExibicao += " " + partes[1];
+            }
+
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
                 <span style="font-size:26px;">${emojis[i%emojis.length]}</span>
-                <div class="runner-tag" style="border-color: ${corDinamica}; border-width: 3px;">${s.n.split(' ')[0]} | ${n.toFixed(1)}</div>
+                <div class="runner-tag" style="border-color: ${corDinamica}; border-width: 3px;">${nomeExibicao} | ${n.toFixed(1)}</div>
             </div>`;
             lanesBox.appendChild(lane);
         });
