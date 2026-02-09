@@ -68,7 +68,7 @@
         .nav-btn.active { background: #ab47bc; color: white; box-shadow: 0 5px 12px rgba(106, 27, 154, 0.2); }
 
         .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; }
-        .students-area { width: 360px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; height: 100%; }
+        .students-area { width: 450px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; height: 100%; }
         
         .track-container { 
             flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 30px; border: 2px dashed #ce93d8;
@@ -77,14 +77,29 @@
         }
 
         #lanes-box { min-height: 100%; padding: 20px 0 150px 0; display: flex; flex-direction: column; }
-        .student-card { background: white; border-radius: 18px; margin-bottom: 12px; padding: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #eee; }
+        
+        /* NOVO ESTILO DE CARD COMPACTO */
+        .student-card { 
+            background: white; border-radius: 12px; margin-bottom: 8px; padding: 10px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eee;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .stu-info-compact { flex: 1; min-width: 120px; }
+        .stu-name-compact { font-weight: 700; font-size: 13px; color: #2e004f; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .stu-score-compact { font-size: 16px; font-weight: 900; }
+
+        .check-grid-compact { display: flex; flex-wrap: wrap; gap: 3px; max-width: 140px; }
+        .check-box-compact { width: 22px; height: 22px; border: 1px solid #e1bee7; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 9px; font-weight: bold; background: white; }
+        .check-box-compact.active { background: #4caf50; color: white; border-color: #388e3c; }
+
+        .crit-inputs-compact { display: flex; gap: 5px; }
+        .crit-col { display: flex; flex-direction: column; align-items: center; }
+        .crit-label { font-size: 8px; font-weight: bold; color: #6a1b9a; text-transform: uppercase; margin-bottom: 2px; }
+        .in-crit-compact { width: 38px; height: 32px; border: 2px solid #ce93d8; border-radius: 6px; text-align: center; font-size: 12px; font-weight: bold; }
+
         .lane { position: relative; height: 55px; min-height: 55px; width: 100%; border-bottom: 1px solid rgba(171, 71, 188, 0.1); display: flex; align-items: center; }
         .runner { position: absolute; z-index: 5; display: flex; align-items: center; gap: 8px; transition: left 2s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
         .runner-tag { background: #6a1b9a; color: white; padding: 4px 12px; border-radius: 15px; font-size: 10px; font-weight: bold; border: 3px solid #ce93d8; white-space: nowrap; box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
-
-        .check-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
-        .check-box { width: 30px; height: 30px; border: 2px solid #e1bee7; border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11px; font-weight: bold; background: white; }
-        .check-box.active { background: #4caf50; color: white; border-color: #388e3c; }
 
         .config-overlay { position: fixed; top: 110px; left: 50%; transform: translateX(-50%); background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 460px; z-index: 1000; display: none; border: 5px solid #ab47bc; box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
         .delete-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #f0e1f7; }
@@ -273,29 +288,29 @@
 
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             let nB = getNota(s, dados.bim, t.mi);
-            let n1 = getNota(s, 1, t.mi), n2 = getNota(s, 2, t.mi), n3 = getNota(s, 3, t.mi), n4 = getNota(s, 4, t.mi);
-            let mediaAnual = (n1 + n2 + n3 + n4) / 4;
-            
             let corDinamica = nB < 7 ? '#ff4757' : '#2ecc71';
             
             let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = (t.totA && t.totA[t.mi]) || 10;
             if (!s.sc) s.sc = {};
-            for(let i=0; i<tot; i++) chs += `<div class="check-box ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
+            for(let i=0; i<tot; i++) chs += `<div class="check-box-compact ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
             
-            return `<div class="student-card" style="border-left: 10px solid ${corDinamica}">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <b style="color:#2e004f">${s.n}</b>
-                    <div style="text-align:right">
-                        <div style="font-size:22px; font-weight:900; color:${corDinamica}">${nB.toFixed(1)}</div>
-                        <div style="font-size:10px; color:#666; font-weight:700;">ANUAL: ${mediaAnual.toFixed(1)}</div>
-                    </div>
+            return `<div class="student-card" style="border-left: 6px solid ${corDinamica}">
+                <div class="stu-info-compact">
+                    <span class="stu-name-compact">${s.n}</span>
+                    <span class="stu-score-compact" style="color:${corDinamica}">${nB.toFixed(1)}</span>
                 </div>
-                <div class="check-grid">${chs}</div>
-                ${(t.crits && t.crits[t.mi] || []).map(c => `
-                    <div style="display:flex; justify-content:space-between; font-size:11px; margin-top:8px; background:#fdf7ff; padding:6px; border-radius:8px; border:1px solid #f0e1f7;">
-                        <span>${c.n}</span>
-                        <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" style="width:45px; border:2px solid #ce93d8; border-radius:5px; text-align:center;">
-                    </div>`).join('')}
+                
+                <div class="check-grid-compact">${chs}</div>
+                
+                <div class="crit-inputs-compact">
+                    ${(t.crits && t.crits[t.mi] || []).map(c => `
+                        <div class="crit-col">
+                            <span class="crit-label">${c.n.substring(0,1)}</span>
+                            <input type="number" step="0.1" value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" 
+                                   onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" 
+                                   class="in-crit-compact">
+                        </div>`).join('')}
+                </div>
             </div>`;
         }).join('');
 
@@ -317,8 +332,8 @@
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
-    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
-    function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
+    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[{n:'A'},{n:'C'},{n:'P'}], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
+    function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([{n:'A'},{n:'C'},{n:'P'}]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
     function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
     function addStus() { 
         let n=document.getElementById('in-nm').value.split('\n'); 
