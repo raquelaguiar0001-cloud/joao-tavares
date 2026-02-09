@@ -69,7 +69,6 @@
 
         .main-content { display: flex; flex: 1; padding: 10px; gap: 15px; overflow: hidden; }
         
-        /* ÁREA DOS ALUNOS AJUSTADA PARA A ESTRUTURA DA IMAGEM */
         .students-area { width: 550px; display: flex; flex-direction: column; overflow-y: auto; padding-right: 5px; height: 100%; }
         
         .student-card { 
@@ -80,7 +79,6 @@
         .stu-main-info { flex: 1; }
         .stu-name { font-weight: 900; font-size: 14px; color: #2e004f; text-transform: uppercase; margin-bottom: 8px; display: block; }
 
-        /* QUADRADINHOS DE VISTOS */
         .check-grid-row { display: flex; gap: 4px; }
         .check-box-std { 
             width: 26px; height: 26px; border: 1px solid #ccc; border-radius: 6px; 
@@ -89,13 +87,12 @@
         }
         .check-box-std.active { background: #4caf50; color: white; border-color: #388e3c; }
 
-        /* ÁREA LATERAL DE NOTAS */
-        .stu-score-side { display: flex; align-items: center; gap: 20px; text-align: center; }
+        .stu-score-side { display: flex; align-items: center; gap: 12px; text-align: center; }
         
         .crit-box-c { display: flex; flex-direction: column; align-items: center; }
         .crit-label-c { font-size: 12px; font-weight: 900; color: #c2185b; margin-bottom: 4px; }
         .in-score-c { 
-            width: 55px; height: 45px; border: 2px solid #e0e0e0; border-radius: 12px; 
+            width: 50px; height: 45px; border: 2px solid #e0e0e0; border-radius: 12px; 
             text-align: center; font-size: 18px; font-weight: bold; color: #333;
         }
 
@@ -103,7 +100,6 @@
         .final-val { font-size: 24px; font-weight: 900; display: block; line-height: 1; }
         .annual-val { font-size: 11px; color: #888; font-weight: bold; }
 
-        /* OUTROS ESTILOS */
         .track-container { 
             flex: 1; background: rgba(255, 255, 255, 0.4); border-radius: 30px; border: 2px dashed #ce93d8;
             position: relative; overflow-y: scroll; overflow-x: hidden;
@@ -246,7 +242,6 @@
         if (!dados.turmas) dados.turmas = [];
         const t = dados.turmas[dados.ti];
 
-        // Listas de deleção (Paineis)
         document.getElementById('class-list-del').innerHTML = dados.turmas.map((x,i)=>`
             <div class="delete-item">
                 <span onclick="dados.ti=${i};salvar()" style="cursor:pointer; font-weight:${i===dados.ti?'700':'400'}">${x.n}</span>
@@ -269,7 +264,6 @@
         document.getElementById('txt-total-alunos').innerText = (t.st || []).length;
         document.getElementById('tot-at').value = (t.totA && t.totA[t.mi]) || 10;
 
-        // RENDER LISTA DE ALUNOS (ESTILO IMAGEM 2)
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             let nB = getNota(s, dados.bim, t.mi);
             let n1 = getNota(s, 1, t.mi), n2 = getNota(s, 2, t.mi), n3 = getNota(s, 3, t.mi), n4 = getNota(s, 4, t.mi);
@@ -282,8 +276,17 @@
                 chs += `<div class="check-box-std ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
             }
 
-            // Pega o critério 'C' ou o primeiro critério disponível para o campo principal
-            let critPrincipal = (t.crits && t.crits[t.mi] && t.crits[t.mi][0]) ? t.crits[t.mi][0].n : 'C';
+            // MODIFICAÇÃO SOLICITADA: EXIBIR TODOS OS CRITÉRIOS DA MATÉRIA COM INICIAL
+            let critsMat = (t.crits && t.crits[t.mi]) || [];
+            let inputsCrit = critsMat.map(c => `
+                <div class="crit-box-c">
+                    <span class="crit-label-c">${c.n.charAt(0).toUpperCase()}</span>
+                    <input type="number" step="0.1" 
+                        value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" 
+                        onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" 
+                        class="in-score-c">
+                </div>
+            `).join('');
 
             return `
             <div class="student-card">
@@ -293,14 +296,7 @@
                 </div>
                 
                 <div class="stu-score-side">
-                    <div class="crit-box-c">
-                        <span class="crit-label-c">${critPrincipal}</span>
-                        <input type="number" step="0.1" 
-                            value="${s.sc[`${t.mi}_${dados.bim}_${critPrincipal}`]||0}" 
-                            onchange="upN(${si},'${t.mi}_${dados.bim}_${critPrincipal}',this.value)" 
-                            class="in-score-c">
-                    </div>
-                    
+                    ${inputsCrit}
                     <div class="final-result-box">
                         <span class="final-val" style="color:${corDinamica}">${nB.toFixed(1)}</span>
                         <span class="annual-val">An: ${mediaAnual.toFixed(1)}</span>
@@ -309,7 +305,6 @@
             </div>`;
         }).join('');
 
-        // CORRIDA
         const lanesBox = document.getElementById('lanes-box'); lanesBox.innerHTML = '';
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
@@ -317,7 +312,7 @@
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
                 <span style="font-size:26px;">${emojis[i%emojis.length]}</span>
-                <div class="runner-tag" style="border-color: ${corDinamica}; border-width: 3px;">${s.n} | ${n.toFixed(1)}</div>
+                <div class="runner-tag" style="border-color: ${corDinamica}; border-width: 3px;">${s.n.split(' ')[0]} | ${n.toFixed(1)}</div>
             </div>`;
             lanesBox.appendChild(lane);
         });
@@ -325,7 +320,6 @@
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
     }
 
-    // FUNÇÕES DE LOGICA (IGUAIS AS ANTERIORES)
     function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
@@ -334,7 +328,7 @@
     function addC() { let v=document.getElementById('in-cr').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.crits[t.mi]) t.crits[t.mi]=[]; t.crits[t.mi].push({n:v}); salvar(); document.getElementById('in-cr').value=''; } }
     function addStus() { 
         let n=document.getElementById('in-nm').value.split('\n'); 
-        n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); 
+        n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim().toUpperCase(), sc:{}}); } }); 
         dados.turmas[dados.ti].st.sort((a,b)=>a.n.localeCompare(b.n));
         document.getElementById('in-nm').value=''; salvar(); 
     }
