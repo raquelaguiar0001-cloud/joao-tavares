@@ -5,10 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>UE. JOÃO TAVARES DA COSTA</title>
     
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/197/197374.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
 
@@ -20,8 +16,7 @@
         body { 
             font-family: 'Fredoka', sans-serif; 
             margin: 0; height: 100vh; display: flex; flex-direction: column; 
-            background: #f8f0fb;
-            overflow: hidden; color: #2e004f;
+            background: #f8f0fb; overflow: hidden; color: #2e004f;
         }
 
         header { 
@@ -32,10 +27,7 @@
 
         .header-main { display: flex; justify-content: space-between; align-items: center; }
         .school-info h2 { margin: 0; font-family: 'Orbitron'; font-size: 17px; color: #6a1b9a; }
-
-        .status-bar { 
-            display: flex; gap: 12px; margin-top: 8px; font-size: 11px; font-weight: bold;
-        }
+        .status-bar { display: flex; gap: 12px; margin-top: 8px; font-size: 11px; font-weight: bold; }
 
         .nav-container { display: flex; gap: 6px; margin-top: 10px; }
         .nav-btn { flex: 1; padding: 10px; border: none; background: #f0e1f7; color: #6a1b9a; font-weight: 700; cursor: pointer; border-radius: 10px; font-size: 10px; }
@@ -53,40 +45,41 @@
 
         .stu-name { font-weight: 800; font-size: 13px; text-transform: uppercase; display: block; margin-bottom: 6px; }
 
-        /* GRID DE VISTOS */
         .check-grid { display: flex; gap: 3px; }
         .check-box { 
             width: 24px; height: 24px; border: 1px solid #ddd; border-radius: 5px; 
             display: flex; align-items: center; justify-content: center; 
-            cursor: pointer; font-size: 9px; font-weight: bold;
+            cursor: pointer; font-size: 9px; font-weight: bold; color: #444;
         }
         .check-box.active { background: #4caf50; color: white; border-color: #388e3c; }
 
-        /* INPUTS DE CRITÉRIOS (DINÂMICOS POR LETRA INICIAL) */
         .criteria-inputs { display: flex; gap: 12px; align-items: center; }
         .crit-item { display: flex; flex-direction: column; align-items: center; }
-        .crit-label { font-size: 11px; font-weight: 900; color: #c2185b; margin-bottom: 2px; }
+        .crit-label { font-size: 12px; font-weight: 900; color: #c2185b; margin-bottom: 2px; text-transform: uppercase; }
         .in-score { 
             width: 48px; height: 40px; border: 2px solid #e0e0e0; border-radius: 10px; 
-            text-align: center; font-size: 16px; font-weight: bold;
+            text-align: center; font-size: 16px; font-weight: bold; outline: none;
         }
+        .in-score:focus { border-color: #ab47bc; }
 
-        .final-box { min-width: 55px; text-align: center; }
-        .final-val { font-size: 22px; font-weight: 900; display: block; }
-        .annual-val { font-size: 10px; color: #888; }
+        .final-box { min-width: 65px; text-align: right; }
+        .final-val { font-size: 24px; font-weight: 900; display: block; line-height: 1; }
+        .annual-val { font-size: 11px; color: #888; font-weight: bold; }
 
-        .track-container { flex: 1; background: #fffcf2; border-radius: 20px; overflow-y: auto; position: relative; }
+        .track-container { flex: 1; background: #fffcf2; border-radius: 20px; overflow-y: auto; position: relative; border: 1px solid #e1bee7; }
         .lane { height: 50px; border-bottom: 1px solid #f0e1f7; position: relative; display: flex; align-items: center; }
         .runner { position: absolute; transition: left 1.5s ease; display: flex; align-items: center; gap: 5px; }
-        .runner-tag { background: #6a1b9a; color: white; padding: 3px 10px; border-radius: 10px; font-size: 9px; white-space: nowrap; }
+        .runner-tag { background: #6a1b9a; color: white; padding: 3px 10px; border-radius: 10px; font-size: 9px; white-space: nowrap; font-weight: bold; }
 
         .config-overlay { position: fixed; top: 100px; left: 50%; transform: translateX(-50%); background: white; border-radius: 20px; padding: 20px; width: 90%; max-width: 400px; z-index: 1000; display: none; border: 4px solid #ab47bc; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .delete-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee; }
+        .btn-x { background: none; border: none; color: #ff4757; font-weight: bold; cursor: pointer; }
         #loading { position: fixed; inset: 0; background: #f3e5f5; display: flex; align-items: center; justify-content: center; z-index: 9999; font-family: 'Orbitron'; color: #6a1b9a; }
     </style>
 </head>
 <body onclick="fecharTodos()">
 
-<div id="loading"><b>CARREGANDO DADOS...</b></div>
+<div id="loading"><b>SINCRONIZANDO...</b></div>
 
 <header onclick="event.stopPropagation()">
     <div class="header-main">
@@ -113,23 +106,23 @@
 </main>
 
 <div id="p-turmas" class="config-overlay" onclick="event.stopPropagation()">
-    <h3>Gerenciar Turmas</h3>
+    <h3>Turmas</h3>
     <div id="class-list-del"></div>
-    <input type="text" id="in-cl" placeholder="+ Nova Turma" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:10px; margin-top:10px;">
+    <input type="text" id="in-cl" placeholder="+ Nova Turma" onkeypress="if(event.key==='Enter') addT()" style="width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ddd;">
 </div>
 
 <div id="p-alunos" class="config-overlay" onclick="event.stopPropagation()">
     <h3>Alunos</h3>
-    <textarea id="in-nm" placeholder="Nomes (um por linha)..." style="width:100%; height:100px;"></textarea>
-    <button onclick="addStus()" style="width:100%; background:#6a1b9a; color:white; padding:10px; margin-top:5px; border-radius:8px;">ADICIONAR</button>
+    <textarea id="in-nm" placeholder="Nomes (um por linha)..." style="width:100%; height:100px; padding:10px; border-radius:8px; border:1px solid #ddd;"></textarea>
+    <button onclick="addStus()" style="width:100%; background:#6a1b9a; color:white; padding:12px; margin-top:8px; border:none; border-radius:8px; font-weight:bold; cursor:pointer;">ADICIONAR</button>
     <div id="stu-list-del" style="max-height:150px; overflow-y:auto; margin-top:10px;"></div>
 </div>
 
 <div id="p-crit" class="config-overlay" onclick="event.stopPropagation()">
-    <h3>Critérios e Provas</h3>
-    <p style="font-size:11px;">O sistema usará a <b>letra inicial</b> de cada critério.</p>
+    <h3>Critérios Extras</h3>
+    <p style="font-size:11px; color:#666;">O sistema exibirá apenas a <b>letra inicial</b> (Ex: P para Prova).</p>
     <div id="crit-list-del"></div>
-    <input type="text" id="in-cr" placeholder="+ Novo Critério (Ex: Prova)" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:10px; margin-top:10px;">
+    <input type="text" id="in-cr" placeholder="+ Novo (Ex: Provas)" onkeypress="if(event.key==='Enter') addC()" style="width:100%; padding:10px; margin-top:10px; border-radius:8px; border:1px solid #ddd;">
 </div>
 
 <script>
@@ -149,12 +142,6 @@
 
     db.ref('biolab_joao_tavares').on('value', (snap) => {
         if(snap.val()) dados = snap.val();
-        // Garantir critério de Prova se não existir
-        const t = dados.turmas[dados.ti];
-        if(t && t.crits && t.crits[t.mi]) {
-            let temProva = t.crits[t.mi].some(c => c.n.toLowerCase().startsWith('p'));
-            if(!temProva) { t.crits[t.mi].push({n: 'Provas'}); salvar(); }
-        }
         document.getElementById('loading').style.display = 'none';
         renderizar();
     });
@@ -168,12 +155,10 @@
         let kA = `${mIdx}_${bim}_ativ`, totA = (t.totA && t.totA[mIdx]) || 10;
         if (!aluno.sc) aluno.sc = {};
         
-        // Vistos (máximo 10)
         let nVistos = ((aluno.sc[kA] || []).length / totA) * 10;
-        
-        // Outros Critérios (Provas, Comportamento, etc)
         let somaExtras = 0;
         let crits = (t.crits && t.crits[mIdx]) || [];
+        
         crits.forEach(c => {
             let letra = c.n.charAt(0).toUpperCase();
             somaExtras += parseFloat(aluno.sc[`${mIdx}_${bim}_${letra}`] || 0);
@@ -190,18 +175,17 @@
         document.getElementById('txt-turma').innerText = t.n;
         document.getElementById('txt-materia').innerText = t.mats[t.mi];
 
-        // RENDER ALUNOS
+        // LISTA DE ALUNOS
         document.getElementById('stu-list').innerHTML = (t.st || []).map((s, si) => {
             let nB = getNota(s, dados.bim, t.mi);
             let nAnual = (getNota(s,1,t.mi)+getNota(s,2,t.mi)+getNota(s,3,t.mi)+getNota(s,4,t.mi))/4;
             
-            // Vistos
             let kA = `${t.mi}_${dados.bim}_ativ`, chs = '', tot = (t.totA && t.totA[t.mi]) || 10;
             for(let i=0; i<tot; i++) {
                 chs += `<div class="check-box ${(s.sc?.[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
             }
 
-            // Critérios Dinâmicos (Letra Inicial)
+            // INPUTS DOS CRITÉRIOS (APENAS LETRA INICIAL)
             let inputsCrit = (t.crits?.[t.mi] || []).map(c => {
                 let letra = c.n.charAt(0).toUpperCase();
                 return `
@@ -227,20 +211,24 @@
             </div>`;
         }).join('');
 
-        // CORRIDA
+        // PISTA DE CORRIDA
         const lanes = document.getElementById('lanes-box'); lanes.innerHTML = '';
-        (t.st || []).forEach((s, i) => {
+        (t.st || []).forEach((s) => {
             let n = getNota(s, dados.bim, t.mi);
             lanes.innerHTML += `<div class="lane">
                 <div class="runner" style="left:${n*9}%">
-                    <span style="font-size:20px;">🏃</span>
-                    <div class="runner-tag">${s.n} | ${n.toFixed(1)}</div>
+                    <span style="font-size:18px;">🏃</span>
+                    <div class="runner-tag">${s.n.split(' ')[0]} | ${n.toFixed(1)}</div>
                 </div>
             </div>`;
         });
 
-        // BIMS
+        // BOLSAS DO BIMESTRE
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
+
+        // LISTA DE DELEÇÃO NOS PAINÉIS
+        document.getElementById('crit-list-del').innerHTML = (t.crits?.[t.mi] || []).map((c,i)=>`<div class="delete-item"><span>${c.n}</span><button class="btn-x" onclick="delC(${i})">✖</button></div>`).join('');
+        document.getElementById('stu-list-del').innerHTML = (t.st || []).map((s,i)=>`<div class="delete-item"><span>${s.n}</span><button class="btn-x" onclick="delS(${i})">✖</button></div>`).join('');
     }
 
     function tglV(si, k, idx) { 
@@ -259,14 +247,26 @@
             salvar(); document.getElementById('in-cr').value=''; 
         } 
     }
-    
-    // Funções extras de Turma e Aluno (Preservadas)
-    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[{n:'Comportamento'},{n:'Provas'}]], st:[]}); salvar(); } }
+
+    function delS(i) { if(confirm('Remover aluno?')) { dados.turmas[dados.ti].st.splice(i,1); salvar(); } }
+    function delC(i) { if(confirm('Remover critério?')) { dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i,1); salvar(); } }
+    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[{n:'Comportamento'}]], st:[]}); salvar(); } }
     function addStus() { 
         let n=document.getElementById('in-nm').value.split('\n'); 
-        n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim(), sc:{}}); } }); 
+        n.forEach(x=>{ if(x.trim()) { if(!dados.turmas[dados.ti].st) dados.turmas[dados.ti].st=[]; dados.turmas[dados.ti].st.push({n:x.trim().toUpperCase(), sc:{}}); } }); 
         dados.turmas[dados.ti].st.sort((a,b)=>a.n.localeCompare(b.n));
         salvar(); 
+    }
+
+    function exportarExcelCompleto() {
+        const t = dados.turmas[dados.ti]; if(!t) return;
+        let csv = "\ufeffALUNO;1B;2B;3B;4B;ANUAL\n";
+        t.st.forEach(s => {
+            let n1 = getNota(s,1,t.mi), n2 = getNota(s,2,t.mi), n3 = getNota(s,3,t.mi), n4 = getNota(s,4,t.mi);
+            csv += `${s.n};${n1.toFixed(1)};${n2.toFixed(1)};${n3.toFixed(1)};${n4.toFixed(1)};${((n1+n2+n3+n4)/4).toFixed(1)}\n`;
+        });
+        let a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv'}));
+        a.download = `NOTAS_${t.n}.csv`; a.click();
     }
 </script>
 </body>
