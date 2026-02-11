@@ -95,6 +95,8 @@
             width: 50px; height: 45px; border: 2px solid #e0e0e0; border-radius: 12px; 
             text-align: center; font-size: 18px; font-weight: bold; color: #333;
         }
+        /* Destaque para campo focado */
+        .in-score-c:focus { border-color: #ab47bc; outline: none; background: #fdf5ff; }
 
         .final-result-box { min-width: 60px; }
         .final-val { font-size: 24px; font-weight: 900; display: block; line-height: 1; }
@@ -201,6 +203,9 @@
     const db = firebase.database();
     let dados = { turmas: [], ti: 0, bim: 1 };
     const emojis = ['🚀', '🛸', '🪐', '👾', '🌍', '🛰️', '☄️', '⚛️', '🔭', '🧪'];
+    
+    // Variável para salvar qual campo estava focado antes do refresh
+    let lastFocusedId = null;
 
     function initEmojiFloat() {
         const container = document.getElementById('emoji-container');
@@ -221,6 +226,18 @@
         if(snap.val()) { dados = snap.val(); if (!dados.turmas) dados.turmas = []; }
         document.getElementById('loading').style.display = 'none';
         renderizar();
+        
+        // Se havia algo focado, devolve o foco após a renderização
+        if(lastFocusedId) {
+            const el = document.getElementById(lastFocusedId);
+            if(el) {
+                el.focus();
+                // Coloca o cursor no final do texto (caso haja algo escrito)
+                const val = el.value;
+                el.value = '';
+                el.value = val;
+            }
+        }
     });
 
     function salvar() { db.ref('biolab_joao_tavares').set(dados); }
@@ -277,15 +294,19 @@
             }
 
             let critsMat = (t.crits && t.crits[t.mi]) || [];
-            let inputsCrit = critsMat.map(c => `
+            let inputsCrit = critsMat.map((c, ci) => {
+                const inputId = `in_${si}_${ci}`;
+                return `
                 <div class="crit-box-c">
                     <span class="crit-label-c">${c.n.charAt(0).toUpperCase()}</span>
-                    <input type="number" step="0.1" 
+                    <input type="number" step="0.1" id="${inputId}"
                         value="${s.sc[`${t.mi}_${dados.bim}_${c.n}`]||0}" 
+                        onfocus="lastFocusedId='${inputId}'"
                         onchange="upN(${si},'${t.mi}_${dados.bim}_${c.n}',this.value)" 
-                        class="in-score-c">
-                </div>
-            `).join('');
+                        class="in-score-c"
+                        tabindex="${(si * 10) + ci + 1}">
+                </div>`;
+            }).join('');
 
             return `
             <div class="student-card">
@@ -293,7 +314,6 @@
                     <span class="stu-name">${s.n}</span>
                     <div class="check-grid-row">${chs}</div>
                 </div>
-                
                 <div class="stu-score-side">
                     ${inputsCrit}
                     <div class="final-result-box">
@@ -305,24 +325,14 @@
         }).join('');
 
         const lanesBox = document.getElementById('lanes-box'); lanesBox.innerHTML = '';
-        
-        // NOVO: Lógica para diferenciar alunos com nomes iguais na pista
         const counts = {};
-        (t.st || []).forEach(s => {
-            let pNome = s.n.split(' ')[0];
-            counts[pNome] = (counts[pNome] || 0) + 1;
-        });
+        (t.st || []).forEach(s => { let pNome = s.n.split(' ')[0]; counts[pNome] = (counts[pNome] || 0) + 1; });
 
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
             let corDinamica = n < 7 ? '#ff4757' : '#2ecc71';
             let partes = s.n.split(' ');
-            let nomeExibicao = partes[0];
-            
-            // Se houver mais de um aluno com o mesmo primeiro nome, adiciona o sobrenome
-            if (counts[partes[0]] > 1 && partes[1]) {
-                nomeExibicao += " " + partes[1];
-            }
+            let nomeExibicao = (counts[partes[0]] > 1 && partes[1]) ? `${partes[0]} ${partes[1]}` : partes[0];
 
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
@@ -335,8 +345,17 @@
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
     }
 
-    function tglV(si, k, idx) { let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
-    function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
+    function tglV(si, k, idx) { 
+        lastFocusedId = null; // Reseta foco ao clicar em vistos
+        let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); 
+    }
+    
+    function upN(si, k, v) { 
+        if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; 
+        dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); 
+        salvar(); 
+    }
+
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
     
     function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[{n:'C'}]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
@@ -360,6 +379,7 @@
         dados.turmas[dados.ti].st.sort((a,b)=>a.n.localeCompare(b.n));
         document.getElementById('in-nm').value=''; salvar(); 
     }
+
     function delT(i) { if(confirm('Excluir turma?')){ dados.turmas.splice(i, 1); dados.ti = 0; salvar(); } }
     function delM(i) { if(confirm('Excluir matéria?')){ dados.turmas[dados.ti].mats.splice(i, 1); dados.turmas[dados.ti].mi = 0; salvar(); } }
     function delS(i) { if(confirm('Remover aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
