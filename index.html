@@ -95,7 +95,6 @@
             width: 50px; height: 45px; border: 2px solid #e0e0e0; border-radius: 12px; 
             text-align: center; font-size: 18px; font-weight: bold; color: #333;
         }
-        /* Destaque para campo focado */
         .in-score-c:focus { border-color: #ab47bc; outline: none; background: #fdf5ff; }
 
         .final-result-box { min-width: 60px; }
@@ -203,8 +202,6 @@
     const db = firebase.database();
     let dados = { turmas: [], ti: 0, bim: 1 };
     const emojis = ['🚀', '🛸', '🪐', '👾', '🌍', '🛰️', '☄️', '⚛️', '🔭', '🧪'];
-    
-    // Variável para salvar qual campo estava focado antes do refresh
     let lastFocusedId = null;
 
     function initEmojiFloat() {
@@ -226,23 +223,22 @@
         if(snap.val()) { dados = snap.val(); if (!dados.turmas) dados.turmas = []; }
         document.getElementById('loading').style.display = 'none';
         renderizar();
-        
-        // Se havia algo focado, devolve o foco após a renderização
         if(lastFocusedId) {
             const el = document.getElementById(lastFocusedId);
-            if(el) {
-                el.focus();
-                // Coloca o cursor no final do texto (caso haja algo escrito)
-                const val = el.value;
-                el.value = '';
-                el.value = val;
-            }
+            if(el) { el.focus(); const val = el.value; el.value = ''; el.value = val; }
         }
     });
 
     function salvar() { db.ref('biolab_joao_tavares').set(dados); }
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
     function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
+
+    // Função auxiliar para pegar os dois primeiros nomes
+    function getDoisNomes(nomeCompleto) {
+        if (!nomeCompleto) return "";
+        let partes = nomeCompleto.split(' ').filter(p => p.length > 0);
+        return partes.slice(0, 2).join(' ');
+    }
 
     function getNota(aluno, bim, mIdx) {
         const t = dados.turmas[dados.ti]; if(!t || !t.mats[mIdx]) return 0;
@@ -308,10 +304,11 @@
                 </div>`;
             }).join('');
 
+            // AQUI: Exibindo dois nomes na lista
             return `
             <div class="student-card">
                 <div class="stu-main-info">
-                    <span class="stu-name">${s.n}</span>
+                    <span class="stu-name">${getDoisNomes(s.n)}</span>
                     <div class="check-grid-row">${chs}</div>
                 </div>
                 <div class="stu-score-side">
@@ -325,14 +322,12 @@
         }).join('');
 
         const lanesBox = document.getElementById('lanes-box'); lanesBox.innerHTML = '';
-        const counts = {};
-        (t.st || []).forEach(s => { let pNome = s.n.split(' ')[0]; counts[pNome] = (counts[pNome] || 0) + 1; });
-
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
             let corDinamica = n < 7 ? '#ff4757' : '#2ecc71';
-            let partes = s.n.split(' ');
-            let nomeExibicao = (counts[partes[0]] > 1 && partes[1]) ? `${partes[0]} ${partes[1]}` : partes[0];
+            
+            // AQUI: Exibindo dois nomes na pista
+            let nomeExibicao = getDoisNomes(s.n);
 
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
@@ -345,33 +340,14 @@
         document.getElementById('bim-tabs').innerHTML = [1,2,3,4].map(b => `<button class="nav-btn ${b===dados.bim?'active':''}" onclick="event.stopPropagation(); dados.bim=${b};salvar()">${b}º BIM</button>`).join('');
     }
 
-    function tglV(si, k, idx) { 
-        lastFocusedId = null; // Reseta foco ao clicar em vistos
-        let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); 
-    }
-    
-    function upN(si, k, v) { 
-        if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; 
-        dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); 
-        salvar(); 
-    }
-
+    function tglV(si, k, idx) { lastFocusedId = null; let s=dados.turmas[dados.ti].st[si]; if(!s.sc) s.sc={}; if(!s.sc[k]) s.sc[k]=[]; let p=s.sc[k].indexOf(idx); if(p>-1) s.sc[k].splice(p,1); else s.sc[k].push(idx); salvar(); }
+    function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
     
     function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[{n:'C'}]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
     function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([{n:'C'}]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
     
-    function addC() { 
-        let v = document.getElementById('in-cr').value; 
-        if(v) { 
-            const t = dados.turmas[dados.ti]; 
-            if(!t.crits) t.crits = []; 
-            if(!t.crits[t.mi]) t.crits[t.mi] = []; 
-            t.crits[t.mi].push({n: v}); 
-            salvar(); 
-            document.getElementById('in-cr').value = ''; 
-        } 
-    }
+    function addC() { let v = document.getElementById('in-cr').value; if(v) { const t = dados.turmas[dados.ti]; if(!t.crits) t.crits = []; if(!t.crits[t.mi]) t.crits[t.mi] = []; t.crits[t.mi].push({n: v}); salvar(); document.getElementById('in-cr').value = ''; } }
 
     function addStus() { 
         let n=document.getElementById('in-nm').value.split('\n'); 
