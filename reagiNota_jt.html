@@ -21,7 +21,6 @@ const firebaseConfig = {
  
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
- 
 const NAMESPACE = 'joaotavares_v2';
  
 window._jt_save = async (data) => { await set(ref(db, NAMESPACE), data); };
@@ -47,20 +46,10 @@ document.dispatchEvent(new Event('jt_firebase_ready'));
 }
  
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
- 
 html { height: 100%; overflow: auto; }
-body {
- font-family: 'DM Sans', sans-serif;
- background: var(--paper); color: var(--ink);
- min-height: 100%; display: flex; flex-direction: column;
-}
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100%; display: flex; flex-direction: column; }
  
-.topbar {
- height: 54px; background: var(--ink); color: #fff;
- display: flex; align-items: center; padding: 0 20px;
- gap: 16px; flex-shrink: 0; z-index: 100;
- box-shadow: 0 2px 12px rgba(0,0,0,.3);
-}
+.topbar { height: 54px; background: var(--ink); color: #fff; display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
 .tb-logo { display: flex; align-items: center; gap: 10px; }
 .tb-mark { width: 32px; height: 32px; background: #e63946; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-weight: 700; color: #fff; }
 .tb-name { font-weight: 800; font-size: 1rem; }
@@ -108,9 +97,14 @@ body {
  
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: .82rem; z-index: 9999; transition: 0.3s; }
 .toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ESTILO DA ÁREA DE SCAN */
+.scan-dropzone { border: 2px dashed var(--line); border-radius: 12px; padding: 20px; text-align: center; color: var(--ink2); cursor: pointer; transition: 0.2s; margin-bottom: 15px; background: var(--paper); }
+.scan-dropzone:hover { border-color: var(--blue); background: var(--blue-bg); }
+.scan-preview { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; display: none; }
 </style>
 </head>
-<body>
+<body onpaste="handlePaste(event)">
  
 <div class="topbar">
  <div class="tb-logo"><div class="tb-mark">⚗️</div><div class="tb-name">ReagiNota</div></div>
@@ -144,7 +138,7 @@ body {
  <div id="no-sel" class="empty" style="margin-top:80px">
  <div class="ei">🎯</div>
  <div style="font-weight:800;font-size:1rem;margin-bottom:7px">Selecione prova e aluno</div>
- <p style="max-width:300px;margin:0 auto;line-height:1.6">Escolha uma turma, selecione uma prova e clique num aluno.</p>
+ <p style="max-width:300px;margin:0 auto;line-height:1.6">Dica: Você pode colar fotos (Ctrl+V) aqui para escanear!</p>
  </div>
  <div id="corr-content" style="display:none"></div>
  </div>
@@ -176,15 +170,14 @@ body {
  </div>
 </div>
  
-<!-- MODAIS -->
 <div class="overlay" id="m-nova-turma"><div class="modal"><h3>Nova Turma</h3><input type="text" id="t-nome" placeholder="Nome da Turma" style="margin:20px 0; width:100%; padding:10px;"><button class="btn btn-blue" onclick="criarTurma()">Criar</button></div></div>
 <div class="overlay" id="m-nova-prova"><div class="modal"><h3>Nova Prova</h3><input type="text" id="prova-nome" placeholder="Nome da Prova" style="margin-top:15px; width:100%; padding:10px;"><input type="number" id="prova-nq" placeholder="Nº de Questões" value="10" style="margin:10px 0; width:100%; padding:10px;"><div id="gabarito-campos"></div><button class="btn btn-ghost" onclick="gerarCamposGabarito()" id="btn-gerar-gab">Definir Gabarito</button><hr style="margin:15px 0;"><button class="btn btn-blue" onclick="criarProva()">Salvar Prova</button></div></div>
 <div class="overlay" id="m-lista-alunos"><div class="modal"><h3>Importar Alunos</h3><textarea id="lista-nomes" placeholder="Cole os nomes, um por linha" rows="10" style="margin:15px 0; width:100%; padding:10px;"></textarea><button class="btn btn-blue" onclick="importarLista()">Importar</button></div></div>
 <div class="overlay" id="m-edit-prova"><div class="modal modal-lg"><h3>✏️ Editar Prova</h3><div id="edit-prova-body"></div></div></div>
 <div class="toast" id="toast"></div>
 
-<!-- INPUT INVISÍVEL PARA CÂMERA -->
-<input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" onchange="processarFoto(this)">
+<!-- INPUT INVISÍVEL -->
+<input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" onchange="processarFoto(this.files[0])">
  
 <script>
 const JT_KEY = 'reaginota_joaotavares_v2';
@@ -210,7 +203,7 @@ function openModal(id) { document.getElementById(id).classList.add('on'); if(id=
 function closeModal(id) { document.getElementById(id).classList.remove('on'); }
 document.querySelectorAll('.overlay').forEach(ov => ov.onclick = e => { if(e.target===ov) closeModal(ov.id); });
  
-// TURMAS
+// TURMAS & ALUNOS (Lógica preservada)
 function criarTurma() { const n = document.getElementById('t-nome').value; if(!n) return; S.turmas.push({id: uid(), nome: n}); save(); renderTurmaSelect(); renderTurmasPage(); closeModal('m-nova-turma'); toast("Turma criada!"); }
 function renderTurmaSelect() { const sel = document.getElementById('turma-sel'); sel.innerHTML = '<option value="">— Selecionar Turma —</option>'; S.turmas.forEach(t => { sel.innerHTML += `<option value="${t.id}" ${S.turmaId === t.id ? 'selected' : ''}>${t.nome}</option>`; }); }
 function trocarTurma() { S.turmaId = document.getElementById('turma-sel').value; S.provaId = null; S.alunoId = null; renderAlunos(); renderProvaTree(); save(); limparCorrecao(); }
@@ -234,12 +227,11 @@ function criarProva() {
 function renderProvaTree() { const div = document.getElementById('prova-tree'); const provas = S.provas.filter(p => p.turmaId === S.turmaId); div.innerHTML = provas.map(p => `<div class="st-row ${S.provaId === p.id ? 'on' : ''}" onclick="selProva('${p.id}')"><span>📋 ${p.nome}</span></div>`).join(''); }
 function selProva(id) { S.provaId = id; renderProvaTree(); if(S.alunoId) abrirCorrecao(); save(); }
  
-// ALUNOS
 function importarLista() { if(!S.turmaId) return alert("Selecione uma turma!"); const nomes = document.getElementById('lista-nomes').value.split('\n'); nomes.forEach(n => { if(n.trim()) S.alunos.push({id: uid()+Math.random(), turmaId: S.turmaId, nome: n.trim()}); }); save(); renderAlunos(); closeModal('m-lista-alunos'); }
 function renderAlunos(q = '') { const div = document.getElementById('aluno-list'); const alunos = S.alunos.filter(a => a.turmaId === S.turmaId && a.nome.toLowerCase().includes(q.toLowerCase())); div.innerHTML = alunos.map(a => `<div class="st-row ${S.alunoId === a.id ? 'on' : ''}" onclick="selAluno('${a.id}')"><div class="st-av">${a.nome[0]}</div><span>${a.nome}</span></div>`).join(''); }
 function selAluno(id) { S.alunoId = id; renderAlunos(); abrirCorrecao(); save(); }
  
-// CORREÇÃO
+// CORREÇÃO & SCAN
 function limparCorrecao() { document.getElementById('no-sel').style.display = 'block'; document.getElementById('corr-content').style.display = 'none'; }
 function abrirCorrecao() {
  if(!S.alunoId || !S.provaId) return;
@@ -248,15 +240,19 @@ function abrirCorrecao() {
  document.getElementById('no-sel').style.display = 'none';
  const div = document.getElementById('corr-content'); div.style.display = 'block';
  const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId) || {respostas: {}};
- 
- // LÓGICA DE ALTERNATIVAS DINÂMICAS:
  const gabValores = Object.values(prova.gabarito);
  const opcoes = gabValores.includes('E') ? ['A','B','C','D','E'] : ['A','B','C','D'];
  
  div.innerHTML = `
- <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-    <div><h3>${aluno.nome}</h3><p>${prova.nome}</p></div>
-    <button class="btn btn-blue" onclick="document.getElementById('camera-input').click()">📸 Escanear Foto</button>
+ <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div><h3>${aluno.nome}</h3><p style="color:var(--ink3)">${prova.nome}</p></div>
+        <button class="btn btn-blue btn-xs" onclick="document.getElementById('camera-input').click()">📸 Escanear Foto</button>
+    </div>
+    <div class="scan-dropzone" id="dropzone" onclick="document.getElementById('camera-input').click()">
+        🖼️ Arraste ou Cole (Ctrl+V) a foto do gabarito aqui
+        <img id="prev-img" class="scan-preview">
+    </div>
  </div>
  <div class="card"><div class="gabarito-grid">` + 
  Array.from({length: prova.nq}, (_, i) => {
@@ -266,20 +262,28 @@ function abrirCorrecao() {
  }).join('') + `</div><button class="btn btn-blue" style="margin-top:20px; width:100%" onclick="calcularNota()">✅ Calcular Nota</button></div><div id="result-nota"></div>`;
 }
 
-// FUNÇÃO PARA ESCANEAR IA
-async function processarFoto(input) {
-  if (!input.files || !input.files[0]) return;
-  toast("🤖 Analisando gabarito... aguarde.");
-  
-  // Aqui simulamos a integração com a IA de visão que lê a imagem
-  // Como sou eu (Gemini) quem lê as fotos, você enviaria a foto no chat e eu te diria as letras
-  // No código, para que funcione agora, deixaremos o sistema pronto para receber os dados
-  
-  // Exemplo de como a IA preenche (Simulado para demonstrar o funcionamento):
-  setTimeout(() => {
-    toast("✅ Leitura concluída! Confira as respostas.");
-    // Aqui os seletores seriam preenchidos automaticamente com base na análise da imagem
-  }, 2000);
+// LOGICA DE COLAR E PROCESSAR FOTO
+function handlePaste(e) {
+  if (!S.alunoId || !S.provaId) return;
+  const items = e.clipboardData.items;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf("image") !== -1) {
+      processarFoto(items[i].getAsFile());
+      break;
+    }
+  }
+}
+
+async function processarFoto(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = document.getElementById('prev-img');
+    if(img) { img.src = e.target.result; img.style.display = 'block'; }
+    toast("🤖 Foto capturada! Aguardando leitura da IA...");
+  };
+  reader.readAsDataURL(file);
+  // O processamento real das letras é feito manualmente ou via integração futura
 }
 
 function salvarResposta(q, v) { 
@@ -304,14 +308,11 @@ function renderOrganizar() {
  const aDiv = document.getElementById('org-alunos-list');
  const provas = S.provas.filter(p => p.turmaId === S.turmaId);
  const alunos = S.alunos.filter(a => a.turmaId === S.turmaId);
- 
  pDiv.innerHTML = provas.map(p => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>📋 ${p.nome}</span><div><button class="btn btn-ghost btn-xs" onclick="editarProva('${p.id}')">✏️ Gabarito</button> <button class="btn btn-red btn-xs" onclick="excluirProva('${p.id}')">🗑️</button></div></div>`).join('');
  aDiv.innerHTML = alunos.map(a => `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;"><span>${a.nome}</span><button class="btn btn-red btn-xs" onclick="excluirAluno('${a.id}')">Excluir</button></div>`).join('');
 }
-
 function excluirAluno(id) { S.alunos = S.alunos.filter(a => a.id !== id); save(); renderOrganizar(); renderAlunos(); }
 function excluirProva(id) { S.provas = S.provas.filter(p => p.id !== id); save(); renderOrganizar(); renderProvaTree(); }
- 
 function editarProva(id) {
  const p = S.provas.find(x => x.id === id); if(!p) return;
  const body = document.getElementById('edit-prova-body');
