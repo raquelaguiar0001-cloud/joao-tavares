@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ReagiNota — UE João Tavares da Costa</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=DM+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
@@ -41,158 +41,128 @@ document.dispatchEvent(new Event('jt_firebase_ready'));
  --line: #dddad4; --blue: #2752e8; --blue-bg: #eef1fd;
  --green: #1a7a4a; --green-bg: #e6f4ed;
  --red: #c8202e; --red-bg: #fdedef;
- --amber: #a06020; --amber-bg: #fdf3e7;
  --r: 10px; --sh: 0 1px 4px rgba(0,0,0,.07), 0 4px 20px rgba(0,0,0,.06);
 }
  
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; overflow: auto; }
-body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100%; display: flex; flex-direction: column; }
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
  
-.topbar { height: 54px; background: var(--ink); color: #fff; display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; z-index: 100; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
+.topbar { height: 54px; background: var(--ink); color: #fff; display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; z-index: 100; }
 .tb-logo { display: flex; align-items: center; gap: 10px; }
-.tb-mark { width: 32px; height: 32px; background: #e63946; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-weight: 700; color: #fff; }
-.tb-name { font-weight: 800; font-size: 1rem; }
+.tb-mark { width: 32px; height: 32px; background: #e63946; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-weight: 700; }
 .tb-nav { display: flex; gap: 2px; }
-.tb-btn { background: transparent; border: none; color: rgba(255,255,255,.55); padding: 6px 14px; border-radius: 7px; cursor: pointer; font-family: inherit; font-size: .82rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.tb-btn { background: transparent; border: none; color: rgba(255,255,255,.55); padding: 6px 12px; border-radius: 7px; cursor: pointer; font-family: inherit; font-size: .8rem; font-weight: 600; }
 .tb-btn.on { background: #e63946; color: #fff; }
-.tb-turma { margin-left: auto; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #fff; padding: 5px 12px; border-radius: 7px; font-size: .8rem; cursor: pointer; min-width: 200px; font-family: inherit; }
+.tb-turma { margin-left: auto; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #fff; padding: 5px 12px; border-radius: 7px; font-size: .8rem; min-width: 220px; font-family: inherit; }
  
 .body { display: flex; flex: 1; overflow: hidden; }
-.sidebar { width: 270px; background: #fff; border-right: 1px solid var(--line); display: flex; flex-direction: column; flex-shrink: 0; }
-.sb-sec { padding: 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
-.sb-sec:last-child { flex: 1; border-bottom: none; }
-.sb-head { display: flex; align-items: center; justify-content: space-between; font-size: .67rem; font-weight: 800; text-transform: uppercase; color: var(--ink3); margin-bottom: 10px; }
-.sb-scroll { overflow-y: auto; flex: 1; padding: 4px 0; }
+.sidebar { width: 260px; background: #fff; border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+.sb-sec { padding: 12px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; }
+.sb-head { display: flex; align-items: center; justify-content: space-between; font-size: .65rem; font-weight: 800; text-transform: uppercase; color: var(--ink3); margin-bottom: 8px; }
+.sb-scroll { overflow-y: auto; flex: 1; }
  
-.main { flex: 1; overflow-y: auto; background: var(--paper); padding-bottom: 40px; }
-.page { display: none; padding: 26px 28px; }
+.main { flex: 1; overflow-y: auto; padding: 20px; background: var(--paper); }
+.page { display: none; }
 .page.on { display: block; }
  
-.btn { border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 700; font-size: .82rem; padding: 9px 16px; display: inline-flex; align-items: center; gap: 7px; transition: 0.15s; }
+.card { background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 15px; box-shadow: var(--sh); margin-bottom: 12px; }
+.st-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: .8rem; border-left: 3px solid transparent; transition: 0.2s; }
+.st-row.on { background: var(--blue-bg); border-left-color: var(--blue); }
+.st-av { width: 26px; height: 26px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .6rem; font-weight: 800; }
+ 
+.btn { border: none; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: 700; font-size: .75rem; padding: 7px 12px; display: inline-flex; align-items: center; gap: 5px; }
 .btn-blue { background: var(--blue); color: #fff; }
 .btn-red { background: var(--red); color: #fff; }
 .btn-ghost { background: var(--paper2); color: var(--ink2); border: 1px solid var(--line); }
- 
-.card { background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 20px; box-shadow: var(--sh); margin-bottom: 16px; }
-.st-row { display: flex; align-items: center; gap: 9px; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: .82rem; border-left: 3px solid transparent; }
-.st-row.on { background: var(--blue-bg); border-left-color: var(--blue); }
-.st-av { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: 800; flex-shrink: 0; }
- 
-.empty { text-align: center; padding: 40px 20px; color: var(--ink3); }
-.empty .ei { font-size: 2.4rem; margin-bottom: 10px; opacity: .35; }
- 
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 500; display: none; align-items: center; justify-content: center; padding: 16px; }
-.overlay.on { display: flex; }
-.modal { background: #fff; border-radius: 14px; padding: 26px; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,.15); }
- 
-/* GABARITO ESTILO CAEd (BOLINHAS) */
-.gabarito-container { display: flex; flex-direction: column; gap: 10px; }
-.q-row { display: flex; align-items: center; gap: 15px; padding: 8px 12px; border-radius: 10px; background: #fff; border: 1.5px solid var(--line); transition: 0.2s; }
-.q-num { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 800; flex-shrink: 0; }
-.options-wrap { display: flex; gap: 12px; flex: 1; justify-content: flex-start; }
-.bubble { 
-    width: 36px; height: 36px; border-radius: 50%; 
-    border: 2px solid var(--ink2); display: flex; 
-    align-items: center; justify-content: center; 
-    font-weight: 700; cursor: pointer; transition: 0.2s;
-    user-select: none; color: var(--ink2); background: #fff;
-}
-.bubble:hover { border-color: var(--blue); color: var(--blue); }
-.bubble.selected { background: var(--ink); color: #fff; border-color: var(--ink); }
+.btn-xs { padding: 4px 8px; font-size: 0.7rem; }
 
-/* Feedback visual de correção */
+/* GABARITO COMPACTO EM GRADE */
+.gabarito-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+    gap: 8px; 
+}
+.q-row { 
+    display: flex; align-items: center; gap: 8px; padding: 6px 10px; 
+    border-radius: 8px; background: #fff; border: 1px solid var(--line); 
+}
+.q-num { 
+    width: 24px; height: 24px; border-radius: 50%; background: var(--ink); 
+    color: #fff; display: flex; align-items: center; justify-content: center; 
+    font-size: .7rem; font-weight: 800; flex-shrink: 0; 
+}
+.options-wrap { display: flex; gap: 4px; }
+.bubble { 
+    width: 28px; height: 28px; border-radius: 50%; 
+    border: 1.5px solid var(--ink2); display: flex; 
+    align-items: center; justify-content: center; 
+    font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: 0.1s;
+    background: #fff; color: var(--ink2);
+}
+.bubble.selected { background: var(--ink); color: #fff; border-color: var(--ink); }
 .q-row.acerto { border-color: var(--green); background: var(--green-bg); }
 .q-row.erro { border-color: var(--red); background: var(--red-bg); }
-.q-row.acerto .q-num { background: var(--green); }
-.q-row.erro .q-num { background: var(--red); }
-.gab-info { font-size: 0.7rem; color: var(--ink3); font-weight: 800; margin-left: auto; text-transform: uppercase; }
+.gab-tip { font-size: 0.65rem; color: var(--ink3); font-weight: 800; margin-left: auto; }
 
-.nota-display { background: var(--ink); color: #fff; border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 20px; }
-.nota-val { font-size: 3.5rem; font-weight: 800; font-family: 'DM Mono', monospace; }
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 500; display: none; align-items: center; justify-content: center; }
+.overlay.on { display: flex; }
+.modal { background: #fff; border-radius: 12px; padding: 20px; width: 100%; max-width: 450px; }
  
-.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: .82rem; z-index: 9999; transition: 0.3s; }
-.toast.show { transform: translateX(-50%) translateY(0); }
-
-.scan-area { border: 2px dashed var(--line); border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; background: var(--paper); cursor: pointer; }
-.scan-preview { max-width: 100%; max-height: 150px; border-radius: 8px; margin-top: 10px; display: none; border: 1px solid var(--line); }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: .8rem; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
+.toast.show { opacity: 1; }
 </style>
 </head>
-<body onpaste="handlePaste(event)">
+<body>
  
 <div class="topbar">
- <div class="tb-logo"><div class="tb-mark">⚗️</div><div class="tb-name">ReagiNota</div></div>
- <div class="tb-sep"></div>
+ <div class="tb-logo"><div class="tb-mark">RN</div><div class="tb-name">ReagiNota</div></div>
  <div class="tb-nav">
  <button class="tb-btn on" onclick="nav('correcao')" id="n-correcao">📋 Correção</button>
  <button class="tb-btn" onclick="nav('turmas')" id="n-turmas">🏫 Turmas</button>
  <button class="tb-btn" onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
- <button class="tb-btn" onclick="nav('relatorios')" id="n-relatorios">📊 Relatórios</button>
  </div>
- <select class="tb-turma" id="turma-sel" onchange="trocarTurma()">
- <option value="">— Selecionar Turma —</option>
- </select>
+ <select class="tb-turma" id="turma-sel" onchange="trocarTurma()"></select>
 </div>
  
 <div class="body">
  <div class="sidebar">
- <div class="sb-sec" style="flex:0 0 auto">
- <div class="sb-head">Provas <button class="btn btn-xs btn-blue" onclick="openModal('m-nova-prova')">+ Nova</button></div>
- <div id="prova-tree" class="sb-scroll" style="max-height:180px"></div>
+ <div class="sb-sec" style="flex:0">
+ <div class="sb-head">Provas <button class="btn btn-xs btn-blue" onclick="openModal('m-nova-prova')">+</button></div>
+ <div id="prova-tree" class="sb-scroll" style="max-height:150px"></div>
  </div>
- <div class="sb-sec">
- <div class="sb-head">Alunos <button class="btn btn-xs btn-blue" onclick="openModal('m-lista-alunos')">📋 Lista</button></div>
- <input type="text" placeholder="🔍 Buscar aluno..." style="width:100%; padding:8px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;" oninput="renderAlunos(this.value)">
+ <div class="sb-sec" style="flex:1">
+ <div class="sb-head">Alunos <button class="btn btn-xs btn-blue" onclick="openModal('m-lista-alunos')">+</button></div>
  <div id="aluno-list" class="sb-scroll"></div>
  </div>
  </div>
  
  <div class="main">
- <div id="p-correcao" class="page on">
- <div id="no-sel" class="empty" style="margin-top:80px">
- <div class="ei">🎯</div>
- <div style="font-weight:800;font-size:1rem;margin-bottom:7px">Selecione prova e aluno</div>
- <p style="max-width:300px;margin:0 auto;line-height:1.6">Você pode colar (Ctrl+V) fotos aqui para escanear.</p>
- </div>
- <div id="corr-content" style="display:none"></div>
- </div>
- 
- <div id="p-turmas" class="page">
- <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
- <h2>🏫 Turmas</h2>
- <button class="btn btn-blue" onclick="openModal('m-nova-turma')">+ Nova Turma</button>
- </div>
- <div id="turmas-list"></div>
- </div>
- 
- <div id="p-organizar" class="page">
- <h2>📂 Organizar Dados</h2>
- <div class="card" style="margin-top:20px;">
- <h3>Provas</h3>
- <div id="org-provas-list"></div>
- </div>
- <div class="card">
- <h3>Alunos</h3>
- <div id="org-alunos-list"></div>
- </div>
- </div>
- 
- <div id="p-relatorios" class="page">
- <h2>📊 Relatórios</h2>
- <div id="rel-content" style="margin-top:20px;"></div>
- </div>
+    <div id="p-correcao" class="page on">
+        <div id="corr-header"></div>
+        <div id="corr-grid" class="gabarito-grid"></div>
+        <div id="result-nota" style="margin-top:15px"></div>
+    </div>
+    <div id="p-turmas" class="page">
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px">
+            <h2>🏫 Turmas</h2>
+            <button class="btn btn-blue" onclick="openModal('m-nova-turma')">+ Nova Turma</button>
+        </div>
+        <div id="turmas-list"></div>
+    </div>
+    <div id="p-organizar" class="page">
+        <h2>📂 Organizar Dados</h2>
+        <div id="org-content" style="margin-top:15px"></div>
+    </div>
  </div>
 </div>
- 
-<!-- MODAIS -->
-<div class="overlay" id="m-nova-turma"><div class="modal"><h3>Nova Turma</h3><input type="text" id="t-nome" placeholder="Nome da Turma" style="margin:20px 0; width:100%; padding:10px;"><button class="btn btn-blue" onclick="criarTurma()">Criar</button></div></div>
-<div class="overlay" id="m-nova-prova"><div class="modal"><h3>Nova Prova</h3><input type="text" id="prova-nome" placeholder="Nome da Prova" style="margin-top:15px; width:100%; padding:10px;"><input type="number" id="prova-nq" placeholder="Nº de Questões" value="10" style="margin:10px 0; width:100%; padding:10px;"><div id="gabarito-campos"></div><button class="btn btn-ghost" onclick="gerarCamposGabarito()" id="btn-gerar-gab">Definir Gabarito</button><hr style="margin:15px 0;"><button class="btn btn-blue" onclick="criarProva()">Salvar Prova</button></div></div>
-<div class="overlay" id="m-lista-alunos"><div class="modal"><h3>Importar Alunos</h3><textarea id="lista-nomes" placeholder="Nomes, um por linha" rows="10" style="margin:15px 0; width:100%; padding:10px;"></textarea><button class="btn btn-blue" onclick="importarLista()">Importar</button></div></div>
-<div class="overlay" id="m-edit-prova"><div class="modal modal-lg"><h3>✏️ Editar Prova</h3><div id="edit-prova-body"></div></div></div>
+
+<div class="overlay" id="m-nova-turma"><div class="modal"><h3>Nova Turma</h3><input type="text" id="t-nome" placeholder="Nome da Turma" style="width:100%; padding:10px; margin:15px 0;"><button class="btn btn-blue" onclick="criarTurma()">Salvar</button></div></div>
+<div class="overlay" id="m-edit-turma"><div class="modal"><h3>Editar Turma</h3><input type="text" id="et-nome" style="width:100%; padding:10px; margin:15px 0;"><button class="btn btn-blue" id="btn-salvar-et">Atualizar</button></div></div>
+<div class="overlay" id="m-nova-prova"><div class="modal"><h3>Nova Prova</h3><input type="text" id="prova-nome" placeholder="Nome" style="width:100%; padding:8px; margin-bottom:10px;"><input type="number" id="prova-nq" placeholder="Questões" value="10" style="width:100%; padding:8px; margin-bottom:10px;"><div id="gabarito-setup" class="gabarito-grid" style="max-height:200px; overflow-y:auto; margin-bottom:10px;"></div><button class="btn btn-ghost" onclick="gerarSetupGab()" id="btn-setup">Definir Gabarito</button><button class="btn btn-blue" onclick="criarProva()" style="width:100%; margin-top:10px;">Criar Prova</button></div></div>
+<div class="overlay" id="m-lista-alunos"><div class="modal"><h3>Importar Alunos</h3><textarea id="lista-nomes" placeholder="Um nome por linha" rows="8" style="width:100%; padding:10px; margin:15px 0;"></textarea><button class="btn btn-blue" onclick="importarLista()">Importar</button></div></div>
+
 <div class="toast" id="toast"></div>
 
-<input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" onchange="processarFoto(this.files[0])">
- 
 <script>
 const JT_KEY = 'reaginota_joaotavares_v2';
 let S = { turmas: [], provas: [], alunos: [], correcoes: [], turmaId: null, provaId: null, alunoId: null };
@@ -200,189 +170,167 @@ let S = { turmas: [], provas: [], alunos: [], correcoes: [], turmaId: null, prov
 function save() { localStorage.setItem(JT_KEY, JSON.stringify(S)); if(window._jt_save) window._jt_save(S); }
 function load() { const raw = localStorage.getItem(JT_KEY); if (raw) S = JSON.parse(raw); }
 load();
- 
-function nav(p) {
- document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
- document.querySelectorAll('.tb-btn').forEach(x => x.classList.remove('on'));
- document.getElementById('p-' + p).classList.add('on');
- document.getElementById('n-' + p).classList.add('on');
- if(p === 'turmas') renderTurmasPage();
- if(p === 'organizar') renderOrganizar();
- if(p === 'relatorios') renderRelatorios();
-}
- 
+
 function toast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
-function uid() { return 'jt_' + Date.now(); }
-function openModal(id) { document.getElementById(id).classList.add('on'); if(id==='m-nova-prova') document.getElementById('btn-gerar-gab').style.display='block'; }
+function openModal(id) { document.getElementById(id).classList.add('on'); }
 function closeModal(id) { document.getElementById(id).classList.remove('on'); }
 document.querySelectorAll('.overlay').forEach(ov => ov.onclick = e => { if(e.target===ov) closeModal(ov.id); });
- 
-function criarTurma() { const n = document.getElementById('t-nome').value; if(!n) return; S.turmas.push({id: uid(), nome: n}); save(); renderTurmaSelect(); renderTurmasPage(); closeModal('m-nova-turma'); }
-function renderTurmaSelect() { const sel = document.getElementById('turma-sel'); sel.innerHTML = '<option value="">— Selecionar Turma —</option>'; S.turmas.forEach(t => { sel.innerHTML += `<option value="${t.id}" ${S.turmaId === t.id ? 'selected' : ''}>${t.nome}</option>`; }); }
-function trocarTurma() { S.turmaId = document.getElementById('turma-sel').value; S.provaId = null; S.alunoId = null; renderAlunos(); renderProvaTree(); save(); limparCorrecao(); }
-function renderTurmasPage() { document.getElementById('turmas-list').innerHTML = S.turmas.map(t => `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><span><b>${t.nome}</b></span><button class="btn btn-red btn-xs" onclick="excluirTurma('${t.id}')">Excluir</button></div>`).join(''); }
-function excluirTurma(id) { if(!confirm("Excluir turma?")) return; S.turmas = S.turmas.filter(t => t.id !== id); S.alunos = S.alunos.filter(a => a.turmaId !== id); save(); renderTurmaSelect(); renderTurmasPage(); }
- 
-function gerarCamposGabarito() {
- const nq = document.getElementById('prova-nq').value;
- document.getElementById('gabarito-campos').innerHTML = '<div class="gabarito-container">' + Array.from({length: nq}, (_, i) => `
-    <div class="q-row">
-        <span class="q-num">${i+1}</span>
-        <div class="options-wrap">
-            ${['A','B','C','D','E'].map(l => `<div class="bubble" onclick="toggleGabItem(${i+1}, '${l}')" id="gab-b-${i+1}-${l}">${l}</div>`).join('')}
-        </div>
-    </div>`).join('') + '</div>';
- document.getElementById('btn-gerar-gab').style.display = 'none';
- window._tempGab = {};
+
+function nav(p) {
+    document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.tb-btn').forEach(x => x.classList.remove('on'));
+    document.getElementById('p-' + p).classList.add('on');
+    document.getElementById('n-' + p).classList.add('on');
+    if(p === 'turmas') renderTurmasPage();
+    if(p === 'organizar') renderOrganizar();
 }
-function toggleGabItem(q, l) {
-    document.querySelectorAll(`[id^="gab-b-${q}-"]`).forEach(el => el.classList.remove('selected'));
-    document.getElementById(`gab-b-${q}-${l}`).classList.add('selected');
+
+// GESTÃO DE TURMAS
+function criarTurma() { 
+    const n = document.getElementById('t-nome').value; 
+    if(!n) return; 
+    S.turmas.push({id: 't_'+Date.now(), nome: n}); 
+    save(); renderTurmaSelect(); renderTurmasPage(); closeModal('m-nova-turma'); 
+}
+
+function editarTurma(id) {
+    const t = S.turmas.find(x => x.id === id);
+    document.getElementById('et-nome').value = t.nome;
+    document.getElementById('btn-salvar-et').onclick = () => {
+        t.nome = document.getElementById('et-nome').value;
+        save(); renderTurmaSelect(); renderTurmasPage(); closeModal('m-edit-turma');
+    };
+    openModal('m-edit-turma');
+}
+
+function excluirTurma(id) {
+    if(!confirm("Excluir turma e todos os alunos dela?")) return;
+    S.turmas = S.turmas.filter(t => t.id !== id);
+    S.alunos = S.alunos.filter(a => a.turmaId !== id);
+    save(); renderTurmaSelect(); renderTurmasPage();
+}
+
+function renderTurmaSelect() {
+    const sel = document.getElementById('turma-sel');
+    sel.innerHTML = '<option value="">— Selecionar Turma —</option>';
+    S.turmas.forEach(t => {
+        const nAlunos = S.alunos.filter(a => a.turmaId === t.id).length;
+        sel.innerHTML += `<option value="${t.id}" ${S.turmaId === t.id ? 'selected' : ''}>${t.nome} (${nAlunos} alunos)</option>`;
+    });
+}
+
+function renderTurmasPage() {
+    const div = document.getElementById('turmas-list');
+    div.innerHTML = S.turmas.map(t => {
+        const nAlunos = S.alunos.filter(a => a.turmaId === t.id).length;
+        return `
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+            <div><b>${t.nome}</b> <span style="color:var(--ink3); margin-left:10px;">👥 ${nAlunos} alunos</span></div>
+            <div style="display:flex; gap:5px;">
+                <button class="btn btn-ghost btn-xs" onclick="editarTurma('${t.id}')">✏️</button>
+                <button class="btn btn-red btn-xs" onclick="excluirTurma('${t.id}')">🗑️</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function trocarTurma() { S.turmaId = document.getElementById('turma-sel').value; S.provaId = null; S.alunoId = null; save(); renderAlunos(); renderProvaTree(); document.getElementById('corr-grid').innerHTML = ''; }
+
+// PROVAS & GABARITO SETUP
+function gerarSetupGab() {
+    const n = document.getElementById('prova-nq').value;
+    window._tempGab = {};
+    document.getElementById('gabarito-setup').innerHTML = Array.from({length: n}, (_, i) => `
+        <div class="q-row">
+            <span class="q-num">${i+1}</span>
+            <div class="options-wrap">
+                ${['A','B','C','D','E'].map(l => `<div class="bubble" onclick="setSetupGab(${i+1},'${l}',this)" data-q="${i+1}">${l}</div>`).join('')}
+            </div>
+        </div>`).join('');
+    document.getElementById('btn-setup').style.display = 'none';
+}
+function setSetupGab(q, l, el) {
+    el.parentNode.querySelectorAll('.bubble').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
     window._tempGab[q] = l;
 }
 function criarProva() {
- if(!S.turmaId) return alert("Selecione uma turma!");
- const nome = document.getElementById('prova-nome').value;
- const nq = document.getElementById('prova-nq').value;
- S.provas.push({id: uid(), turmaId: S.turmaId, nome, nq, gabarito: window._tempGab || {}});
- save(); renderProvaTree(); closeModal('m-nova-prova');
+    if(!S.turmaId) return alert("Selecione uma turma primeiro!");
+    const nome = document.getElementById('prova-nome').value;
+    S.provas.push({id: 'p_'+Date.now(), turmaId: S.turmaId, nome, nq: document.getElementById('prova-nq').value, gabarito: window._tempGab});
+    save(); renderProvaTree(); closeModal('m-nova-prova');
 }
-function renderProvaTree() { const div = document.getElementById('prova-tree'); const provas = S.provas.filter(p => p.turmaId === S.turmaId); div.innerHTML = provas.map(p => `<div class="st-row ${S.provaId === p.id ? 'on' : ''}" onclick="selProva('${p.id}')"><span>📋 ${p.nome}</span></div>`).join(''); }
-function selProva(id) { S.provaId = id; renderProvaTree(); if(S.alunoId) abrirCorrecao(); save(); }
- 
-function importarLista() { if(!S.turmaId) return alert("Selecione uma turma!"); const nomes = document.getElementById('lista-nomes').value.split('\n'); nomes.forEach(n => { if(n.trim()) S.alunos.push({id: uid()+Math.random(), turmaId: S.turmaId, nome: n.trim()}); }); save(); renderAlunos(); closeModal('m-lista-alunos'); }
-function renderAlunos(q = '') { const div = document.getElementById('aluno-list'); const alunos = S.alunos.filter(a => a.turmaId === S.turmaId && a.nome.toLowerCase().includes(q.toLowerCase())); div.innerHTML = alunos.map(a => `<div class="st-row ${S.alunoId === a.id ? 'on' : ''}" onclick="selAluno('${a.id}')"><div class="st-av">${a.nome[0]}</div><span>${a.nome}</span></div>`).join(''); }
-function selAluno(id) { S.alunoId = id; renderAlunos(); abrirCorrecao(); save(); }
- 
-// CORREÇÃO ESTILO BOLINHAS CAEd
-function limparCorrecao() { document.getElementById('no-sel').style.display = 'block'; document.getElementById('corr-content').style.display = 'none'; }
+
+function renderProvaTree() {
+    const div = document.getElementById('prova-tree');
+    const provas = S.provas.filter(p => p.turmaId === S.turmaId);
+    div.innerHTML = provas.map(p => `<div class="st-row ${S.provaId === p.id ? 'on' : ''}" onclick="S.provaId='${p.id}'; renderProvaTree(); abrirCorrecao();"><span>📋 ${p.nome}</span></div>`).join('');
+}
+
+// ALUNOS
+function importarLista() {
+    const nomes = document.getElementById('lista-nomes').value.split('\n');
+    nomes.forEach(n => { if(n.trim()) S.alunos.push({id: 'a_'+Math.random(), turmaId: S.turmaId, nome: n.trim()}); });
+    save(); renderAlunos(); renderTurmaSelect(); closeModal('m-lista-alunos');
+}
+function renderAlunos() {
+    const div = document.getElementById('aluno-list');
+    const alunos = S.alunos.filter(a => a.turmaId === S.turmaId).sort((a,b) => a.nome.localeCompare(b.nome));
+    div.innerHTML = alunos.map(a => `<div class="st-row ${S.alunoId === a.id ? 'on' : ''}" onclick="S.alunoId='${a.id}'; renderAlunos(); abrirCorrecao();"><div class="st-av">${a.nome[0]}</div><span>${a.nome}</span></div>`).join('');
+}
+
+// TELA DE CORREÇÃO (GRADE COMPACTA)
 function abrirCorrecao() {
- if(!S.alunoId || !S.provaId) return;
- const aluno = S.alunos.find(a => a.id === S.alunoId);
- const prova = S.provas.find(p => p.id === S.provaId);
- document.getElementById('no-sel').style.display = 'none';
- const div = document.getElementById('corr-content'); div.style.display = 'block';
- const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId) || {respostas: {}};
- 
- // Lógica de alternativas: Mostra apenas até D se não houver E no gabarito
- const gabValores = Object.values(prova.gabarito);
- const opcoes = gabValores.includes('E') ? ['A','B','C','D','E'] : ['A','B','C','D'];
- 
- div.innerHTML = `
- <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <div><h3 style="font-size:1.2rem">${aluno.nome}</h3><p style="color:var(--ink3); font-size:0.8rem">${prova.nome}</p></div>
-        <button class="btn btn-blue btn-xs" onclick="document.getElementById('camera-input').click()">📸 Escanear Foto</button>
-    </div>
-    <div class="scan-area" id="dropzone" onclick="document.getElementById('camera-input').click()">
-        🖼️ Arraste ou Cole (Ctrl+V) o gabarito aqui
-        <img id="prev-img" class="scan-preview">
-    </div>
- </div>
- <div class="card">
-    <div class="gabarito-container">` + 
-    Array.from({length: prova.nq}, (_, i) => {
-        const q = i+1; const resp = corr.respostas[q] || ""; const gab = prova.gabarito[q];
-        let corCls = resp ? (resp === gab ? "acerto" : "erro") : "";
+    if(!S.alunoId || !S.provaId) return;
+    const a = S.alunos.find(x => x.id === S.alunoId);
+    const p = S.provas.find(x => x.id === S.provaId);
+    const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId) || {respostas:{}};
+    
+    document.getElementById('corr-header').innerHTML = `<div class="card"><h3>${a.nome}</h3><p style="color:var(--ink3); font-size:0.8rem">${p.nome}</p></div>`;
+    
+    const hasE = Object.values(p.gabarito).includes('E');
+    const ops = hasE ? ['A','B','C','D','E'] : ['A','B','C','D'];
+    
+    document.getElementById('corr-grid').innerHTML = Array.from({length: p.nq}, (_, i) => {
+        const q = i+1; const resp = corr.respostas[q] || ""; const gab = p.gabarito[q];
+        const cls = resp ? (resp === gab ? 'acerto' : 'erro') : '';
         return `
-        <div class="q-row ${corCls}">
+        <div class="q-row ${cls}">
             <span class="q-num">${q}</span>
             <div class="options-wrap">
-                ${opcoes.map(l => `<div class="bubble ${resp === l ? 'selected' : ''}" onclick="salvarResposta(${q}, '${l}')">${l}</div>`).join('')}
+                ${ops.map(l => `<div class="bubble ${resp === l ? 'selected' : ''}" onclick="salvarResp(${q},'${l}')">${l}</div>`).join('')}
             </div>
-            <div class="gab-info">${gab ? 'Gab: '+gab : ''}</div>
+            <div class="gab-tip">${gab||''}</div>
         </div>`;
-    }).join('') + 
- `  </div>
-    <button class="btn btn-blue" style="margin-top:20px; width:100%" onclick="calcularNota()">✅ Calcular Nota</button>
- </div>
- <div id="result-nota"></div>`;
+    }).join('') + `<div style="grid-column: 1/-1"><button class="btn btn-blue" style="width:100%; padding:12px; margin-top:10px" onclick="calcNota()">Calcular Nota</button></div>`;
 }
 
-function handlePaste(e) {
-  if (!S.alunoId || !S.provaId) return;
-  const items = e.clipboardData.items;
-  for (let i = 0; i < items.length; i++) {
-    if (items[i].type.indexOf("image") !== -1) { processarFoto(items[i].getAsFile()); break; }
-  }
+function salvarResp(q, v) {
+    let corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
+    if(!corr) { corr = {alunoId: S.alunoId, provaId: S.provaId, turmaId: S.turmaId, respostas: {}}; S.correcoes.push(corr); }
+    if(corr.respostas[q] === v) delete corr.respostas[q]; else corr.respostas[q] = v;
+    save(); abrirCorrecao();
 }
 
-function processarFoto(file) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const img = document.getElementById('prev-img');
-    if(img) { img.src = e.target.result; img.style.display = 'block'; }
-    toast("🤖 Foto capturada! Analisando gabarito...");
-  };
-  reader.readAsDataURL(file);
+function calcNota() {
+    const p = S.provas.find(x => x.id === S.provaId);
+    const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
+    let acertos = 0; for(let q in p.gabarito) if(p.gabarito[q] === corr.respostas[q]) acertos++;
+    const nota = (acertos / p.nq) * 10;
+    document.getElementById('result-nota').innerHTML = `<div class="card" style="text-align:center; background:var(--ink); color:#fff"><div style="font-size:2rem; font-weight:800">${nota.toFixed(1)}</div><p>Nota Final</p></div>`;
 }
 
-function salvarResposta(q, v) { 
- let corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
- if(!corr) { corr = {id: uid(), alunoId: S.alunoId, provaId: S.provaId, turmaId: S.turmaId, respostas: {}}; S.correcoes.push(corr); }
- if(corr.respostas[q] === v) delete corr.respostas[q];
- else corr.respostas[q] = v;
- save(); abrirCorrecao(); 
-}
-
-function calcularNota() {
- const prova = S.provas.find(p => p.id === S.provaId);
- const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
- if(!corr) return;
- let acertos = 0; for(let q in prova.gabarito) if(prova.gabarito[q] === corr.respostas[q]) acertos++;
- const nota = (acertos / prova.nq) * 10; corr.nota = nota; save();
- document.getElementById('result-nota').innerHTML = `<div class="nota-display"><div class="nota-val">${nota.toFixed(1)}</div><p>${acertos} acertos de ${prova.nq}</p></div>`;
- renderAlunos();
-}
- 
 function renderOrganizar() {
- const pDiv = document.getElementById('org-provas-list');
- const aDiv = document.getElementById('org-alunos-list');
- const provas = S.provas.filter(p => p.turmaId === S.turmaId);
- const alunos = S.alunos.filter(a => a.turmaId === S.turmaId);
- pDiv.innerHTML = provas.map(p => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>📋 ${p.nome}</span><div><button class="btn btn-ghost btn-xs" onclick="editarProva('${p.id}')">✏️ Gabarito</button> <button class="btn btn-red btn-xs" onclick="excluirProva('${p.id}')">🗑️</button></div></div>`).join('');
- aDiv.innerHTML = alunos.map(a => `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;"><span>${a.nome}</span><button class="btn btn-red btn-xs" onclick="excluirAluno('${a.id}')">Excluir</button></div>`).join('');
+    const div = document.getElementById('org-content');
+    const provas = S.provas.filter(p => p.turmaId === S.turmaId);
+    div.innerHTML = `<h3>Provas desta Turma</h3>` + provas.map(p => `
+        <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+            <span>📋 ${p.nome}</span>
+            <button class="btn btn-red btn-xs" onclick="S.provas=S.provas.filter(x=>x.id!=='${p.id}'); save(); renderOrganizar(); renderProvaTree();">Excluir</button>
+        </div>`).join('');
 }
-function excluirAluno(id) { S.alunos = S.alunos.filter(a => a.id !== id); save(); renderOrganizar(); renderAlunos(); }
-function excluirProva(id) { S.provas = S.provas.filter(p => p.id !== id); save(); renderOrganizar(); renderProvaTree(); }
-function editarProva(id) {
- const p = S.provas.find(x => x.id === id); if(!p) return;
- const body = document.getElementById('edit-prova-body');
- body.innerHTML = `<input type="text" id="ep-nome" value="${p.nome}" style="width:100%; padding:10px; margin-bottom:15px;"><div class="gabarito-container">` + 
- Array.from({length: p.nq}, (_, i) => `
-    <div class="q-row">
-        <span class="q-num">${i+1}</span>
-        <div class="options-wrap">
-            ${['A','B','C','D','E'].map(l => `<div class="bubble ${p.gabarito[i+1] === l ? 'selected' : ''}" onclick="toggleEditGabItem(${i+1}, '${l}')" id="ed-gab-${i+1}-${l}">${l}</div>`).join('')}
-        </div>
-    </div>`).join('') + 
- `</div><button class="btn btn-blue" style="margin-top:20px; width:100%" onclick="salvarEdicaoProva('${id}')">Salvar Alterações</button>`;
- window._tempEditGab = {...p.gabarito};
- openModal('m-edit-prova');
-}
-function toggleEditGabItem(q, l) {
-    document.querySelectorAll(`[id^="ed-gab-${q}-"]`).forEach(el => el.classList.remove('selected'));
-    document.getElementById(`ed-gab-${q}-${l}`).classList.add('selected');
-    window._tempEditGab[q] = l;
-}
-function salvarEdicaoProva(id) {
- const p = S.provas.find(x => x.id === id);
- p.nome = document.getElementById('ep-nome').value;
- p.gabarito = {...window._tempEditGab};
- save(); renderOrganizar(); renderProvaTree(); closeModal('m-edit-prova'); toast("Gabarito atualizado!");
-}
- 
-function renderRelatorios() {
- const div = document.getElementById('rel-content');
- if(!S.turmaId) return div.innerHTML = "<p>Selecione uma turma.</p>";
- const corrs = S.correcoes.filter(c => S.turmaId === c.turmaId || S.alunos.find(a => a.id === c.alunoId && a.turmaId === S.turmaId));
- if(!corrs.length) return div.innerHTML = "<p>Nenhuma nota lançada.</p>";
- div.innerHTML = `<div class="card"><table style="width:100%; text-align:left;"><thead><tr><th>Aluno</th><th>Nota</th></tr></thead><tbody>` + 
- corrs.map(c => { const a = S.alunos.find(al => al.id === c.alunoId); return `<tr><td>${a?.nome || 'Excluído'}</td><td><b>${c.nota?.toFixed(1) || '0.0'}</b></td></tr>`; }).join('') + `</tbody></table></div>`;
-}
- 
-renderTurmaSelect(); renderAlunos(); renderProvaTree();
+
+renderTurmaSelect();
 document.addEventListener('jt_firebase_ready', () => { window._jt_load().then(d => { if(d) { S = d; renderTurmaSelect(); renderAlunos(); renderProvaTree(); } }); });
 </script>
 </body>
