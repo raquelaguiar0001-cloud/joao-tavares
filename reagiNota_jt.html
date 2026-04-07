@@ -1,88 +1,232 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planejador - João Tavares</title>
-    <style>
-        :root { --primary: #f0f2f5; --card-bg: #ffffff; --text-dark: #263238; --header-bg: #455a64; --accent: #80cbc4; --shadow: 0 4px 12px rgba(0,0,0,0.1); --bg-6: #90a4ae; --bg-7: #4db6ac; --bg-8: #7986cb; --bg-9: #607d8b; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--primary); color: var(--text-dark); margin: 0; padding: 0; }
-        .turmas-nav { background: #fff; padding: 15px; display: flex; justify-content: center; gap: 10px; border-bottom: 2px solid #ddd; position: sticky; top: 0; z-index: 100; }
-        .btn-turma { padding: 10px 20px; border: 2px solid var(--header-bg); border-radius: 8px; background: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-turma.active { background: var(--header-bg); color: white; }
-        .main-layout { display: grid; grid-template-columns: 350px 1fr; gap: 20px; padding: 20px; max-width: 1400px; margin: auto; }
-        .left-col { background: #fff; border-radius: 12px; padding: 20px; box-shadow: var(--shadow); height: fit-content; border-left: 6px solid var(--header-bg); }
-        .left-col h2 { font-size: 1.2rem; text-align: center; color: var(--header-bg); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
-        .day-box { margin-bottom: 20px; }
-        .day-box h4 { margin: 10px 0; color: #546e7a; text-transform: uppercase; font-size: 0.8rem; }
-        .schedule-tag { padding: 8px; border-radius: 6px; color: white; font-size: 0.85rem; margin-bottom: 5px; font-weight: bold; }
-        .right-col { display: flex; flex-direction: column; gap: 15px; }
-        .collapsible-section { background: #fff; border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 10px; }
-        .collapsible-header { padding: 15px 20px; background: #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-bottom: 1px solid #eee; }
-        .collapsible-content { padding: 20px; display: none; }
-        .collapsible-section.open .collapsible-content { display: block; }
-        .line-6 { background: var(--bg-6); } .line-7 { background: var(--bg-7); } .line-8 { background: var(--bg-8); } .line-9 { background: var(--bg-9); }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
-        .btn-main { background: var(--header-bg); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
-        .roteiro-item { border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; background: #fff; overflow: hidden; }
-        .roteiro-header { padding: 12px; display: flex; justify-content: space-between; cursor: pointer; background: #fff; }
-        .roteiro-content { padding: 15px; display: none; border-top: 1px solid #eee; }
-        .roteiro-item.open .roteiro-content { display: block; }
-        .subtopico-view { display: flex; align-items: center; gap: 10px; padding: 8px; background: #f1f8e9; border-radius: 8px; margin-top: 5px; font-size: 0.9rem; border: 1px solid #dcedc8; cursor: pointer; }
-        .subtopico-view.checked { background: #f8f9fa; border-color: #e0e0e0; color: #9e9e9e; text-decoration: line-through; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; }
-        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReagiNota — UE João Tavares da Costa</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCHR8cuC25TCDyZJNkV2R_04oTdUSdVAyk",
+  authDomain: "corretor-gabarito.firebaseapp.com",
+  databaseURL: "https://corretor-gabarito-default-rtdb.firebaseio.com",
+  projectId: "corretor-gabarito",
+  storageBucket: "corretor-gabarito.firebasestorage.app",
+  messagingSenderId: "823312147686",
+  appId: "1:823312147686:web:196d3492a3a37d8a460727"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
+
+window._fbSignIn = () => signInWithPopup(auth, provider);
+window._fbSignOut = () => signOut(auth);
+window._fbSave = async (uid, data) => { await set(ref(db, 'usuarios/' + uid), data); };
+window._fbLoad = async (uid) => { const snap = await get(ref(db, 'usuarios/' + uid)); return snap.exists() ? snap.val() : null; };
+
+onAuthStateChanged(auth, user => {
+  window._fbUser = user;
+  if(typeof window._onAuthChange === 'function') window._onAuthChange(user);
+});
+</script>
+<style>
+:root {
+  --ink: #161616; --ink2: #5a5a6a; --ink3: #9898a8;
+  --paper: #f8f7f4; --paper2: #efede8; --paper3: #e5e2db;
+  --line: #dddad4; --blue: #2752e8; --blue-bg: #eef1fd;
+  --green: #1a7a4a; --green-bg: #e6f4ed;
+  --red: #c8202e; --red-bg: #fdedef;
+  --amber: #a06020; --amber-bg: #fdf3e7;
+  --r: 10px; --sh: 0 1px 4px rgba(0,0,0,.07), 0 4px 20px rgba(0,0,0,.06);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* ESTILO ORIGINAL COM SCROLL CORRIGIDO */
+html,body{height:100%; overflow: auto;} 
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);display:flex;flex-direction:column; min-height: 100vh;}
+
+.topbar{
+  height:54px;background:var(--ink);color:#fff;display:flex;align-items:center;
+  padding:0 20px;gap:16px;flex-shrink:0;z-index:100;
+  box-shadow:0 2px 12px rgba(0,0,0,.25)
+}
+.tb-logo{display:flex;align-items:center;gap:10px}
+.tb-mark{width:32px;height:32px;background:#e63946;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-weight:700;color:#fff}
+.tb-name{font-weight:800;font-size:1rem}
+.tb-sep{width:1px;height:24px;background:rgba(255,255,255,.15)}
+.tb-nav{display:flex;gap:2px}
+.tb-btn{background:transparent;border:none;color:rgba(255,255,255,.55);padding:6px 14px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;transition:all .15s;display:flex;align-items:center;gap:6px}
+.tb-btn:hover{background:rgba(255,255,255,.1);color:#fff}
+.tb-btn.on{background:#e63946;color:#fff}
+.tb-turma{margin-left:auto;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:5px 12px;border-radius:7px;font-size:.8rem;cursor:pointer;min-width:160px}
+
+.body{display:flex;flex:1; overflow: hidden;} 
+
+.sidebar{
+  width:270px;background:#fff;border-right:1px solid var(--line);
+  display:flex;flex-direction:column;flex-shrink:0;overflow:hidden
+}
+.sb-sec{padding:14px;border-bottom:1px solid var(--line)}
+.sb-head{display:flex;align-items:center;justify-content:space-between;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:var(--ink3);margin-bottom:10px}
+.sb-scroll{overflow-y:auto;flex:1;padding:4px 0}
+
+.main{flex:1; overflow-y:auto; background:var(--paper); padding-bottom: 50px;} 
+.page{display:none;padding:26px 28px; min-height: fit-content;}
+.page.on{display:block}
+
+.btn{border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.82rem;padding:9px 16px;display:inline-flex;align-items:center;gap:7px;transition:all .15s}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:#1e40c8;box-shadow:0 4px 12px rgba(39,82,232,.3)}
+.btn-xs{padding:4px 9px;font-size:.71rem}
+
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.field label{font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--ink3)}
+input[type=text],input[type=number],select,textarea{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;width:100%;font-family:inherit}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh); margin-bottom: 20px;}
+
+.st-row{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;cursor:pointer;transition:background .1s;font-size:.82rem}
+.st-row:hover{background:var(--paper2)}
+.st-row.on{background:#eef1fd;border-left:3px solid var(--blue)}
+.st-av{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0}
+
+.empty{text-align:center;padding:40px 20px;color:var(--ink3);font-size:.87rem}
+.empty .ei{font-size:2.4rem;margin-bottom:10px;opacity:.35}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.on{display:flex}
+.modal{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.1)}
+
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+</style>
 </head>
 <body>
-<nav class="turmas-nav" id="turmaGrid"></nav>
-<div class="main-layout">
-    <aside class="left-col">
-        <h2>Quadro de Horários da Semana</h2>
-        <div id="homeDaysGrid"></div>
-    </aside>
-    <main class="right-col" id="painelTurma" style="display:none;">
-        <h2 id="tituloTurmaDinamico" style="margin: 0 0 10px 10px; color: var(--header-bg);"></h2>
-        <div class="collapsible-section">
-            <div class="collapsible-header" onclick="toggleSection(this)">Horário da Turma <span>▽</span></div>
-            <div class="collapsible-content"><div id="gradeHorario" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;"></div></div>
-        </div>
-        <div class="collapsible-section">
-            <div class="collapsible-header" onclick="toggleSection(this)">Novo Planejamento <span>▽</span></div>
-            <div class="collapsible-content">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><input type="text" id="dataInput" placeholder="Data (Apenas números)" onkeyup="mascaraData(this)"><input type="text" id="aulaInput" placeholder="Aula (ex: 1ª)"></div>
-                <textarea id="textoPrincipal" rows="4" placeholder="Escreva o conteúdo aqui..."></textarea>
-                <button class="btn-main" onclick="salvarNovo()">💾 Salvar na Pasta</button>
-            </div>
-        </div>
-        <div id="listaHistorico"></div>
-    </main>
+
+<div class="topbar">
+  <div class="tb-logo"><div class="tb-mark">⚗️</div><div class="tb-name">ReagiNota</div></div>
+  <div class="tb-sep"></div>
+  <div class="tb-nav">
+    <button class="tb-btn on" onclick="nav('correcao')" id="n-correcao">📋 Correção</button>
+    <button class="tb-btn" onclick="nav('turmas')" id="n-turmas">🏫 Turmas</button>
+    <button class="tb-btn" onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
+    <button class="tb-btn" onclick="nav('relatorios')" id="n-relatorios">📊 Relatórios</button>
+  </div>
+  <select class="tb-turma" id="turma-sel" onchange="trocarTurma()">
+    <option value="">— Selecionar Turma —</option>
+  </select>
 </div>
-<div id="modalEdicao" class="modal"><div class="modal-content"><h3 style="color:var(--header-bg)">Editar Registro</h3><div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"><input type="text" id="editData" onkeyup="mascaraData(this)"><input type="text" id="editAula"></div><textarea id="editTitulo" rows="4"></textarea><div id="areaSubtopicosEdit"></div><button onclick="adicionarLinhaSubtopico()" style="width:100%; background:#f0f0f0; border:1px solid #ccc; padding:10px; border-radius:8px; cursor:pointer; margin-top:10px;">+ Adicionar Tópico</button><div style="margin-top:20px; display:flex; gap:10px;"><button class="btn-main" onclick="salvarAlteracoes()" style="flex:2">Salvar Alterações</button><button class="btn-main" onclick="fecharModal()" style="flex:1; background:#90a4ae;">Cancelar</button></div><button onclick="excluirRegistro()" style="width:100%; background:none; border:none; color:red; cursor:pointer; margin-top:15px; font-weight:bold;">🗑️ Excluir Permanente</button></div></div>
+
+<div class="body">
+  <div class="sidebar">
+    <div class="sb-sec" style="flex:1;display:flex;flex-direction:column">
+      <div class="sb-head">Provas <button class="btn btn-xs btn-blue" onclick="abrirModalNovaProva()">+ Nova</button></div>
+      <div id="prova-tree" class="sb-scroll"></div>
+    </div>
+    <div class="sb-sec" style="flex:1;display:flex;flex-direction:column">
+      <div class="sb-head">Alunos <button class="btn btn-xs btn-blue" onclick="openModal('m-lista')">📋 Lista</button></div>
+      <!-- BARRA DE BUSCA ORIGINAL -->
+      <input type="text" placeholder="🔍 Buscar aluno..." style="margin-bottom:7px;font-size:.77rem;padding:6px 10px" oninput="renderAlunos(this.value)">
+      <div id="aluno-list" class="sb-scroll"></div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div id="p-correcao" class="page on">
+      <div id="no-sel" class="empty" style="margin-top:80px">
+        <div class="ei">🎯</div>
+        <div style="font-weight:800;font-size:1rem;margin-bottom:7px">Selecione prova e aluno</div>
+        <p style="max-width:300px;margin:0 auto;line-height:1.6">Escolha uma turma, selecione uma prova e clique num aluno para iniciar a correção.</p>
+      </div>
+      <div id="corr-content" style="display:none">
+        <!-- ÁREA DE CORREÇÃO -->
+      </div>
+    </div>
+
+    <div id="p-relatorios" class="page">
+      <h2>📊 Relatórios de Desempenho</h2>
+      <div id="tp-geral"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL TURMA -->
+<div class="overlay" id="m-turma">
+  <div class="modal">
+    <h3>Nova Turma</h3>
+    <div class="field"><label>Nome da Turma</label><input type="text" id="t-nome"></div>
+    <button class="btn btn-blue" onclick="criarTurma()">Criar</button>
+  </div>
+</div>
+
 <script>
-    // ENDEREÇO EXCLUSIVO JOÃO TAVARES
-    const URL_FIREBASE = "https://planejador-raquel-default-rtdb.firebaseio.com/joao_tavares_data.json"; 
-    const CLASSES = { "6º ano": "line-6", "7º ano": "line-7", "8º ano": "line-8", "9º ano": "line-9" };
-    const DIAS = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
-    let banco = {}; let turmaAtiva = ""; let idsAbertos = new Set(); let indexEditando = null;
-    function toggleSection(el) { el.parentElement.classList.toggle('open'); }
-    async function carregar() { try { const res = await fetch(URL_FIREBASE); banco = await res.json() || {}; renderizarTurmas(); renderizarHome(); if(turmaAtiva) { renderizarGrade(); renderizarHistorico(); } } catch (e) {} }
-    function mascaraData(i) { let v = i.value.replace(/\D/g, ""); if (v.length >= 2) v = v.substring(0,2) + "/" + v.substring(2); if (v.length >= 5) v = v.substring(0,5) + "/" + v.substring(5,9); i.value = v; }
-    function renderizarTurmas() { const nav = document.getElementById('turmaGrid'); nav.innerHTML = ''; Object.keys(CLASSES).forEach(nome => { const id = `JT_${nome.replace(/\s/g, '_')}`; if(!banco[id]) banco[id] = { roteiros: [], horários: {} }; const btn = document.createElement('button'); btn.className = `btn-turma ${turmaAtiva === id ? 'active' : ''}`; btn.innerHTML = nome; btn.onclick = () => { turmaAtiva = id; idsAbertos.clear(); document.getElementById('painelTurma').style.display = 'flex'; document.getElementById('tituloTurmaDinamico').innerText = nome; renderizarTurmas(); renderizarGrade(); renderizarHistorico(); }; nav.appendChild(btn); }); }
-    function renderizarHome() { const grid = document.getElementById('homeDaysGrid'); grid.innerHTML = ''; DIAS.forEach(dia => { let aulasDia = []; Object.keys(CLASSES).forEach(nome => { const id = `JT_${nome.replace(/\s/g, '_')}`; if(banco[id]?.horários?.[dia]) { banco[id].horários[dia].forEach(h => { if(h && h.trim()) aulasDia.push({h, nome}); }); } }); if(aulasDia.length > 0) { let html = `<div class="day-box"><h4>${dia}</h4>`; aulasDia.sort((a,b) => parseInt(a.h) - parseInt(b.h)); aulasDia.forEach(item => { html += `<div class="schedule-tag ${CLASSES[item.nome]}">${item.h} - ${item.nome}</div>`; }); grid.innerHTML += html + `</div>`; } }); }
-    function renderizarGrade() { const cont = document.getElementById('gradeHorario'); cont.innerHTML = ''; DIAS.slice(0, 3).forEach(dia => { if(!banco[turmaAtiva].horários[dia]) banco[turmaAtiva].horários[dia] = [""]; let html = `<div style="background:#f9f9f9; padding:10px; border-radius:8px;"><b>${dia}</b><br>`; banco[turmaAtiva].horários[dia].forEach((v, idx) => { html += `<div style="display:flex; gap:2px;"><input type="text" value="${v}" style="padding:5px; margin-bottom:2px;" onblur="banco['${turmaAtiva}'].horários['${dia}'][${idx}]=this.value; sincronizar();"></div>`; }); html += `<button onclick="banco['${turmaAtiva}'].horários['${dia}'].push(''); renderizarGrade();" style="width:100%; background:#eee; border:none; cursor:pointer;">+</button></div>`; cont.innerHTML += html; }); }
-    async function sincronizar() { await fetch(URL_FIREBASE, { method: 'PUT', body: JSON.stringify(banco) }); renderizarHome(); }
-    function renderizarHistorico() { const lista = document.getElementById('listaHistorico'); lista.innerHTML = '<h3 style="margin-left:10px; color:#455a64;">Histórico</h3>'; if(!banco[turmaAtiva]?.roteiros) return; banco[turmaAtiva].roteiros.forEach((r, idx) => { let subs = (r.subtopicos || []).map((s, sIdx) => { const isChecked = typeof s === 'object' ? s.feito : false; const texto = typeof s === 'object' ? s.texto : s; return `<div class="subtopico-view ${isChecked ? 'checked' : ''}" onclick="event.stopPropagation();toggleCheck(${idx}, ${sIdx})"><input type="checkbox" ${isChecked ? 'checked' : ''}> <span>${texto}</span></div>`; }).join(''); const isOpen = idsAbertos.has(idx) ? 'open' : ''; const item = document.createElement('div'); item.className = `roteiro-item ${isOpen}`; item.innerHTML = `<div class="roteiro-header" onclick="toggleItem(${idx}, this.parentElement)"><span>${r.data} - ${r.aula}</span> <span>▽</span></div><div class="roteiro-content"><p style="white-space:pre-wrap; font-weight: bold; margin-bottom:10px;">${r.titulo}</p>${subs}<button class="btn-main" onclick="abrirModal(${idx})" style="margin-top:15px; padding:8px; font-size:0.8rem; width:auto;">✏️ Editar Registro</button></div>`; lista.appendChild(item); }); }
-    function toggleItem(idx, el) { if(idsAbertos.has(idx)) idsAbertos.delete(idx); else idsAbertos.add(idx); el.classList.toggle('open'); }
-    function toggleCheck(rIdx, sIdx) { let r = banco[turmaAtiva].roteiros[rIdx]; let s = r.subtopicos[sIdx]; if(typeof s === 'string') r.subtopicos[sIdx] = { texto: s, feito: true }; else r.subtopicos[sIdx].feito = !r.subtopicos[sIdx].feito; sincronizar(); renderizarHistorico(); }
-    function salvarNovo() { const d = document.getElementById('dataInput').value, a = document.getElementById('aulaInput').value, t = document.getElementById('textoPrincipal').value; if(!d || !t) return alert("Preencha Data e Conteúdo!"); if(!banco[turmaAtiva].roteiros) banco[turmaAtiva].roteiros = []; banco[turmaAtiva].roteiros.unshift({ data: d, aula: a, titulo: t, subtopicos: [] }); sincronizar(); renderizarHistorico(); document.getElementById('dataInput').value=''; document.getElementById('aulaInput').value=''; document.getElementById('textoPrincipal').value=''; }
-    function abrirModal(idx) { indexEditando = idx; const r = banco[turmaAtiva].roteiros[idx]; document.getElementById('editData').value = r.data; document.getElementById('editAula').value = r.aula; document.getElementById('editTitulo').value = r.titulo; const area = document.getElementById('areaSubtopicosEdit'); area.innerHTML = ''; (r.subtopicos || []).forEach(s => { const texto = typeof s === 'object' ? s.texto : s; area.innerHTML += `<div style="display:flex; gap:10px;"><input type="text" class="input-sub" value="${texto}" style="margin:5px 0;"> <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer;">❌</button></div>`; }); document.getElementById('modalEdicao').style.display = 'flex'; }
-    function adicionarLinhaSubtopico() { const div = document.createElement('div'); div.style.display="flex"; div.style.gap="10px"; div.innerHTML = `<input type="text" class="input-sub" placeholder="Novo tópico..." style="margin:5px 0;"> <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer;">❌</button>`; document.getElementById('areaSubtopicosEdit').appendChild(div); }
-    function fecharModal() { document.getElementById('modalEdicao').style.display = 'none'; indexEditando = null; }
-    function salvarAlteracoes() { const r = banco[turmaAtiva].roteiros[indexEditando]; const subsAntigos = r.subtopicos || []; r.data = document.getElementById('editData').value; r.aula = document.getElementById('editAula').value; r.titulo = document.getElementById('editTitulo').value; const inputs = document.querySelectorAll('.input-sub'); r.subtopicos = Array.from(inputs).map((input, idx) => ({ texto: input.value, feito: (subsAntigos[idx]?.feito || false) })).filter(v => v.texto !== ""); sincronizar(); renderizarHistorico(); fecharModal(); }
-    function excluirRegistro() { if(confirm("Excluir permanentemente?")) { banco[turmaAtiva].roteiros.splice(indexEditando, 1); sincronizar(); renderizarHistorico(); fecharModal(); } }
-    setInterval(carregar, 5000); carregar();
+// LÓGICA DE SEPARAÇÃO PARA JOÃO TAVARES
+const SK = 'gabia_jt_v1'; 
+let S = { turmas:[], provas:[], alunos:[], correcoes:[], turmaId:null, provaId:null, alunoId:null };
+
+function save(){ localStorage.setItem(SK, JSON.stringify(S)); }
+function load(){ const d=localStorage.getItem(SK); if(d) S=JSON.parse(d); }
+load();
+
+function nav(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.tb-btn').forEach(x=>x.classList.remove('on'));
+  document.getElementById('p-'+p).classList.add('on');
+  document.getElementById('n-'+p).classList.add('on');
+}
+
+function renderTurmaSelect(){
+  const el=document.getElementById('turma-sel');
+  el.innerHTML='<option value="">— Selecionar Turma —</option>';
+  S.turmas.forEach(t=>{
+    const o=document.createElement('option'); o.value=t.id; o.textContent=t.nome;
+    if(t.id===S.turmaId) o.selected=true;
+    el.appendChild(o);
+  });
+}
+
+function trocarTurma(){
+  S.turmaId=document.getElementById('turma-sel').value;
+  renderAlunos(); renderProvaTree(); save();
+}
+
+function renderAlunos(q=''){
+  const el=document.getElementById('aluno-list');
+  const list = S.alunos.filter(a=>a.turmaId===S.turmaId).filter(a=>!q || a.nome.toLowerCase().includes(q.toLowerCase()));
+  el.innerHTML = list.map(a=>`<div class="st-row ${S.alunoId===a.id?'on':''}" onclick="selAluno('${a.id}')">${a.nome}</div>`).join('');
+}
+
+function selAluno(id){ S.alunoId=id; renderAlunos(); abrirCorrecao(); }
+
+function renderProvaTree(){
+  const el=document.getElementById('prova-tree');
+  const list = S.provas.filter(p=>p.turmaId===S.turmaId);
+  el.innerHTML = list.map(p=>`<div class="st-row ${S.provaId===p.id?'on':''}" onclick="S.provaId='${p.id}';renderProvaTree();">${p.nome}</div>`).join('');
+}
+
+function abrirCorrecao(){
+  if(!S.alunoId || !S.provaId) return;
+  document.getElementById('no-sel').style.display='none';
+  document.getElementById('corr-content').style.display='block';
+}
+
+function openModal(id){ document.getElementById(id).classList.add('on'); }
+function closeModal(id){ document.getElementById(id).classList.remove('on'); }
+
+window._onAuthChange = async function(user){
+  if(user){
+    const dados = await window._fbLoad(user.uid);
+    if(dados){ S = {...S, ...dados}; save(); renderTurmaSelect(); renderAlunos(); renderProvaTree(); }
+  }
+};
+
+renderTurmaSelect(); renderAlunos(); renderProvaTree();
 </script>
 </body>
 </html>
