@@ -4,16 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ReagiNota — UE João Tavares da Costa</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230f0f1a'/><stop offset='1' stop-color='%231a1a3e'/></linearGradient><linearGradient id='liq' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ff6b6b'/><stop offset='1' stop-color='%23c8202e'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23bg)'/><rect x='30' y='8' width='40' height='6' rx='3' fill='%23e63946'/><path d='M36 40 L20 70 Q15 82 26 87 L74 87 Q85 82 80 70 L64 40 Z' fill='%23ffffff' opacity='.07' stroke='%236699ff' stroke-width='2.5'/><path d='M33 58 Q36 55 40 58 L22 80 Q17 87 28 88 L72 88 Q83 87 78 80 Z' fill='url(%23liq)' opacity='.92'/><circle cx='38' cy='71' r='4' fill='%23ffffff' opacity='.25'/><circle cx='30' cy='52' r='3' fill='%236699ff' opacity='.7'/><circle cx='70' cy='48' r='2' fill='%2366ffcc' opacity='.6'/></svg>"><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230f0f1a'/><stop offset='1' stop-color='%231a1a3e'/></linearGradient><linearGradient id='liq' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ff6b6b'/><stop offset='1' stop-color='%23c8202e'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23bg)'/><rect x='30' y='8' width='40' height='6' rx='3' fill='%23e63946'/><rect x='36' y='14' width='28' height='26' rx='3' fill='%23ffffff' opacity='.08'/><rect x='38' y='14' width='3' height='26' fill='%23ffffff' opacity='.12'/><path d='M36 40 L20 70 Q15 82 26 87 L74 87 Q85 82 80 70 L64 40 Z' fill='%23ffffff' opacity='.07' stroke='%236699ff' stroke-width='2.5' stroke-linejoin='round'/><path d='M33 58 Q36 55 40 58 L22 80 Q17 87 28 88 L72 88 Q83 87 78 80 Z' fill='url(%23liq)' opacity='.92'/><path d='M33 58 Q36 55 40 58 L38 65 Q35 62 32 65 Z' fill='%23ff9999' opacity='.4'/><circle cx='38' cy='71' r='4' fill='%23ffffff' opacity='.25'/><circle cx='58' cy='76' r='2.8' fill='%23ffffff' opacity='.18'/><circle cx='47' cy='80' r='2' fill='%23ffffff' opacity='.22'/><circle cx='65' cy='69' r='1.8' fill='%23ffffff' opacity='.15'/><circle cx='30' cy='52' r='3' fill='%236699ff' opacity='.7'/><circle cx='70' cy='48' r='2' fill='%2366ffcc' opacity='.6'/><circle cx='55' cy='44' r='1.5' fill='%23ffcc44' opacity='.7'/></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23e63946'/><text y='.9em' font-size='72' x='50%25' text-anchor='middle' dominant-baseline='top' dy='8'>⚗️</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='bg' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%230f0f1a'/><stop offset='1' stop-color='%231a1a3e'/></linearGradient><linearGradient id='liq' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23ff6b6b'/><stop offset='1' stop-color='%23c8202e'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='url(%23bg)'/><rect x='30' y='8' width='40' height='6' rx='3' fill='%23e63946'/><path d='M36 40 L20 70 Q15 82 26 87 L74 87 Q85 82 80 70 L64 40 Z' fill='%23ffffff' opacity='.07' stroke='%2352d68a' stroke-width='2.5'/><path d='M33 58 Q36 55 40 58 L22 80 Q17 87 28 88 L72 88 Q83 87 78 80 Z' fill='url(%23liq)' opacity='.92'/><circle cx='38' cy='71' r='4' fill='%23ffffff' opacity='.25'/><circle cx='30' cy='52' r='3' fill='%2352d68a' opacity='.7'/><circle cx='70' cy='48' r='2' fill='%23a8e6cf' opacity='.6'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <script type="module">
 // ── FIREBASE ──────────────────────────────────────────
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
-  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-import { getDatabase, ref, set, get, onValue }
-  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCHR8cuC25TCDyZJNkV2R_04oTdUSdVAyk",
@@ -25,25 +22,15 @@ const firebaseConfig = {
   appId: "1:823312147686:web:196d3492a3a37d8a460727"
 };
 
-const app      = initializeApp(firebaseConfig);
-const auth     = getAuth(app);
-const db       = getDatabase(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
 const provider = new GoogleAuthProvider();
 
-window._fbSignIn  = () => signInWithPopup(auth, provider)
-  .catch(e => { document.getElementById('login-status').textContent = '❌ ' + e.message; });
+window._fbSignIn = () => signInWithPopup(auth, provider);
 window._fbSignOut = () => signOut(auth);
-
-// Salva todos os dados do usuário no Realtime Database
-window._fbSave = async (uid, data) => {
-  await set(ref(db, 'usuarios/' + uid), data);
-};
-
-// Carrega dados do usuário
-window._fbLoad = async (uid) => {
-  const snap = await get(ref(db, 'usuarios/' + uid));
-  return snap.exists() ? snap.val() : null;
-};
+window._fbSave = async (uid, data) => { await set(ref(db, 'usuarios/' + uid), data); };
+window._fbLoad = async (uid) => { const snap = await get(ref(db, 'usuarios/' + uid)); return snap.exists() ? snap.val() : null; };
 
 onAuthStateChanged(auth, user => {
   window._fbUser = user;
@@ -52,407 +39,95 @@ onAuthStateChanged(auth, user => {
 </script>
 <style>
 :root {
-  --ink:      #161616;
-  --ink2:     #5a5a6a;
-  --ink3:     #9898a8;
-  --paper:    #f8f7f4;
-  --paper2:   #efede8;
-  --paper3:   #e5e2db;
-  --line:     #dddad4;
-  --blue:     #2752e8;
-  --blue-bg:  #eef1fd;
-  --green:    #1a7a4a;
-  --green-bg: #e6f4ed;
-  --red:      #c8202e;
-  --red-bg:   #fdedef;
-  --amber:    #a06020;
-  --amber-bg: #fdf3e7;
-  --r:        10px;
-  --sh:       0 1px 4px rgba(0,0,0,.07), 0 4px 20px rgba(0,0,0,.06);
-  --sh2:      0 2px 8px rgba(0,0,0,.08), 0 8px 32px rgba(0,0,0,.1);
+  --ink: #161616; --ink2: #5a5a6a; --ink3: #9898a8;
+  --paper: #f8f7f4; --paper2: #efede8; --paper3: #e5e2db;
+  --line: #dddad4; --blue: #2752e8; --blue-bg: #eef1fd;
+  --green: #1a7a4a; --green-bg: #e6f4ed;
+  --red: #c8202e; --red-bg: #fdedef;
+  --amber: #a06020; --amber-bg: #fdf3e7;
+  --r: 10px; --sh: 0 1px 4px rgba(0,0,0,.07), 0 4px 20px rgba(0,0,0,.06);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden}
-body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);display:flex;flex-direction:column}
 
-/* ───── TOPBAR ───── */
+/* CORREÇÃO AQUI: Permitir scroll se o conteúdo for maior que a tela */
+html,body{height:100%; overflow: auto;} 
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);display:flex;flex-direction:column; min-height: 100vh;}
+
 .topbar{
   height:54px;background:var(--ink);color:#fff;display:flex;align-items:center;
   padding:0 20px;gap:16px;flex-shrink:0;z-index:100;
   box-shadow:0 2px 12px rgba(0,0,0,.25)
 }
 .tb-logo{display:flex;align-items:center;gap:10px}
-.tb-mark{
-  width:32px;height:32px;background:#e63946;border-radius:7px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:'DM Mono',monospace;font-weight:700;font-size:.95rem;color:#fff
-}
-.tb-name{font-weight:800;font-size:1rem;letter-spacing:-.3px}
+.tb-mark{width:32px;height:32px;background:#e63946;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-weight:700;color:#fff}
+.tb-name{font-weight:800;font-size:1rem}
 .tb-sep{width:1px;height:24px;background:rgba(255,255,255,.15)}
 .tb-nav{display:flex;gap:2px}
-.tb-btn{
-  background:transparent;border:none;color:rgba(255,255,255,.55);
-  padding:6px 14px;border-radius:7px;cursor:pointer;
-  font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:600;
-  transition:all .15s;display:flex;align-items:center;gap:6px
-}
+.tb-btn{background:transparent;border:none;color:rgba(255,255,255,.55);padding:6px 14px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:.82rem;font-weight:600;transition:all .15s;display:flex;align-items:center;gap:6px}
 .tb-btn:hover{background:rgba(255,255,255,.1);color:#fff}
 .tb-btn.on{background:#e63946;color:#fff}
-.tb-turma{
-  margin-left:auto;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
-  color:#fff;padding:5px 12px;border-radius:7px;font-family:'DM Sans',sans-serif;
-  font-size:.8rem;cursor:pointer;min-width:160px
-}
-.tb-turma option{background:var(--ink);color:#fff}
+.tb-turma{margin-left:auto;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#fff;padding:5px 12px;border-radius:7px;font-size:.8rem;cursor:pointer;min-width:160px}
 
-/* ───── LAYOUT ───── */
-.body{display:flex;flex:1;overflow:hidden}
+.body{display:flex;flex:1; overflow: hidden;} /* O container pai segura o overflow */
 
-/* ───── SIDEBAR ───── */
 .sidebar{
   width:270px;background:#fff;border-right:1px solid var(--line);
   display:flex;flex-direction:column;flex-shrink:0;overflow:hidden
 }
 .sb-sec{padding:14px;border-bottom:1px solid var(--line)}
-.sb-head{
-  display:flex;align-items:center;justify-content:space-between;
-  font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;
-  color:var(--ink3);margin-bottom:10px
-}
+.sb-head{display:flex;align-items:center;justify-content:space-between;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:1.4px;color:var(--ink3);margin-bottom:10px}
 .sb-scroll{overflow-y:auto;flex:1;padding:4px 0}
 
-/* ───── MAIN ───── */
-.main{flex:1;overflow-y:auto;background:var(--paper)}
-.page{display:none;padding:26px 28px;min-height:100%}
+/* CORREÇÃO AQUI: Garantir que a área principal role o conteúdo */
+.main{flex:1; overflow-y:auto; background:var(--paper); padding-bottom: 50px;} 
+.page{display:none;padding:26px 28px; min-height: fit-content;}
 .page.on{display:block}
 
-/* ───── BUTTONS ───── */
-.btn{
-  border:none;border-radius:8px;cursor:pointer;
-  font-family:'DM Sans',sans-serif;font-weight:700;font-size:.82rem;
-  padding:9px 16px;display:inline-flex;align-items:center;gap:7px;
-  transition:all .15s;letter-spacing:.1px
-}
+.btn{border:none;border-radius:8px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.82rem;padding:9px 16px;display:inline-flex;align-items:center;gap:7px;transition:all .15s}
 .btn-blue{background:var(--blue);color:#fff}
 .btn-blue:hover{background:#1e40c8;box-shadow:0 4px 12px rgba(39,82,232,.3)}
-.btn-red{background:#e63946;color:#fff}
-.btn-red:hover{background:#c8202e}
-.btn-green{background:var(--green);color:#fff}
-.btn-green:hover{background:#145c38}
 .btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink2)}
 .btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
-.btn-sm{padding:6px 12px;font-size:.76rem}
 .btn-xs{padding:4px 9px;font-size:.71rem}
-.btn-block{width:100%;justify-content:center}
 
-/* ───── FORMS ───── */
 .field{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
-.field label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--ink3)}
-input[type=text],input[type=number],select,textarea{
-  background:var(--paper);border:1.5px solid var(--line);border-radius:8px;
-  color:var(--ink);font-family:'DM Sans',sans-serif;font-size:.87rem;
-  padding:9px 12px;width:100%;transition:border-color .15s
-}
-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--blue)}
-input::placeholder,textarea::placeholder{color:var(--ink3)}
-textarea{resize:vertical}
+.field label{font-size:.68rem;font-weight:800;text-transform:uppercase;color:var(--ink3)}
+input[type=text],input[type=number],select,textarea{background:var(--paper);border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;width:100%;font-family:inherit}
 
-/* ───── CARD ───── */
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh)}
-.card+.card{margin-top:14px}
-.card-sm{padding:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--sh); margin-bottom: 20px;}
 
-/* ───── PROVA ITEM ───── */
-.prova-item{
-  padding:9px 12px;border-radius:8px;cursor:pointer;
-  font-size:.81rem;font-weight:600;transition:background .12s;
-  display:flex;align-items:center;gap:8px;margin-bottom:2px
-}
-.prova-item:hover{background:var(--paper2)}
-.prova-item.on{background:#eef1fd;border-left:3px solid var(--blue);padding-left:9px}
-.prova-item .pi-label{flex:1;min-width:0}
-.prova-item .pi-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.prova-item .pi-sub{font-size:.67rem;font-weight:500;color:var(--ink3);margin-top:1px}
-.prova-mat-badge{
-  padding:2px 7px;border-radius:20px;font-size:.64rem;font-weight:800;
-  flex-shrink:0
-}
-
-/* ───── STUDENT ROW ───── */
-.st-row{
-  display:flex;align-items:center;gap:9px;padding:8px 12px;
-  border-radius:8px;cursor:pointer;transition:background .1s;font-size:.82rem
-}
+.st-row{display:flex;align-items:center;gap:9px;padding:8px 12px;border-radius:8px;cursor:pointer;transition:background .1s;font-size:.82rem}
 .st-row:hover{background:var(--paper2)}
-.st-row.on{background:#eef1fd;border-left:3px solid var(--blue);padding-left:9px}
-.st-av{
-  width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.68rem;font-weight:800;flex-shrink:0
-}
-.st-score{
-  margin-left:auto;font-family:'DM Mono',monospace;font-size:.72rem;
-  padding:2px 8px;border-radius:20px
-}
+.st-row.on{background:#eef1fd;border-left:3px solid var(--blue)}
+.st-av{width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;flex-shrink:0}
+.st-score{margin-left:auto;font-family:'DM Mono',monospace;font-size:.72rem;padding:2px 8px;border-radius:20px}
 .s-g{background:var(--green-bg);color:var(--green)}
 .s-a{background:var(--amber-bg);color:var(--amber)}
 .s-r{background:var(--red-bg);color:var(--red)}
 .s-n{background:var(--paper2);color:var(--ink3)}
 
-/* ───── SCAN MODES ───── */
-.scan-tabs{display:flex;gap:4px;margin-bottom:16px;flex-wrap:wrap}
-.scan-tab{
-  padding:7px 13px;border-radius:8px;border:1.5px solid var(--line);
-  background:transparent;cursor:pointer;font-family:'DM Sans',sans-serif;
-  font-size:.78rem;font-weight:700;color:var(--ink2);transition:all .15s;
-  display:flex;align-items:center;gap:6px
-}
-.scan-tab:hover{border-color:var(--blue);color:var(--blue)}
-.scan-tab.on{background:var(--blue);border-color:var(--blue);color:#fff}
-
-.drop-zone{
-  border:2.5px dashed var(--line);border-radius:var(--r);
-  padding:36px 20px;text-align:center;cursor:pointer;
-  transition:all .2s;background:var(--paper);position:relative
-}
-.drop-zone:hover,.drop-zone.drag{border-color:var(--blue);background:var(--blue-bg)}
-.drop-zone h3{font-size:.95rem;font-weight:700;margin:10px 0 5px}
-.drop-zone p{font-size:.79rem;color:var(--ink3)}
-.dz-icon{font-size:2.6rem}
-
-/* Camera */
-#camera-stream{width:100%;max-height:300px;border-radius:var(--r);display:none;object-fit:cover}
-#canvas-hidden{display:none}
-
-/* Paste area */
-#paste-zone{
-  min-height:120px;border:2px dashed var(--line);border-radius:var(--r);
-  padding:16px;display:flex;align-items:center;justify-content:center;
-  cursor:text;transition:border-color .2s;outline:none;
-  font-size:.85rem;color:var(--ink3);text-align:center;
-  position:relative
-}
-#paste-zone:focus{border-color:var(--blue);background:var(--blue-bg)}
-#paste-zone img{max-width:100%;max-height:300px;border-radius:8px}
-
-/* Preview */
-#img-preview{width:100%;max-height:260px;object-fit:contain;border-radius:var(--r);display:none;margin-top:12px}
-
-/* Manual gabarito input */
-.manual-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
-.man-cell{display:flex;flex-direction:column;align-items:center;gap:4px}
-.man-cell .qn{font-size:.63rem;font-weight:800;color:var(--ink3)}
-.man-cell .opts{display:flex;flex-direction:column;gap:3px}
-.man-opt{
-  width:34px;height:22px;border-radius:5px;border:1.5px solid var(--line);
-  background:transparent;cursor:pointer;font-family:'DM Mono',monospace;
-  font-size:.72rem;font-weight:700;color:var(--ink2);transition:all .1s;
-  display:flex;align-items:center;justify-content:center
-}
-.man-opt:hover{border-color:var(--blue);color:var(--blue)}
-.man-opt.sel{background:var(--blue);border-color:var(--blue);color:#fff}
-
-/* ───── LOADER ───── */
-.loader{display:none;flex-direction:column;align-items:center;gap:12px;padding:28px}
-.loader.on{display:flex}
-.spin{
-  width:38px;height:38px;border:3px solid var(--line);
-  border-top-color:#e63946;border-radius:50%;
-  animation:spin .65s linear infinite
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.load-msg{font-size:.85rem;color:var(--ink2);font-weight:500}
-.load-step{font-family:'DM Mono',monospace;font-size:.73rem;color:#e63946;font-weight:700}
-
-/* ───── RESULTS ───── */
-.score-ring{
-  width:86px;height:86px;border-radius:50%;display:flex;
-  align-items:center;justify-content:center;flex-direction:column;flex-shrink:0
-}
-.sr-n{font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:700;line-height:1}
-.sr-d{font-size:.7rem;opacity:.65}
-.sr-g{background:var(--green-bg);color:var(--green);border:3px solid #5ec490}
-.sr-a{background:var(--amber-bg);color:var(--amber);border:3px solid #e9c46a}
-.sr-r{background:var(--red-bg);color:var(--red);border:3px solid #f4a0a5}
-
-.q-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(82px,1fr));gap:7px;margin:14px 0}
-.q-card{
-  border-radius:9px;padding:11px 7px;text-align:center;
-  border:2px solid transparent;transition:transform .12s;cursor:default
-}
-.q-card:hover{transform:scale(1.05)}
-.q-card.ok{background:var(--green-bg);border-color:#74c69d}
-.q-card.err{background:var(--red-bg);border-color:#ffaaaa}
-.q-card.blank{background:var(--paper2);border-color:var(--line)}
-.q-card .qn{font-size:.6rem;font-weight:800;color:var(--ink3);margin-bottom:3px}
-.q-card .qa{font-family:'DM Mono',monospace;font-size:1.05rem;font-weight:700}
-.q-card.ok .qa{color:var(--green)}
-.q-card.err .qa{color:var(--red)}
-.q-card .qg{font-size:.62rem;margin-top:2px;color:var(--ink3)}
-.q-card.err .qg{color:var(--green);font-weight:700}
-.q-card .qt{font-size:.58rem;color:var(--ink3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-
-/* ───── BIMESTRE ORGANIZER ───── */
-.bim-header{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 14px;background:var(--ink);color:#fff;
-  border-radius:9px;cursor:pointer;margin-bottom:4px;
-  font-weight:700;font-size:.85rem;transition:background .15s
-}
-.bim-header:hover{background:#2a2a3a}
-.bim-header .bh-arrow{margin-left:auto;transition:transform .2s;font-size:.8rem}
-.bim-header.open .bh-arrow{transform:rotate(90deg)}
-.bim-body{display:none;padding:4px 0 4px 12px}
-.bim-body.open{display:block}
-.mat-group{margin-bottom:4px}
-.mat-header{
-  display:flex;align-items:center;gap:8px;padding:7px 11px;
-  border-radius:8px;cursor:pointer;font-weight:700;font-size:.8rem;
-  background:var(--paper2);margin-bottom:2px;transition:background .12s
-}
-.mat-header:hover{background:var(--paper3)}
-.mat-header .mh-count{
-  margin-left:auto;font-family:'DM Mono',monospace;font-size:.68rem;
-  background:rgba(0,0,0,.08);padding:1px 7px;border-radius:20px
-}
-.mat-body{padding:2px 0 2px 10px}
-
-/* ───── ORGANIZER PAGE ───── */
-.org-bim{
-  background:#fff;border:1px solid var(--line);border-radius:var(--r);
-  margin-bottom:16px;overflow:hidden;box-shadow:var(--sh)
-}
-.org-bim-head{
-  padding:14px 18px;background:var(--ink);color:#fff;
-  display:flex;align-items:center;gap:12px;cursor:pointer
-}
-.org-bim-head h3{font-size:.95rem;font-weight:800}
-.org-bim-body{padding:16px 18px;display:none}
-.org-bim-body.open{display:block}
-.org-mat-group{margin-bottom:14px}
-.org-mat-title{
-  font-size:.72rem;font-weight:800;text-transform:uppercase;
-  letter-spacing:1.2px;color:var(--ink3);margin-bottom:8px;
-  display:flex;align-items:center;justify-content:space-between
-}
-.org-prova-row{
-  display:flex;align-items:center;gap:10px;padding:9px 12px;
-  border-radius:8px;background:var(--paper);border:1px solid var(--line);
-  margin-bottom:6px;font-size:.82rem;transition:box-shadow .15s
-}
-.org-prova-row:hover{box-shadow:var(--sh)}
-
-/* ───── BAR CHART ───── */
-.bar-row{
-  display:grid;grid-template-columns:28px 1fr 56px 38px;
-  align-items:center;gap:10px;padding:7px 10px;border-radius:7px
-}
-.bar-row:hover{background:var(--paper2)}
-.bq{font-family:'DM Mono',monospace;font-size:.7rem;font-weight:700;color:var(--ink3)}
-.bar-bg{background:var(--paper2);height:10px;border-radius:5px;overflow:hidden}
-.bar-fill{height:100%;border-radius:5px;transition:width .5s ease}
-.bf-g{background:linear-gradient(90deg,var(--green),#52b788)}
-.bf-r{background:linear-gradient(90deg,var(--red),#e76f74)}
-.bf-a{background:linear-gradient(90deg,var(--amber),#e9c46a)}
-.bpct{font-family:'DM Mono',monospace;font-size:.73rem;font-weight:700;text-align:right}
-.bgab{font-family:'DM Mono',monospace;font-size:.68rem;background:var(--paper2);padding:1px 6px;border-radius:4px;text-align:center;color:var(--ink3)}
-
-/* ───── TABS ───── */
 .tab-bar{display:flex;gap:4px;border-bottom:2px solid var(--line);margin-bottom:18px}
-.tab-btn{
-  padding:8px 15px;border:none;background:none;
-  font-family:'DM Sans',sans-serif;font-size:.81rem;font-weight:700;
-  color:var(--ink3);cursor:pointer;
-  border-bottom:2.5px solid transparent;margin-bottom:-2px;transition:all .15s
-}
-.tab-btn:hover{color:var(--ink)}
+.tab-btn{padding:8px 15px;border:none;background:none;font-weight:700;color:var(--ink3);cursor:pointer;border-bottom:2.5px solid transparent;transition:all .15s}
 .tab-btn.on{color:var(--blue);border-bottom-color:var(--blue)}
 .tab-pane{display:none}
 .tab-pane.on{display:block}
 
-/* ───── SECTION ───── */
-.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.sec-title{font-size:.98rem;font-weight:800;display:flex;align-items:center;gap:7px}
-.bdg{background:var(--ink);color:#fff;border-radius:20px;padding:2px 8px;font-size:.66rem;font-weight:800}
-.bdg-b{background:var(--blue)}
-.bdg-g{background:var(--green)}
-.bdg-r{background:#e63946}
+.score-ring{width:86px;height:86px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;flex-shrink:0}
+.sr-n{font-family:'DM Mono',monospace;font-size:1.5rem;font-weight:700}
+.sr-g{background:var(--green-bg);color:var(--green);border:3px solid #5ec490}
 
-/* ───── CHIPS ───── */
-.chip{
-  display:inline-flex;align-items:center;gap:4px;
-  border-radius:20px;padding:3px 10px;font-size:.73rem;font-weight:700
-}
-.chip-g{background:var(--green-bg);color:var(--green);border:1px solid #74c69d}
-.chip-r{background:var(--red-bg);color:var(--red);border:1px solid #f4a0a5}
-.chip-a{background:var(--amber-bg);color:var(--amber);border:1px solid #e9c46a}
-.chip-n{background:var(--paper2);color:var(--ink3);border:1px solid var(--line)}
-.chip-b{background:var(--blue-bg);color:var(--blue);border:1px solid #b3c4f8}
-
-/* ───── MODALS ───── */
-.overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;
-  display:none;align-items:center;justify-content:center;padding:16px
-}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:16px}
 .overlay.on{display:flex}
-.modal{
-  background:#fff;border-radius:14px;padding:26px;width:100%;
-  max-width:520px;max-height:92vh;overflow-y:auto;
-  box-shadow:var(--sh2);animation:mIn .2s ease
-}
-@keyframes mIn{from{opacity:0;transform:scale(.95) translateY(8px)}to{opacity:1;transform:none}}
-.modal-lg{max-width:680px}
-.modal-title{
-  font-size:1.08rem;font-weight:800;margin-bottom:18px;
-  display:flex;align-items:center;justify-content:space-between
-}
-.modal-x{
-  width:28px;height:28px;border-radius:7px;background:var(--paper2);
-  border:none;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center
-}
-hr{border:none;border-top:1px solid var(--line);margin:12px 0}
+.modal{background:#fff;border-radius:14px;padding:26px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.1)}
 
-/* ───── TOAST ───── */
-.toast-box{position:fixed;bottom:18px;right:18px;z-index:600;display:flex;flex-direction:column;gap:7px}
-.toast{
-  background:var(--ink);color:#fff;padding:11px 16px;border-radius:9px;
-  font-size:.82rem;font-weight:600;box-shadow:var(--sh2);
-  display:flex;align-items:center;gap:7px;
-  animation:tIn .25s ease
-}
-@keyframes tIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
-.toast.ok{background:var(--green)}
-.toast.err{background:var(--red)}
-.toast.info{background:var(--blue)}
-
-/* ───── EMPTY ───── */
-.empty{text-align:center;padding:40px 20px;color:var(--ink3);font-size:.87rem}
-.empty .ei{font-size:2.4rem;margin-bottom:10px;opacity:.35}
-
-/* ───── MATERIAL COLORS ───── */
-.mc-0{background:#dbeafe;color:#1e40af}.mc-1{background:#dcfce7;color:#166534}
-.mc-2{background:#fce7f3;color:#9d174d}.mc-3{background:#fef3c7;color:#92400e}
-.mc-4{background:#ede9fe;color:#5b21b6}.mc-5{background:#ffedd5;color:#9a3412}
-.mc-6{background:#e0f2fe;color:#075985}.mc-7{background:#f0fdf4;color:#14532d}
-
-::-webkit-scrollbar{width:5px}
-::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
 </style>
 </head>
 <body>
 
-<!-- Login gerenciado pelo index.html -->
-<div id="login-screen" style="display:none"><div id="login-status"></div></div>
-
-<!-- TOPBAR -->
 <div class="topbar">
-  <div class="tb-logo">
-    <div class="tb-mark">⚗️</div>
-    <div>
-      <div class="tb-name">ReagiNota</div><div style="font-size:.65rem;opacity:.5;font-weight:400">UE João Tavares da Costa</div>
-    </div>
-  </div>
+  <div class="tb-logo"><div class="tb-mark">⚗️</div><div class="tb-name">ReagiNota</div></div>
   <div class="tb-sep"></div>
   <div class="tb-nav">
     <button class="tb-btn on" onclick="nav('correcao')" id="n-correcao">📋 Correção</button>
@@ -460,1785 +135,129 @@ hr{border:none;border-top:1px solid var(--line);margin:12px 0}
     <button class="tb-btn" onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
     <button class="tb-btn" onclick="nav('relatorios')" id="n-relatorios">📊 Relatórios</button>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;margin-left:auto">
-    <div id="tb-user" style="display:flex;align-items:center;gap:8px">
-      <div id="tb-user-info" style="display:none;align-items:center;gap:8px">
-        <img id="tb-avatar" style="width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.3)" src="" alt="">
-        <span id="tb-user-name" style="font-size:.78rem;opacity:.8;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-        <button class="tb-btn" onclick="fbSignOut()" style="font-size:.73rem;padding:4px 10px;opacity:.7">Sair</button>
-      </div>
-<button id="tb-login-btn" style="display:none"></button>
-    </div>
-    <select class="tb-turma" id="turma-sel" onchange="trocarTurma()">
-      <option value="">— Selecionar Turma —</option>
-    </select>
-  </div>
+  <select class="tb-turma" id="turma-sel" onchange="trocarTurma()">
+    <option value="">— Selecionar Turma —</option>
+  </select>
 </div>
 
 <div class="body">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <!-- Provas por bimestre/matéria -->
-  <div class="sb-sec" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
-    <div class="sb-head">
-      Provas
-      <button class="btn btn-xs btn-blue" onclick="abrirModalNovaProva()">+ Nova</button>
+  <div class="sidebar">
+    <div class="sb-sec" style="flex:1;display:flex;flex-direction:column">
+      <div class="sb-head">Provas <button class="btn btn-xs btn-blue" onclick="abrirModalNovaProva()">+ Nova</button></div>
+      <div id="prova-tree" class="sb-scroll"></div>
     </div>
-    <div id="prova-tree" class="sb-scroll" style="flex:1"></div>
+    <div class="sb-sec" style="flex:1;display:flex;flex-direction:column">
+      <div class="sb-head">Alunos <button class="btn btn-xs btn-blue" onclick="openModal('m-lista')">📋 Lista</button></div>
+      <div id="aluno-list" class="sb-scroll"></div>
+    </div>
   </div>
-  <!-- Alunos -->
-  <div class="sb-sec" style="flex:1;overflow:hidden;display:flex;flex-direction:column">
-    <div class="sb-head">
-      Alunos
-      <div style="display:flex;gap:4px">
-        <button class="btn btn-xs btn-blue" onclick="openModal('m-aluno')">+ Novo</button>
-        <button class="btn btn-xs btn-ghost" onclick="openModal('m-lista')" title="Importar lista de nomes">📋 Lista</button>
-      </div>
-    </div>
-    <input type="text" placeholder="🔍 Buscar..." style="margin-bottom:7px;font-size:.77rem;padding:6px 10px" oninput="renderAlunos(this.value)">
-    <div id="aluno-list" class="sb-scroll" style="flex:1"></div>
-  </div>
-</div>
 
-<!-- MAIN -->
-<div class="main">
-
-<!-- PAGE: CORREÇÃO -->
-<div id="p-correcao" class="page on">
-  <div id="no-sel" class="empty" style="margin-top:80px">
-    <div class="ei">🎯</div>
-    <div style="font-weight:800;font-size:1rem;margin-bottom:7px">Selecione prova e aluno</div>
-    <p style="max-width:300px;margin:0 auto;line-height:1.6">Escolha uma turma, selecione uma prova no painel lateral, depois clique num aluno para iniciar a correção com IA.</p>
-  </div>
-  <div id="corr-content" style="display:none">
-    <div class="sec-head">
-      <div>
-        <div class="sec-title" id="corr-title">Correção</div>
-        <div style="font-size:.76rem;color:var(--ink3);margin-top:3px" id="corr-sub"></div>
-      </div>
-      <div style="display:flex;gap:7px">
-        <button class="btn btn-ghost btn-sm" onclick="verHistorico()">📂 Histórico</button>
-        <button class="btn btn-blue btn-sm" onclick="novaCorrecao()">🔄 Nova Correção</button>
+  <div class="main">
+    <div id="p-correcao" class="page on">
+      <div id="no-sel" style="text-align:center; padding:100px 0;">Selecione prova e aluno no menu lateral.</div>
+      <div id="corr-content" style="display:none">
+        <div class="card" id="result-wrap"></div>
       </div>
     </div>
 
-    <!-- Resultado atual -->
-    <div id="result-wrap" style="display:none">
-      <div class="card" style="margin-bottom:14px">
-        <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
-          <div id="score-ring-el"></div>
-          <div style="flex:1">
-            <div style="font-size:1.05rem;font-weight:800;margin-bottom:4px" id="res-name"></div>
-            <div style="font-size:.78rem;color:var(--ink3);margin-bottom:8px" id="res-meta"></div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap" id="res-chips"></div>
-          </div>
-          <div style="display:flex;gap:7px">
-            <button class="btn btn-ghost btn-sm" onclick="abrirEdicaoGabarito()">✏️ Editar</button>
-            <button class="btn btn-ghost btn-sm" onclick="deletarCorrecaoAtual()">🗑 Excluir</button>
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="sec-title" style="margin-bottom:10px">📝 Detalhamento por Questão</div>
-        <div class="q-grid" id="q-detail"></div>
-      </div>
+    <div id="p-turmas" class="page">
+      <h2>🏫 Minhas Turmas</h2>
+      <div id="turmas-wrap"></div>
     </div>
 
-    <!-- Painel de scan -->
-    <div id="scan-wrap">
-      <div class="card">
-        <div class="sec-title" style="margin-bottom:14px">📷 Modo de Entrada do Gabarito</div>
-
-        <!-- Modo tabs -->
-        <div class="scan-tabs">
-          <button class="scan-tab on" onclick="scanMode('upload')" id="sm-upload">📂 Upload</button>
-          <button class="scan-tab" onclick="scanMode('camera')" id="sm-camera">📷 Câmera</button>
-          <button class="scan-tab" onclick="scanMode('paste')" id="sm-paste">📋 Colar Imagem</button>
-          <button class="scan-tab" onclick="scanMode('manual')" id="sm-manual">✏️ Manual</button>
-        </div>
-
-        <!-- UPLOAD -->
-        <div id="mode-upload">
-          <div class="drop-zone" id="dz"
-            onclick="document.getElementById('f-input').click()"
-            ondragover="event.preventDefault();this.classList.add('drag')"
-            ondragleave="this.classList.remove('drag')"
-            ondrop="onDrop(event)">
-            <div class="dz-icon">📋</div>
-            <h3>Clique ou arraste a foto do gabarito</h3>
-            <p>JPG · PNG · WEBP · HEIC — foto nítida, boa iluminação, gabarito centralizado</p>
-          </div>
-          <input type="file" id="f-input" accept="image/*" style="display:none" onchange="onFile(event)">
-          <img id="img-preview" class="img-preview" style="width:100%;max-height:250px;object-fit:contain;border-radius:var(--r);display:none;margin-top:12px">
-        </div>
-
-        <!-- CÂMERA AO VIVO -->
-        <div id="mode-camera" style="display:none">
-          <div style="position:relative;border-radius:var(--r);overflow:hidden;background:#000;margin-bottom:10px">
-            <video id="cam-video" style="width:100%;max-height:300px;display:block;object-fit:cover" autoplay muted playsinline></video>
-            <div style="position:absolute;inset:0;border:3px solid rgba(39,82,232,.7);border-radius:var(--r);pointer-events:none"></div>
-          </div>
-          <canvas id="cam-canvas" style="display:none"></canvas>
-          <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-blue" id="btn-capture" onclick="capturarFoto()" style="display:none">📸 Capturar Foto</button>
-            <button class="btn btn-ghost btn-sm" id="btn-iniciar-cam" onclick="iniciarCamera()">▶ Iniciar Câmera</button>
-            <button class="btn btn-ghost btn-sm" id="btn-parar-cam" onclick="pararCamera()" style="display:none">⏹ Parar</button>
-          </div>
-          <img id="cam-preview" style="width:100%;max-height:200px;object-fit:contain;border-radius:var(--r);display:none;margin-top:10px">
-        </div>
-
-        <!-- COLAR IMAGEM -->
-        <div id="mode-paste" style="display:none">
-          <p style="font-size:.8rem;color:var(--ink3);margin-bottom:10px">
-            Copie uma imagem (Ctrl+C em qualquer lugar) e cole aqui com <strong>Ctrl+V</strong> ou clique no campo abaixo.
-          </p>
-          <div id="paste-zone" tabindex="0" contenteditable="false"
-            style="min-height:130px;border:2px dashed var(--line);border-radius:var(--r);padding:16px;display:flex;align-items:center;justify-content:center;cursor:text;font-size:.85rem;color:var(--ink3);text-align:center;outline:none"
-            onpaste="onPaste(event)" onclick="this.focus()" onfocus="this.style.borderColor='var(--blue)'">
-            📋 Clique aqui e cole a imagem (Ctrl+V)
-          </div>
-          <img id="paste-preview" style="width:100%;max-height:250px;object-fit:contain;border-radius:var(--r);display:none;margin-top:10px">
-        </div>
-
-        <!-- MANUAL BOLINHAS -->
-        <div id="mode-manual" style="display:none">
-          <p style="font-size:.8rem;color:var(--ink3);margin-bottom:12px">
-            Clique nas alternativas corretas para cada questão. Simula o gabarito de bolinhas — alternativas detectadas automaticamente.
-          </p>
-          <div id="manual-grid" class="manual-grid"></div>
-          <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-green" onclick="corrigirManual()">✅ Corrigir</button>
-            <button class="btn btn-ghost btn-sm" onclick="limparManual()">🗑 Limpar</button>
-            <div style="flex:1;display:flex;align-items:center;gap:8px">
-              <span style="font-size:.75rem;color:var(--ink3)">ou digitar:</span>
-              <input type="text" id="text-resp" placeholder="ABCD..." style="flex:1;font-family:'DM Mono',monospace" oninput="this.value=this.value.toUpperCase()">
-              <button class="btn btn-blue btn-sm" onclick="corrigirTexto()">OK</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- LOADER -->
-        <div class="loader" id="ai-load">
-          <div class="spin"></div>
-          <div class="load-msg">Analisando gabarito com IA...</div>
-          <div class="load-step" id="load-step">🔍 Detectando bolinhas preenchidas</div>
-        </div>
-
-        <!-- AÇÃO após imagem carregada -->
-        <div id="img-action" style="display:none;margin-top:12px">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <button class="btn btn-green btn-block" onclick="enviarParaIA()">🤖 Analisar com IA</button>
-            <button class="btn btn-blue btn-block" onclick="abrirRevisaoVisual()">👁 Corrigir vendo a imagem</button>
-          </div>
-          <div style="font-size:.73rem;color:var(--ink3);text-align:center;margin-top:6px">
-            💡 Se a IA errar, use <strong>Corrigir vendo a imagem</strong> para marcar manualmente com a foto à vista
-          </div>
-        </div>
+    <div id="p-relatorios" class="page">
+      <div class="tab-bar">
+        <button class="tab-btn on" onclick="relTab('geral',this)">Visão Geral</button>
+        <button class="tab-btn" onclick="relTab('questao',this)">Por Questão</button>
       </div>
+      <div id="tp-geral" class="tab-pane on"></div>
+      <div id="tp-questao" class="tab-pane"></div>
     </div>
   </div>
 </div>
 
-<!-- PAGE: TURMAS -->
-<div id="p-turmas" class="page">
-  <div class="sec-head">
-    <div class="sec-title">🏫 Turmas</div>
-    <button class="btn btn-blue" onclick="openModal('m-turma')">+ Nova Turma</button>
-  </div>
-  <div id="turmas-wrap"></div>
-</div>
-
-<!-- PAGE: ORGANIZAR -->
-<div id="p-organizar" class="page">
-  <div class="sec-head">
-    <div class="sec-title">📂 Organização por Bimestre · Matéria</div>
-    <button class="btn btn-blue btn-sm" onclick="abrirModalNovaProva()">+ Nova Avaliação</button>
-  </div>
-  <div id="org-wrap"></div>
-</div>
-
-<!-- PAGE: RELATÓRIOS -->
-<div id="p-relatorios" class="page">
-  <div class="tab-bar">
-    <button class="tab-btn on" onclick="relTab('geral',this)">Visão Geral</button>
-    <button class="tab-btn" onclick="relTab('questao',this)">Por Questão</button>
-    <button class="tab-btn" onclick="relTab('evolucao',this)">Evolução</button>
-  </div>
-  <div id="tp-geral" class="tab-pane on"></div>
-  <div id="tp-questao" class="tab-pane"></div>
-  <div id="tp-evolucao" class="tab-pane"></div>
-</div>
-
-</div><!-- /main -->
-</div><!-- /body -->
-
-<!-- ════ MODALS ════ -->
-
-<!-- Turma -->
+<!-- MODAL TURMA -->
 <div class="overlay" id="m-turma">
   <div class="modal">
-    <div class="modal-title">Nova Turma <button class="modal-x" onclick="closeModal('m-turma')">✕</button></div>
-    <div class="field"><label>Nome da Turma</label><input type="text" id="t-nome" placeholder="Ex: 8º Ano A"></div>
-    <div class="field"><label>Disciplina / Professor</label><input type="text" id="t-disc" placeholder="Ex: Matemática"></div>
-    <div class="field"><label>Ano Letivo</label><input type="number" id="t-ano" value="2025"></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
-      <button class="btn btn-ghost" onclick="closeModal('m-turma')">Cancelar</button>
-      <button class="btn btn-blue" onclick="criarTurma()">Criar</button>
-    </div>
+    <h3>Nova Turma</h3>
+    <div class="field"><label>Nome</label><input type="text" id="t-nome"></div>
+    <button class="btn btn-blue" onclick="criarTurma()">Criar</button>
   </div>
 </div>
-
-<!-- Prova -->
-<div class="overlay" id="m-prova">
-  <div class="modal">
-    <div class="modal-title" id="m-prova-title">Nova Avaliação <button class="modal-x" onclick="closeModal('m-prova')">✕</button></div>
-    <input type="hidden" id="p-edit-id" value="">
-    <div class="field"><label>Nome</label><input type="text" id="p-nome" placeholder="Ex: Prova 1, Simulado, Mini-teste..."></div>
-    <div style="display:flex;gap:10px">
-      <div class="field" style="flex:1">
-        <label>Bimestre</label>
-        <select id="p-bim">
-          <option value="1">1º Bimestre</option><option value="2">2º Bimestre</option>
-          <option value="3">3º Bimestre</option><option value="4">4º Bimestre</option>
-        </select>
-      </div>
-      <div class="field" style="flex:1">
-        <label>Matéria</label>
-        <input type="text" id="p-mat" placeholder="Ex: Matemática" list="mat-list">
-        <datalist id="mat-list"></datalist>
-      </div>
-    </div>
-    <div style="display:flex;gap:10px">
-      <div class="field" style="flex:1">
-        <label>Nº de Questões</label>
-        <input type="number" id="p-nq" value="10" min="1" max="60" oninput="previewGab()">
-      </div>
-      <div class="field" style="flex:1">
-        <label>Peso / Nota máx.</label>
-        <input type="number" id="p-peso" value="10" min="1" step="0.5">
-      </div>
-    </div>
-    <div class="field">
-      <label>Gabarito Mestre (letras sem espaço)</label>
-      <input type="text" id="p-gab" placeholder="Ex: ABCDEABCDE" oninput="this.value=this.value.toUpperCase();previewGab()">
-      <div id="gab-preview" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px"></div>
-    </div>
-    <div class="field">
-      <label>Temas por Questão (vírgula — opcional)</label>
-      <input type="text" id="p-temas" placeholder="Álgebra, Frações, Geometria...">
-    </div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
-      <button class="btn btn-ghost" onclick="closeModal('m-prova')">Cancelar</button>
-      <button class="btn btn-blue" id="btn-salvar-prova" onclick="salvarProva()">Criar Avaliação</button>
-    </div>
-  </div>
-</div>
-
-<!-- Aluno -->
-<div class="overlay" id="m-aluno">
-  <div class="modal">
-    <div class="modal-title">Adicionar Aluno <button class="modal-x" onclick="closeModal('m-aluno')">✕</button></div>
-    <div class="field"><label>Nome Completo</label><input type="text" id="a-nome" placeholder="Nome do Aluno"></div>
-    <div class="field"><label>Número / Chamada (opcional)</label><input type="text" id="a-num" placeholder="01"></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
-      <button class="btn btn-ghost" onclick="closeModal('m-aluno')">Cancelar</button>
-      <button class="btn btn-blue" onclick="criarAluno()">Adicionar</button>
-    </div>
-  </div>
-</div>
-
-<!-- Ver Prova -->
-<div class="overlay" id="m-edit-gabarito">
-  <div class="modal" style="max-width:620px">
-    <div class="modal-title">✏️ Editar Gabarito do Aluno <button class="modal-x" onclick="closeModal('m-edit-gabarito')">✕</button></div>
-    <p style="font-size:.79rem;color:var(--ink3);margin-bottom:14px;line-height:1.6">
-      Clique nas alternativas para alterar as respostas. A correção será recalculada automaticamente.
-    </p>
-    <div id="edit-gab-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:7px;margin-bottom:18px"></div>
-    <div style="display:flex;gap:8px;justify-content:flex-end">
-      <button class="btn btn-ghost" onclick="closeModal('m-edit-gabarito')">Cancelar</button>
-      <button class="btn btn-blue" onclick="salvarEdicaoGabarito()">💾 Salvar</button>
-    </div>
-  </div>
-</div>
-
-
-<div class="overlay" id="m-ver-prova">
-  <div class="modal" style="max-width:600px">
-    <div class="modal-title" id="ver-prova-title">Detalhes da Avaliação <button class="modal-x" onclick="closeModal('m-ver-prova')">✕</button></div>
-    <div id="ver-prova-body"></div>
-  </div>
-</div>
-
-<!-- Lista em lote -->
-<div class="overlay" id="m-lista">
-  <div class="modal" style="max-width:560px">
-    <div class="modal-title">📋 Importar Lista de Alunos <button class="modal-x" onclick="closeModal('m-lista')">✕</button></div>
-    <p style="font-size:.8rem;color:var(--ink3);margin-bottom:14px;line-height:1.6">
-      Cole abaixo a lista com um nome por linha. Nomes já cadastrados nesta turma serão <strong>ignorados automaticamente</strong> — seus dados ficam intactos.
-    </p>
-    <div class="field">
-      <label>Lista de Nomes (um por linha)</label>
-      <textarea id="lista-nomes" rows="10" placeholder="Ana Silva&#10;Bruno Souza&#10;Carlos Oliveira&#10;..."></textarea>
-    </div>
-    <div id="lista-preview" style="display:none;margin-bottom:12px"></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center;margin-top:4px">
-      <button class="btn btn-ghost btn-sm" onclick="previewLista()">👁 Pré-visualizar</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-ghost" onclick="closeModal('m-lista')">Cancelar</button>
-        <button class="btn btn-blue" onclick="importarLista()">✅ Importar</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Revisão Visual -->
-<div class="overlay" id="m-revisao">
-  <div class="modal" style="max-width:760px;padding:20px">
-    <div class="modal-title" style="margin-bottom:12px">
-      👁 Corrigir com Imagem
-      <button class="modal-x" onclick="closeModal('m-revisao')">✕</button>
-    </div>
-    <!-- Imagem do gabarito -->
-    <img id="revisao-img" style="width:100%;max-height:220px;object-fit:contain;border-radius:8px;background:#f0f0f0;margin-bottom:14px;border:1px solid var(--line)">
-    <p style="font-size:.76rem;color:var(--ink3);margin-bottom:10px">Olhe a imagem acima e clique na alternativa marcada em cada questão:</p>
-    <!-- Grid de questões -->
-    <div id="revisao-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:6px;margin-bottom:16px;max-height:280px;overflow-y:auto"></div>
-    <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;flex-wrap:wrap">
-      <button class="btn btn-ghost btn-sm" onclick="limparRevisao()">🗑 Limpar tudo</button>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-ghost" onclick="closeModal('m-revisao')">Cancelar</button>
-        <button class="btn btn-green" onclick="salvarRevisao()">✅ Salvar Correção</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Backup / Sincronizar -->
-<div class="overlay" id="m-backup">
-  <div class="modal" style="max-width:480px">
-    <div class="modal-title">☁️ Sincronizar entre Dispositivos <button class="modal-x" onclick="closeModal('m-backup')">✕</button></div>
-
-    <p style="font-size:.8rem;color:var(--ink3);margin-bottom:18px;line-height:1.6">
-      Para usar o ReagiNota no <strong>notebook e no tablet</strong>: exporte o backup num dispositivo e importe no outro. Todos os dados são preservados.
-    </p>
-
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-      <!-- Exportar -->
-      <div style="background:var(--green-bg);border:1.5px solid #74c69d;border-radius:var(--r);padding:16px;text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:6px">📤</div>
-        <div style="font-weight:800;font-size:.9rem;margin-bottom:4px">Exportar</div>
-        <div style="font-size:.75rem;color:var(--ink3);margin-bottom:12px;line-height:1.5">Salva todos os dados em um arquivo <strong>.json</strong> no seu dispositivo</div>
-        <button class="btn btn-green btn-block btn-sm" onclick="exportarBackup()">⬇ Baixar Backup</button>
-      </div>
-      <!-- Importar -->
-      <div style="background:var(--blue-bg);border:1.5px solid #b3c4f8;border-radius:var(--r);padding:16px;text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:6px">📥</div>
-        <div style="font-weight:800;font-size:.9rem;margin-bottom:4px">Importar</div>
-        <div style="font-size:.75rem;color:var(--ink3);margin-bottom:12px;line-height:1.5">Carrega um backup <strong>.json</strong> e mescla com os dados atuais</div>
-        <button class="btn btn-blue btn-block btn-sm" onclick="document.getElementById('backup-input').click()">⬆ Carregar Backup</button>
-        <input type="file" id="backup-input" accept=".json" style="display:none" onchange="importarBackup(event)">
-      </div>
-    </div>
-
-    <div id="backup-stats" style="background:var(--paper2);border-radius:8px;padding:12px;font-size:.78rem;margin-bottom:16px">
-      <div style="font-weight:800;margin-bottom:6px;font-size:.72rem;text-transform:uppercase;letter-spacing:1px;color:var(--ink3)">Dados atuais neste dispositivo</div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap" id="backup-stats-body"></div>
-    </div>
-
-    <div style="background:var(--amber-bg);border:1px solid #e9c46a;border-radius:8px;padding:10px 12px;font-size:.76rem;color:var(--amber);line-height:1.6">
-      ⚠️ <strong>Como sincronizar:</strong><br>
-      1. No dispositivo A → clique <em>Baixar Backup</em><br>
-      2. Transfira o arquivo para o dispositivo B (e-mail, WhatsApp, Drive…)<br>
-      3. No dispositivo B → clique <em>Carregar Backup</em><br>
-      4. Os dados são <strong>mesclados</strong> — nada é apagado
-    </div>
-  </div>
-</div>
-
-<!-- Confirmação -->
-<div class="overlay" id="m-confirm">
-  <div class="modal" style="max-width:380px;text-align:center">
-    <div style="font-size:2rem;margin-bottom:10px" id="confirm-icon">⚠️</div>
-    <div style="font-size:1rem;font-weight:800;margin-bottom:8px" id="confirm-msg">Confirmar</div>
-    <div style="font-size:.82rem;color:var(--ink3);margin-bottom:20px" id="confirm-sub"></div>
-    <div style="display:flex;gap:10px;justify-content:center">
-      <button class="btn btn-ghost" onclick="closeModal('m-confirm')">Cancelar</button>
-      <button class="btn btn-red" id="confirm-ok">Excluir</button>
-    </div>
-  </div>
-</div>
-
-<!-- Histórico -->
-<div class="overlay" id="m-hist">
-  <div class="modal modal-lg">
-    <div class="modal-title">📂 Histórico de Correções <button class="modal-x" onclick="closeModal('m-hist')">✕</button></div>
-    <div id="hist-body"></div>
-  </div>
-</div>
-
-<div class="toast-box" id="toast-box"></div>
 
 <script>
-// ════════════════════════════════════════════
-//  STATE
-// ════════════════════════════════════════════
 const SK = 'gabia_v2';
-let S = {
-  turmas:[], provas:[], alunos:[], correcoes:[],
-  turmaId:null, provaId:null, alunoId:null
-};
+let S = { turmas:[], provas:[], alunos:[], correcoes:[], turmaId:null, provaId:null, alunoId:null };
 
-// Salva localmente E no Firebase (se logado)
-function save(){
-  localStorage.setItem(SK, JSON.stringify(S));
-  if(window._fbUser){
-    // Salva apenas os dados (não IDs de seleção de tela)
-    const dados = { turmas:S.turmas, provas:S.provas, alunos:S.alunos, correcoes:S.correcoes };
-    window._fbSave(window._fbUser.uid, dados)
-      .catch(e => console.warn('Firebase save error:', e));
-  }
-}
-
-function load(){
-  try{ const d=localStorage.getItem(SK); if(d) S={...S,...JSON.parse(d)} }catch(e){}
-}
+function save(){ localStorage.setItem(SK, JSON.stringify(S)); }
+function load(){ const d=localStorage.getItem(SK); if(d) S=JSON.parse(d); }
 load();
 
-// Carrega dados do Firebase e mescla com localStorage
-async function fbLoad(user){
-  try{
-    document.getElementById('login-status').textContent = '⏳ Carregando seus dados...';
-    const dados = await window._fbLoad(user.uid);
-    if(dados){
-      // Firebase tem prioridade — substitui dados locais
-      S.turmas    = dados.turmas    || [];
-      S.provas    = dados.provas    || [];
-      S.alunos    = dados.alunos    || [];
-      S.correcoes = dados.correcoes || [];
-      // Preserva seleção de tela do localStorage
-      localStorage.setItem(SK, JSON.stringify(S));
-    } else {
-      // Primeira vez: envia dados locais para o Firebase
-      const temDados = S.turmas.length||S.alunos.length||S.provas.length;
-      if(temDados){
-        await window._fbSave(user.uid,{turmas:S.turmas,provas:S.provas,alunos:S.alunos,correcoes:S.correcoes});
-        toast('Dados locais sincronizados com o Firebase!','ok');
-      }
-    }
-  } catch(e){ console.warn('fbLoad error:', e); }
-}
-
-// Callback de autenticação
-window._onAuthChange = async function(user){
-  // Login já feito via index.html — apenas carrega os dados
-  const tbUserInfo = document.getElementById('tb-user-info');
-  if(user){
-    tbUserInfo.style.display = 'flex';
-    document.getElementById('tb-avatar').src = user.photoURL || '';
-    document.getElementById('tb-user-name').textContent = user.displayName || user.email;
-    await fbLoad(user);
-    renderTurmaSelect(); renderProvaTree(); renderAlunos();
-    if(S.turmaId&&S.alunoId&&S.provaId) abrirCorrecao();
-  }
-};
-function fbSignIn(){ window._fbSignIn && window._fbSignIn(); }
-function fbSignOut(){ window._fbSignOut && window._fbSignOut(); }
-
-// ════════════════════════════════════════════
-//  NAVIGATION
-// ════════════════════════════════════════════
 function nav(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
   document.querySelectorAll('.tb-btn').forEach(x=>x.classList.remove('on'));
   document.getElementById('p-'+p).classList.add('on');
   document.getElementById('n-'+p).classList.add('on');
-  if(p==='relatorios') renderRel('geral');
-  if(p==='turmas') renderTurmasPage();
-  if(p==='organizar') renderOrg();
+  if(p==='relatorios') renderRelGeral();
 }
 
-// ════════════════════════════════════════════
-//  TURMA SELECT
-// ════════════════════════════════════════════
 function renderTurmaSelect(){
   const el=document.getElementById('turma-sel');
   el.innerHTML='<option value="">— Selecionar Turma —</option>';
   S.turmas.forEach(t=>{
-    const o=document.createElement('option');
-    o.value=t.id; o.textContent=`${t.nome} (${t.disc||t.ano})`;
+    const o=document.createElement('option'); o.value=t.id; o.textContent=t.nome;
     if(t.id===S.turmaId) o.selected=true;
     el.appendChild(o);
   });
-  // datalist matérias
-  const dl=document.getElementById('mat-list');
-  const mats=[...new Set(S.provas.filter(p=>p.turmaId===S.turmaId).map(p=>p.mat).filter(Boolean))];
-  dl.innerHTML=mats.map(m=>`<option value="${m}">`).join('');
-}
-function trocarTurma(){
-  S.turmaId=document.getElementById('turma-sel').value||null;
-  S.provaId=null; S.alunoId=null; save();
-  renderProvaTree(); renderAlunos(); showNoSel();
 }
 
-// ════════════════════════════════════════════
-//  PROVA TREE (sidebar)
-// ════════════════════════════════════════════
-const MAT_COLORS=['mc-0','mc-1','mc-2','mc-3','mc-4','mc-5','mc-6','mc-7'];
-let matColorMap={};
-function matColor(mat){
-  if(!matColorMap[mat]){
-    const keys=Object.keys(matColorMap);
-    matColorMap[mat]=MAT_COLORS[keys.length % MAT_COLORS.length];
-  }
-  return matColorMap[mat];
+function trocarTurma(){
+  S.turmaId=document.getElementById('turma-sel').value;
+  renderAlunos(); renderProvaTree(); save();
+}
+
+function renderAlunos(){
+  const el=document.getElementById('aluno-list');
+  const list = S.alunos.filter(a=>a.turmaId===S.turmaId);
+  el.innerHTML = list.map(a=>`<div class="st-row" onclick="S.alunoId='${a.id}';abrirCorrecao();">${a.nome}</div>`).join('');
 }
 
 function renderProvaTree(){
   const el=document.getElementById('prova-tree');
-  const provas=S.provas.filter(p=>p.turmaId===S.turmaId);
-  if(!provas.length){el.innerHTML='<div style="font-size:.77rem;color:var(--ink3);padding:4px 8px">Nenhuma avaliação.</div>';return;}
-
-  // Group: bimestre → mat → provas
-  const tree={};
-  provas.forEach(p=>{
-    const b=p.bim||'1'; const m=p.mat||'Geral';
-    if(!tree[b]) tree[b]={};
-    if(!tree[b][m]) tree[b][m]=[];
-    tree[b][m].push(p);
-  });
-
-  let html='';
-  Object.keys(tree).sort().forEach(b=>{
-    const bOpen=true;
-    html+=`<div class="bim-header ${bOpen?'open':''}" onclick="toggleBim(this)">
-      <span>📅 ${b}º Bimestre</span>
-      <span class="bh-arrow">▶</span>
-    </div>
-    <div class="bim-body ${bOpen?'open':''}">`;
-    Object.keys(tree[b]).sort().forEach(m=>{
-      html+=`<div class="mat-group"><div class="mat-header">
-        <span class="prova-mat-badge ${matColor(m)}">${m[0]}</span>
-        <span style="font-size:.78rem">${m}</span>
-        <span class="mh-count">${tree[b][m].length}</span>
-      </div><div class="mat-body">`;
-      tree[b][m].forEach(p=>{
-        const cs=S.correcoes.filter(c=>c.provaId===p.id);
-        html+=`<div class="prova-item ${S.provaId===p.id?'on':''}" onclick="selProva('${p.id}')">
-          <div class="pi-label">
-            <div class="pi-name">${p.nome}</div>
-            <div class="pi-sub">${p.nq}Q · ${cs.length} corrigido${cs.length!==1?'s':''}</div>
-          </div>
-          <div style="display:flex;gap:1px;flex-shrink:0">
-            <button onclick="event.stopPropagation();verProva('${p.id}')" style="background:none;border:none;cursor:pointer;color:var(--ink3);font-size:.75rem;padding:2px 5px" title="Ver / Editar">✏️</button>
-            <button onclick="event.stopPropagation();delProva('${p.id}')" style="background:none;border:none;cursor:pointer;color:var(--ink3);font-size:.75rem;padding:2px 5px" title="Excluir">✕</button>
-          </div>
-        </div>`;
-      });
-      html+='</div></div>';
-    });
-    html+='</div>';
-  });
-  el.innerHTML=html;
-}
-
-function toggleBim(el){
-  el.classList.toggle('open');
-  el.nextElementSibling.classList.toggle('open');
-}
-
-function selProva(id){
-  S.provaId=id; S.alunoId=null; save();
-  renderProvaTree(); showNoSel();
-}
-
-// ════════════════════════════════════════════
-//  ALUNOS SIDEBAR
-// ════════════════════════════════════════════
-function renderAlunos(q=''){
-  const el=document.getElementById('aluno-list');
-  const list=S.alunos
-    .filter(a=>a.turmaId===S.turmaId)
-    .filter(a=>!q||a.nome.toLowerCase().includes(q.toLowerCase()))
-    .sort((a,b)=>a.nome.localeCompare(b.nome,'pt-BR',{sensitivity:'base'}));
-  if(!list.length){el.innerHTML='<div class="empty" style="padding:16px"><div class="ei" style="font-size:1.4rem">👤</div>Nenhum aluno.</div>';return;}
-  el.innerHTML=list.map(a=>{
-    const lc=ultCorrecao(a.id);
-    const sc=!lc?'s-n':lc.pct>=70?'s-g':lc.pct>=50?'s-a':'s-r';
-    return `<div class="st-row ${S.alunoId===a.id?'on':''}" onclick="selAluno('${a.id}')">
-      <div class="st-av">${ini(a.nome)}</div>
-      <div style="min-width:0;flex:1">
-        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${a.nome}</div>
-        ${a.num?`<div style="font-size:.66rem;color:var(--ink3)">Nº ${a.num}</div>`:''}
-      </div>
-      <span class="st-score ${sc}">${lc?lc.pct+'%':'—'}</span>
-    </div>`;
-  }).join('');
-}
-
-function selAluno(id){
-  S.alunoId=id; save();
-  renderAlunos();
-  abrirCorrecao();
-}
-
-// ════════════════════════════════════════════
-//  CRUD
-// ════════════════════════════════════════════
-function criarTurma(){
-  const nome=v('t-nome'); if(!nome){toast('Digite o nome!','err');return;}
-  const t={id:uid(),nome,disc:v('t-disc'),ano:v('t-ano')};
-  S.turmas.push(t); S.turmaId=t.id; save();
-  closeModal('m-turma'); renderTurmaSelect(); renderProvaTree(); renderAlunos(); renderTurmasPage();
-  document.getElementById('t-nome').value=''; document.getElementById('t-disc').value='';
-  toast(`Turma "${nome}" criada!`,'ok');
-}
-
-function previewGab(){
-  const gab=v('p-gab'); const nq=parseInt(v('p-nq'))||0;
-  const el=document.getElementById('gab-preview');
-  if(!gab){el.innerHTML='';return;}
-  el.innerHTML=gab.slice(0,Math.max(nq,gab.length)).split('').map((c,i)=>
-    `<span style="font-family:'DM Mono',monospace;font-size:.72rem;background:var(--blue-bg);color:var(--blue);padding:2px 6px;border-radius:4px;font-weight:700">Q${i+1}:${c}</span>`
-  ).join('');
-}
-
-function abrirModalNovaProva(){
-  // reset to "create" mode
-  document.getElementById('p-edit-id').value='';
-  document.getElementById('m-prova-title').innerHTML='Nova Avaliação <button class="modal-x" onclick="closeModal(\'m-prova\')">✕</button>';
-  document.getElementById('btn-salvar-prova').textContent='Criar Avaliação';
-  document.getElementById('p-nome').value='';
-  document.getElementById('p-bim').value='1';
-  document.getElementById('p-mat').value='';
-  document.getElementById('p-nq').value='10';
-  document.getElementById('p-peso').value='10';
-  document.getElementById('p-gab').value='';
-  document.getElementById('p-temas').value='';
-  document.getElementById('gab-preview').innerHTML='';
-  openModal('m-prova');
-}
-
-function salvarProva(){
-  if(!S.turmaId){toast('Selecione uma turma!','err');return;}
-  const nome=v('p-nome'); const gab=v('p-gab');
-  if(!nome){toast('Digite o nome!','err');return;}
-  if(!gab){toast('Digite o gabarito!','err');return;}
-  const nq=Math.max(parseInt(v('p-nq'))||10,gab.length);
-  const editId=document.getElementById('p-edit-id').value;
-
-  if(editId){
-    // EDIT — preserve id, turmaId, criado; update only changed fields
-    const idx=S.provas.findIndex(p=>p.id===editId);
-    if(idx===-1){toast('Prova não encontrada!','err');return;}
-    S.provas[idx]={
-      ...S.provas[idx],
-      nome, bim:v('p-bim'), mat:v('p-mat')||'Geral',
-      nq, gabarito:gab, peso:parseFloat(v('p-peso'))||10,
-      temas:v('p-temas').split(',').map(s=>s.trim()).filter(Boolean),
-      editado:new Date().toISOString()
-    };
-    save(); closeModal('m-prova'); renderProvaTree(); renderTurmaSelect();
-    document.getElementById('gab-preview').innerHTML='';
-    toast('Avaliação atualizada!','ok');
-  } else {
-    // CREATE
-    const p={
-      id:uid(),turmaId:S.turmaId,nome,bim:v('p-bim'),mat:v('p-mat')||'Geral',
-      nq,gabarito:gab,peso:parseFloat(v('p-peso'))||10,
-      temas:v('p-temas').split(',').map(s=>s.trim()).filter(Boolean),
-      criado:new Date().toISOString()
-    };
-    S.provas.push(p); S.provaId=p.id; save();
-    closeModal('m-prova'); renderProvaTree(); renderTurmaSelect();
-    document.getElementById('p-nome').value=''; document.getElementById('p-gab').value='';
-    document.getElementById('p-temas').value=''; document.getElementById('gab-preview').innerHTML='';
-    toast('Avaliação criada!','ok');
-  }
-}
-
-function verProva(id){
-  const p=S.provas.find(x=>x.id===id);
-  if(!p) return;
-  const cs=S.correcoes.filter(c=>c.provaId===id);
-  const gab=p.gabarito.split('');
-  document.getElementById('ver-prova-title').innerHTML=
-    `📋 ${p.nome} <button class="modal-x" onclick="closeModal('m-ver-prova')">✕</button>`;
-  document.getElementById('ver-prova-body').innerHTML=`
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-      <span class="chip chip-b">${p.bim}º Bimestre</span>
-      <span class="chip chip-n">${p.mat||'Geral'}</span>
-      <span class="chip chip-n">${p.nq} questões</span>
-      <span class="chip chip-n">Peso ${p.peso}</span>
-      <span class="chip chip-g">✅ ${cs.length} corrigido${cs.length!==1?'s':''}</span>
-      ${p.criado?`<span class="chip chip-n">Criado ${new Date(p.criado).toLocaleDateString('pt-BR')}</span>`:''}
-      ${p.editado?`<span class="chip chip-a">Editado ${new Date(p.editado).toLocaleDateString('pt-BR')}</span>`:''}
-    </div>
-    <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);margin-bottom:8px">Gabarito Mestre</div>
-    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px">
-      ${gab.map((g,i)=>`
-        <div style="text-align:center;background:var(--blue-bg);border:1px solid #b3c4f8;border-radius:7px;padding:7px 5px;min-width:44px">
-          <div style="font-size:.6rem;font-weight:700;color:var(--ink3)">Q${i+1}</div>
-          <div style="font-family:'DM Mono',monospace;font-size:1rem;font-weight:800;color:var(--blue)">${g}</div>
-          ${p.temas&&p.temas[i]?`<div style="font-size:.55rem;color:var(--ink3);margin-top:2px;max-width:44px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${p.temas[i]}">${p.temas[i]}</div>`:''}
-        </div>`).join('')}
-    </div>
-    ${p.temas&&p.temas.length?`
-    <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--ink3);margin-bottom:8px">Temas</div>
-    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:18px">
-      ${p.temas.map((t,i)=>t?`<span class="chip chip-n"><strong>Q${i+1}</strong> ${t}</span>`:'').filter(Boolean).join('')}
-    </div>`:''}
-    <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:8px">
-      <button class="btn btn-ghost" onclick="closeModal('m-ver-prova')">Fechar</button>
-      <button class="btn btn-blue" onclick="closeModal('m-ver-prova');editarProva('${id}')">✏️ Editar</button>
-    </div>`;
-  openModal('m-ver-prova');
-}
-
-function editarProva(id){
-  const p=S.provas.find(x=>x.id===id);
-  if(!p) return;
-  // fill form in edit mode
-  document.getElementById('p-edit-id').value=id;
-  document.getElementById('m-prova-title').innerHTML='✏️ Editar Avaliação <button class="modal-x" onclick="closeModal(\'m-prova\')">✕</button>';
-  document.getElementById('btn-salvar-prova').textContent='💾 Salvar Alterações';
-  document.getElementById('p-nome').value=p.nome;
-  document.getElementById('p-bim').value=p.bim||'1';
-  document.getElementById('p-mat').value=p.mat||'';
-  document.getElementById('p-nq').value=p.nq;
-  document.getElementById('p-peso').value=p.peso||10;
-  document.getElementById('p-gab').value=p.gabarito;
-  document.getElementById('p-temas').value=(p.temas||[]).join(', ');
-  previewGab();
-  openModal('m-prova');
-}
-
-function delProva(id){
-  confirmar('Excluir esta avaliação?','Todas as correções relacionadas também serão removidas.',()=>{
-    S.provas=S.provas.filter(p=>p.id!==id);
-    S.correcoes=S.correcoes.filter(c=>c.provaId!==id);
-    if(S.provaId===id){S.provaId=null;S.alunoId=null;}
-    save(); renderProvaTree(); showNoSel(); toast('Avaliação excluída.','ok');
-  });
-}
-
-function criarAluno(){
-  if(!S.turmaId){toast('Selecione uma turma!','err');return;}
-  const nome=v('a-nome'); if(!nome){toast('Digite o nome!','err');return;}
-  const a={id:uid(),turmaId:S.turmaId,nome,num:v('a-num')};
-  S.alunos.push(a); save();
-  closeModal('m-aluno'); renderAlunos();
-  document.getElementById('a-nome').value=''; document.getElementById('a-num').value='';
-  toast(`${nome} adicionado(a)!`,'ok');
-}
-
-function parseLista(){
-  const raw=document.getElementById('lista-nomes').value;
-  return raw.split('\n')
-    .map(l=>l.trim()).filter(l=>l.length>1)
-    .map((nome,i)=>{
-      // suporte a "01. Nome", "01 - Nome", "01) Nome", "Nome" simples
-      const m=nome.match(/^(\d+)[\.\-\)]\s*(.+)$/);
-      return m ? {num:m[1], nome:m[2].trim()} : {num:String(i+1).padStart(2,'0'), nome};
-    });
-}
-
-function previewLista(){
-  if(!S.turmaId){toast('Selecione uma turma primeiro!','err');return;}
-  const novos=parseLista();
-  if(!novos.length){document.getElementById('lista-preview').style.display='none';return;}
-  const existentes=S.alunos.filter(a=>a.turmaId===S.turmaId).map(a=>a.nome.toLowerCase().trim());
-  const jaExistem=novos.filter(n=>existentes.includes(n.nome.toLowerCase()));
-  const paraAdicionar=novos.filter(n=>!existentes.includes(n.nome.toLowerCase()));
-  const el=document.getElementById('lista-preview');
-  el.style.display='block';
-  el.innerHTML=`<div style="background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.8rem">
-    <div style="display:flex;gap:12px;margin-bottom:10px;flex-wrap:wrap">
-      <span class="chip chip-g">✅ ${paraAdicionar.length} serão adicionados</span>
-      ${jaExistem.length?`<span class="chip chip-a">⚠️ ${jaExistem.length} já existem (ignorados)</span>`:''}
-    </div>
-    <div style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:3px">
-      ${novos.map(n=>{
-        const existe=existentes.includes(n.nome.toLowerCase());
-        return `<div style="display:flex;align-items:center;gap:8px;padding:4px 7px;border-radius:5px;background:${existe?'var(--amber-bg)':'var(--green-bg)'}">
-          <span style="font-family:'DM Mono';font-size:.67rem;color:var(--ink3);width:22px">${n.num}</span>
-          <span style="font-weight:500;color:${existe?'var(--amber)':'var(--green)'}">${n.nome}</span>
-          ${existe?'<span style="margin-left:auto;font-size:.67rem;color:var(--amber)">já existe</span>':''}
-        </div>`;
-      }).join('')}
-    </div>
-  </div>`;
-}
-
-function importarLista(){
-  if(!S.turmaId){toast('Selecione uma turma!','err');return;}
-  const novos=parseLista();
-  if(!novos.length){toast('Nenhum nome encontrado na lista.','err');return;}
-  const existentes=S.alunos.filter(a=>a.turmaId===S.turmaId).map(a=>a.nome.toLowerCase().trim());
-  const paraAdicionar=novos.filter(n=>!existentes.includes(n.nome.toLowerCase()));
-  if(!paraAdicionar.length){toast('Todos os nomes já estão cadastrados!','info');return;}
-  paraAdicionar.forEach(n=>{
-    S.alunos.push({id:uid(),turmaId:S.turmaId,nome:n.nome,num:n.num});
-  });
-  save(); renderAlunos();
-  closeModal('m-lista');
-  document.getElementById('lista-nomes').value='';
-  document.getElementById('lista-preview').style.display='none';
-  toast(`${paraAdicionar.length} aluno(s) adicionado(s)!`,'ok');
-}
-
-// ════════════════════════════════════════════
-//  SCAN MODES
-// ════════════════════════════════════════════
-function normalizeMime(type){
-  const allowed=['image/jpeg','image/png','image/gif','image/webp'];
-  if(allowed.includes(type)) return type;
-  // HEIC, HEIF, AVIF, BMP, TIFF → convert canvas to jpeg
-  return 'image/jpeg';
-}
-
-let currentB64=null, currentMime='image/jpeg', cameraStream=null;
-
-function scanMode(m){
-  ['upload','camera','paste','manual'].forEach(x=>{
-    document.getElementById('mode-'+x).style.display=x===m?'block':'none';
-    document.getElementById('sm-'+x).classList.toggle('on',x===m);
-  });
-  document.getElementById('img-action').style.display='none';
-  currentB64=null;
-  if(m!=='camera') pararCamera();
-}
-
-// ── Converte QUALQUER imagem para JPEG limpo via canvas ──
-function processarImagem(src, onDone){
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onload = () => {
-    const cv = document.createElement('canvas');
-    // Limita resolução máxima para não estourar payload
-    const MAX = 1600;
-    let w = img.naturalWidth, h = img.naturalHeight;
-    if(w > MAX){ h = Math.round(h * MAX / w); w = MAX; }
-    if(h > MAX){ w = Math.round(w * MAX / h); h = MAX; }
-    cv.width = w; cv.height = h;
-    cv.getContext('2d').drawImage(img, 0, 0, w, h);
-    const jpeg = cv.toDataURL('image/jpeg', 0.92);
-    currentB64 = jpeg.split(',')[1];
-    currentMime = 'image/jpeg';
-    onDone(jpeg);
-  };
-  img.onerror = () => toast('Não foi possível carregar a imagem.','err');
-  img.src = src;
-}
-
-// Upload
-function onDrop(e){
-  e.preventDefault();
-  document.getElementById('dz').classList.remove('drag');
-  const f=e.dataTransfer.files[0];
-  if(f) loadFile(f);
-}
-function onFile(e){ const f=e.target.files[0]; if(f) loadFile(f); }
-function loadFile(f){
-  const r=new FileReader();
-  r.onload=e=>{
-    processarImagem(e.target.result, jpeg=>{
-      const pv=document.getElementById('img-preview');
-      pv.src=jpeg; pv.style.display='block';
-      document.getElementById('img-action').style.display='block';
-    });
-  };
-  r.readAsDataURL(f);
-}
-
-// Camera
-async function iniciarCamera(){
-  try{
-    cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:1280}}});
-    const vid=document.getElementById('cam-video');
-    vid.srcObject=cameraStream; vid.style.display='block';
-    document.getElementById('btn-capture').style.display='flex';
-    document.getElementById('btn-iniciar-cam').style.display='none';
-    document.getElementById('btn-parar-cam').style.display='flex';
-  }catch(err){ toast('Câmera não disponível: '+err.message,'err'); }
-}
-function pararCamera(){
-  if(cameraStream){ cameraStream.getTracks().forEach(t=>t.stop()); cameraStream=null; }
-  const vid=document.getElementById('cam-video');
-  vid.srcObject=null; vid.style.display='none';
-  document.getElementById('btn-capture').style.display='none';
-  document.getElementById('btn-iniciar-cam').style.display='flex';
-  document.getElementById('btn-parar-cam').style.display='none';
-}
-function capturarFoto(){
-  const vid=document.getElementById('cam-video');
-  const cv=document.getElementById('cam-canvas');
-  cv.width=vid.videoWidth; cv.height=vid.videoHeight;
-  cv.getContext('2d').drawImage(vid,0,0);
-  const jpeg=cv.toDataURL('image/jpeg',0.92);
-  currentB64=jpeg.split(',')[1]; currentMime='image/jpeg';
-  const pv=document.getElementById('cam-preview');
-  pv.src=jpeg; pv.style.display='block';
-  document.getElementById('img-action').style.display='block';
-  pararCamera();
-  toast('Foto capturada! Clique em Analisar.','info');
-}
-
-// Paste
-function onPaste(e){
-  const items=e.clipboardData.items;
-  for(const item of items){
-    if(item.type.startsWith('image/')){
-      e.preventDefault();
-      const f=item.getAsFile();
-      const r=new FileReader();
-      r.onload=ev=>{
-        processarImagem(ev.target.result, jpeg=>{
-          const pv=document.getElementById('paste-preview');
-          pv.src=jpeg; pv.style.display='block';
-          document.getElementById('paste-zone').innerHTML='✅ Imagem colada com sucesso!';
-          document.getElementById('img-action').style.display='block';
-        });
-      };
-      r.readAsDataURL(f);
-      return;
-    }
-  }
-  toast('Nenhuma imagem encontrada na área de transferência.','err');
-}
-
-// Manual grid
-let manualSel={};
-function buildManualGrid(){
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  if(!prova) return;
-  manualSel={};
-  const el=document.getElementById('manual-grid');
-  el.style.gridTemplateColumns=`repeat(${Math.min(5,prova.nq)},1fr)`;
-  const opts=opcoesProva(prova);
-  el.innerHTML=Array.from({length:prova.nq},(_,i)=>{
-    return `<div class="man-cell">
-      <div class="qn">Q${i+1}</div>
-      <div style="display:flex;gap:3px;flex-wrap:wrap;justify-content:center">
-        ${opts.map(o=>`<button class="man-opt" id="mo-${i}-${o}" onclick="selManual(${i},'${o}')">${o}</button>`).join('')}
-      </div>
-    </div>`;
-  }).join('');
-}
-function selManual(q,opt){
-  const old=manualSel[q];
-  if(old) document.getElementById(`mo-${q}-${old}`)?.classList.remove('sel');
-  if(old===opt){ delete manualSel[q]; return; }
-  manualSel[q]=opt;
-  document.getElementById(`mo-${q}-${opt}`)?.classList.add('sel');
-}
-function limparManual(){
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  if(!prova) return;
-  manualSel={};
-  document.querySelectorAll('.man-opt').forEach(b=>b.classList.remove('sel'));
-}
-function corrigirManual(){
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  if(!prova) return;
-  const r=Array.from({length:prova.nq},(_,i)=>manualSel[i]||'X').join('');
-  salvar(r);
-}
-function corrigirTexto(){
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  if(!prova) return;
-  const raw=document.getElementById('text-resp').value.trim().toUpperCase();
-  if(!raw){toast('Digite as respostas!','err');return;}
-  salvar(raw.slice(0,prova.nq).padEnd(prova.nq,'X'));
-}
-
-// ════════════════════════════════════════════
-//  REVISÃO VISUAL (imagem + clique nas alternativas)
-// ════════════════════════════════════════════
-let revisaoSel = {};
-
-function abrirRevisaoVisual(){
-  const prova = S.provas.find(p=>p.id===S.provaId);
-  if(!prova){ toast('Selecione uma prova!','err'); return; }
-  if(!currentB64){ toast('Nenhuma imagem carregada!','err'); return; }
-
-  revisaoSel = {};
-  // Mostrar imagem no modal
-  document.getElementById('revisao-img').src = 'data:image/jpeg;base64,' + currentB64;
-
-  // Montar grid de questões com alternativas do gabarito
-  const opts = opcoesProva(prova);
-  const gab = prova.gabarito.split('');
-  document.getElementById('revisao-grid').innerHTML = Array.from({length: prova.nq}, (_,i) => `
-    <div style="background:var(--paper);border:1.5px solid var(--line);border-radius:9px;padding:8px 5px;text-align:center" id="rv-card-${i}">
-      <div style="font-size:.62rem;font-weight:800;color:var(--ink3);margin-bottom:5px">Q${i+1}</div>
-      <div style="display:flex;gap:3px;justify-content:center;flex-wrap:wrap">
-        ${opts.map(o=>`
-          <button id="rv-${i}-${o}"
-            onclick="toggleRevisao(${i},'${o}')"
-            style="width:28px;height:22px;border-radius:5px;border:1.5px solid var(--line);
-                   background:transparent;color:var(--ink2);cursor:pointer;
-                   font-family:'DM Mono',monospace;font-size:.72rem;font-weight:700;transition:all .1s">
-            ${o}
-          </button>`).join('')}
-      </div>
-      <div style="font-size:.6rem;color:var(--green);font-family:'DM Mono',monospace;margin-top:4px" id="rv-gab-${i}">✓${gab[i]}</div>
-    </div>`).join('');
-
-  openModal('m-revisao');
-}
-
-function toggleRevisao(q, opt){
-  const old = revisaoSel[q];
-  const opts = ['A','B','C','D','E'];
-  // Deselecionar anterior
-  if(old){
-    const b = document.getElementById(`rv-${q}-${old}`);
-    if(b){ b.style.background='transparent'; b.style.borderColor='var(--line)'; b.style.color='var(--ink2)'; }
-  }
-  // Clicar no mesmo = desmarcar
-  if(old === opt){
-    delete revisaoSel[q];
-    document.getElementById(`rv-card-${q}`).style.borderColor='var(--line)';
-    return;
-  }
-  revisaoSel[q] = opt;
-  const b = document.getElementById(`rv-${q}-${opt}`);
-  if(b){ b.style.background='var(--blue)'; b.style.borderColor='var(--blue)'; b.style.color='#fff'; }
-
-  // Cor da borda do card: verde se acertou, vermelho se errou
-  const prova = S.provas.find(p=>p.id===S.provaId);
-  if(prova){
-    const correta = prova.gabarito[q];
-    const card = document.getElementById(`rv-card-${q}`);
-    card.style.borderColor = opt===correta ? '#74c69d' : '#f4a0a5';
-    card.style.background = opt===correta ? 'var(--green-bg)' : 'var(--red-bg)';
-  }
-}
-
-function limparRevisao(){
-  const prova = S.provas.find(p=>p.id===S.provaId);
-  if(!prova) return;
-  revisaoSel={};
-  Array.from({length: prova.nq}, (_,i)=>{
-    opcoesProva(prova).forEach(o=>{
-      const b=document.getElementById(`rv-${i}-${o}`);
-      if(b){ b.style.background='transparent'; b.style.borderColor='var(--line)'; b.style.color='var(--ink2)'; }
-    });
-    const card=document.getElementById(`rv-card-${i}`);
-    if(card){ card.style.borderColor='var(--line)'; card.style.background='var(--paper)'; }
-  });
-}
-
-function salvarRevisao(){
-  const prova = S.provas.find(p=>p.id===S.provaId);
-  if(!prova) return;
-  const resps = Array.from({length: prova.nq}, (_,i) => revisaoSel[i]||'X').join('');
-  closeModal('m-revisao');
-  salvar(resps);
-}
-async function enviarParaIA(){
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  if(!prova||!currentB64){toast('Nenhuma imagem carregada!','err');return;}
-  // Diagnóstico — garante mime sempre válido
-  currentMime='image/jpeg';
-  console.log('Enviando para IA — mime:', currentMime, '— b64 length:', currentB64.length, '— primeiros bytes:', currentB64.slice(0,20));
-  const loader=document.getElementById('ai-load');
-  loader.classList.add('on');
-  document.getElementById('img-action').style.display='none';
-  const steps=[
-    '🔍 Localizando folha de gabarito...',
-    '⭕ Identificando bolinhas preenchidas...',
-    '📊 Lendo alternativas marcadas (A·B·C·D)...',
-    '✅ Comparando com gabarito mestre...'
-  ];
-  let si=0;
-  const stepEl=document.getElementById('load-step');
-  stepEl.textContent=steps[0];
-  const iv=setInterval(()=>{ si=(si+1)%steps.length; stepEl.textContent=steps[si]; },900);
-  const prompt=`Você é um especialista em leitura de gabaritos escolares impressos. Analise a imagem com muito cuidado.
-
-LAYOUT EXATO DESTE GABARITO:
-A folha tem grupos de questões organizados assim:
-- Linha superior: grupos lado a lado (ex: 01+02 | 03+04 | 05+06)
-- Linha inferior: grupos lado a lado (ex: 07+08 | 09+10)
-- Dentro de cada grupo, as questões aparecem UMA EMBAIXO DA OUTRA (01 em cima, 02 embaixo)
-- Cada questão tem 4 círculos na horizontal: A  B  C  D
-
-COMO IDENTIFICAR A RESPOSTA MARCADA:
-- Círculo MARCADO: preenchido, pintado, escurecido, rabiscado com caneta — claramente diferente dos outros
-- Círculo NÃO marcado: apenas o contorno com a letra, vazio por dentro
-- A marcação pode ser imperfeita (rabisco, borrão) mas estará visivelmente mais escura que os outros
-
-PROCESSO OBRIGATÓRIO — faça passo a passo:
-1. Localize a questão 01 (número "01" visível na folha)
-2. Olhe os 4 círculos A B C D dessa questão — qual está preenchido/escuro?
-3. Registre a letra
-4. Repita para 02, 03, 04... até ${String(prova.nq).padStart(2,'0')}
-5. NUNCA pule uma questão nem inverta a ordem
-
-REGRAS:
-- Se marcado claramente: registre A, B, C ou D
-- Se nenhum marcado: registre X
-- Se dois marcados: registre ?
-- Total de respostas deve ser EXATAMENTE ${prova.nq}
-
-Responda SOMENTE com este JSON (sem markdown, sem texto extra):
-{"respostas":"ABCD...","obs":"descreva brevemente o que viu em cada questão"}`;
-
-  try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',max_tokens:2000,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:currentMime,data:currentB64}},
-          {type:'text',text:prompt}
-        ]}]
-      })
-    });
-    clearInterval(iv); loader.classList.remove('on');
-    const data=await resp.json();
-    if(data.error){ console.error('API error:', JSON.stringify(data.error)); throw new Error(data.error.message||JSON.stringify(data.error)); }
-    const txt=data.content.find(b=>b.type==='text')?.text||'';
-    console.log('Resposta bruta da IA:', txt);
-    let parsed;
-    try{ parsed=JSON.parse(txt.replace(/```json|```/g,'').trim()); }
-    catch(e){ const m=txt.match(/\{[\s\S]*\}/); if(m) parsed=JSON.parse(m[0]); else throw new Error('IA não retornou JSON válido. Resposta: '+txt.slice(0,200)); }
-    console.log('Respostas lidas pela IA:', parsed.respostas);
-    console.log('Observações da IA:', parsed.obs);
-    const resps=(parsed.respostas||'').toUpperCase().slice(0,prova.nq).padEnd(prova.nq,'X');
-    salvar(resps);
-    if(parsed.obs) toast('IA leu: '+parsed.obs.slice(0,120),'info');
-  }catch(err){
-    clearInterval(iv); loader.classList.remove('on');
-    document.getElementById('img-action').style.display='block';
-    toast('Erro IA: '+err.message,'err');
-  }
-}
-
-// ════════════════════════════════════════════
-//  CORREÇÃO
-// ════════════════════════════════════════════
-function showNoSel(){
-  document.getElementById('no-sel').style.display='block';
-  document.getElementById('corr-content').style.display='none';
-}
-
-function abrirCorrecao(){
-  if(!S.alunoId||!S.provaId){
-    if(!S.provaId) toast('Selecione uma avaliação!','err');
-    return;
-  }
-  const aluno=S.alunos.find(a=>a.id===S.alunoId);
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  if(!aluno||!prova) return;
-  document.getElementById('no-sel').style.display='none';
-  document.getElementById('corr-content').style.display='block';
-  document.getElementById('corr-title').textContent=`${aluno.nome}`;
-  document.getElementById('corr-sub').textContent=`${prova.nome} · ${prova.mat} · ${prova.bim}º Bimestre · ${prova.nq} questões`;
-  const c=ultCorrecaoProva(aluno.id,prova.id);
-  if(c){ mostrarResultado(c); }
-  else{ novaCorrecao(); }
-}
-
-function novaCorrecao(){
-  document.getElementById('result-wrap').style.display='none';
-  document.getElementById('scan-wrap').style.display='block';
-  document.getElementById('ai-load').classList.remove('on');
-  document.getElementById('img-action').style.display='none';
-  document.getElementById('img-preview').style.display='none';
-  document.getElementById('img-preview').src='';
-  document.getElementById('cam-preview').style.display='none';
-  document.getElementById('paste-preview').style.display='none';
-  document.getElementById('paste-zone').textContent='📋 Clique aqui e cole a imagem (Ctrl+V)';
-  document.getElementById('text-resp').value='';
-  scanMode('upload');
-  currentB64=null;
-  buildManualGrid();
-}
-
-function salvar(respostas){
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  const aluno=S.alunos.find(a=>a.id===S.alunoId);
-  if(!prova||!aluno) return;
-  S.correcoes=S.correcoes.filter(c=>!(c.alunoId===aluno.id&&c.provaId===prova.id));
-  const gab=prova.gabarito.split('');
-  const resps=respostas.split('');
-  const acertos=gab.filter((g,i)=>resps[i]===g).length;
-  const pct=Math.round(acertos/prova.nq*100);
-  const nota=(acertos/prova.nq*prova.peso).toFixed(1);
-  const c={id:uid(),alunoId:aluno.id,provaId:prova.id,turmaId:S.turmaId,
-    respostas,acertos,pct,nota,data:new Date().toISOString()};
-  S.correcoes.push(c); save();
-  renderAlunos(); mostrarResultado(c);
-  toast(`✅ ${acertos}/${prova.nq} · ${pct}% · Nota: ${nota}`,'ok');
-}
-
-function mostrarResultado(c){
-  const prova=S.provas.find(p=>p.id===c.provaId);
-  const aluno=S.alunos.find(a=>a.id===c.alunoId);
-  if(!prova||!aluno) return;
-  document.getElementById('scan-wrap').style.display='none';
-  const rw=document.getElementById('result-wrap');
-  rw.style.display='block';
-  rw.dataset.correcaoId=c.id; // guarda o id da correção exibida
-  document.getElementById('res-name').textContent=aluno.nome;
-  document.getElementById('res-meta').textContent=
-    `${prova.nome} · ${prova.mat} · ${prova.bim}º Bimestre · ${new Date(c.data).toLocaleDateString('pt-BR')}`;
-  const rc=c.pct>=70?'sr-g':c.pct>=50?'sr-a':'sr-r';
-  document.getElementById('score-ring-el').innerHTML=
-    `<div class="score-ring ${rc}"><div class="sr-n">${c.pct}%</div><div class="sr-d">${c.acertos}/${prova.nq}</div></div>`;
-  const erros=prova.nq-c.acertos;
-  document.getElementById('res-chips').innerHTML=
-    `<span class="chip chip-g">✅ ${c.acertos} acertos</span>
-     <span class="chip chip-r">❌ ${erros} erros</span>
-     <span class="chip chip-b">📝 Nota ${c.nota}</span>
-     <span class="chip chip-n">${prova.bim}º Bim · ${prova.mat}</span>`;
-  const gab=prova.gabarito.split('');
-  const resps=c.respostas.split('');
-  document.getElementById('q-detail').innerHTML=gab.map((g,i)=>{
-    const r=resps[i]||'—'; const ok=r===g; const blank=r==='—'||r==='X';
-    const cls=blank?'blank':ok?'ok':'err';
-    const tema=prova.temas&&prova.temas[i]?`<div class="qt">${prova.temas[i]}</div>`:'';
-    return `<div class="q-card ${cls}">
-      <div class="qn">Q${i+1}</div>
-      <div class="qa">${r}</div>
-      ${!ok&&!blank?`<div class="qg">✓ ${g}</div>`:`<div class="qg">&nbsp;</div>`}
-      ${tema}
-    </div>`;
-  }).join('');
-}
-
-function deletarCorrecaoAtual(){
-  confirmar('Excluir esta correção?','Esta ação não pode ser desfeita.',()=>{
-    const id=document.getElementById('result-wrap').dataset.correcaoId;
-    if(id){ S.correcoes=S.correcoes.filter(c=>c.id!==id); }
-    else { S.correcoes=S.correcoes.filter(c=>!(c.alunoId===S.alunoId&&c.provaId===S.provaId)); }
-    save(); renderAlunos(); novaCorrecao(); toast('Correção excluída.','ok');
-  });
-}
-
-let editGabSel={};
-
-function abrirEdicaoGabarito(){
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  const corId=document.getElementById('result-wrap').dataset.correcaoId;
-  const c=S.correcoes.find(x=>x.id===corId) || S.correcoes.find(x=>x.alunoId===S.alunoId&&x.provaId===S.provaId);
-  if(!prova||!c) return;
-  const gab=prova.gabarito.split('');
-  const resps=c.respostas.split('');
-  editGabSel={};
-  resps.forEach((r,i)=>{ if(r&&r!=='X'&&r!=='—') editGabSel[i]=r; });
-  const opts=opcoesProva(prova);
-  document.getElementById('edit-gab-grid').innerHTML=gab.map((g,i)=>{
-    const cur=editGabSel[i]||'';
-    const ok=cur===g;
-    const tema=prova.temas&&prova.temas[i]?`<div style="font-size:.57rem;color:var(--ink3);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:74px" title="${prova.temas[i]}">${prova.temas[i]}</div>`:'';
-    return `<div style="background:var(--paper);border:1.5px solid ${ok?'#74c69d':cur&&cur!==g?'#f4a0a5':'var(--line)'};border-radius:9px;padding:8px 5px;text-align:center">
-      <div style="font-size:.6rem;font-weight:800;color:var(--ink3);margin-bottom:4px">Q${i+1}</div>
-      <div style="display:flex;gap:2px;justify-content:center;flex-wrap:wrap">
-        ${opts.map(o=>`<button id="eg-${i}-${o}"
-          onclick="toggleEditGab(${i},'${o}')"
-          style="width:26px;height:22px;border-radius:5px;border:1.5px solid ${editGabSel[i]===o?'var(--blue)':'var(--line)'};background:${editGabSel[i]===o?'var(--blue)':'transparent'};color:${editGabSel[i]===o?'#fff':'var(--ink2)'};cursor:pointer;font-family:'DM Mono',monospace;font-size:.7rem;font-weight:700;transition:all .1s"
-          >${o}</button>`).join('')}
-      </div>
-      <div style="font-size:.62rem;margin-top:4px;color:var(--green);font-family:'DM Mono',monospace">✓${g}</div>
-      ${tema}
-    </div>`;
-  }).join('');
-  openModal('m-edit-gabarito');
-}
-
-function toggleEditGab(q,opt){
-  const old=editGabSel[q];
-  // deselect old
-  if(old){ const b=document.getElementById(`eg-${q}-${old}`); if(b){b.style.background='transparent';b.style.borderColor='var(--line)';b.style.color='var(--ink2)';} }
-  if(old===opt){ delete editGabSel[q]; return; }
-  editGabSel[q]=opt;
-  const b=document.getElementById(`eg-${q}-${opt}`);
-  if(b){b.style.background='var(--blue)';b.style.borderColor='var(--blue)';b.style.color='#fff';}
-  // update border of parent card
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  if(prova){
-    const g=prova.gabarito[q];
-    const card=b?.closest('div[style*="border-radius:9px"]');
-    if(card) card.style.borderColor=opt===g?'#74c69d':'#f4a0a5';
-  }
-}
-
-function salvarEdicaoGabarito(){
-  const prova=S.provas.find(p=>p.id===S.provaId);
-  const corId=document.getElementById('result-wrap').dataset.correcaoId;
-  const idx=S.correcoes.findIndex(x=>x.id===corId) !== -1
-    ? S.correcoes.findIndex(x=>x.id===corId)
-    : S.correcoes.findIndex(x=>x.alunoId===S.alunoId&&x.provaId===S.provaId);
-  if(!prova||idx===-1) return;
-  const novasResps=Array.from({length:prova.nq},(_,i)=>editGabSel[i]||'X').join('');
-  const gab=prova.gabarito.split('');
-  const resps=novasResps.split('');
-  const acertos=gab.filter((g,i)=>resps[i]===g).length;
-  const pct=Math.round(acertos/prova.nq*100);
-  const nota=(acertos/prova.nq*prova.peso).toFixed(1);
-  // only update response fields — preserve id, alunoId, provaId, turmaId, data original
-  S.correcoes[idx]={...S.correcoes[idx],respostas:novasResps,acertos,pct,nota,editado:new Date().toISOString()};
-  save();
-  closeModal('m-edit-gabarito');
-  mostrarResultado(S.correcoes[idx]);
-  renderAlunos();
-  toast(`✅ Gabarito atualizado — ${acertos}/${prova.nq} · ${pct}%`,'ok');
-}
-
-function verHistorico(){
-  const aluno=S.alunos.find(a=>a.id===S.alunoId);
-  if(!aluno) return;
-  const cs=S.correcoes.filter(c=>c.alunoId===aluno.id)
-    .sort((a,b)=>new Date(b.data)-new Date(a.data));
-  const el=document.getElementById('hist-body');
-  if(!cs.length){el.innerHTML='<div class="empty">Sem correções registradas.</div>';openModal('m-hist');return;}
-  el.innerHTML=cs.map(c=>{
-    const prova=S.provas.find(p=>p.id===c.provaId);
-    if(!prova) return '';
-    const rc=c.pct>=70?'sr-g':c.pct>=50?'sr-a':'sr-r';
-    const gab=prova.gabarito.split('');
-    const resps=c.respostas.split('');
-    return `<div class="card card-sm" style="margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-        <div class="score-ring ${rc}" style="width:58px;height:58px">
-          <div class="sr-n" style="font-size:1.1rem">${c.pct}%</div>
-          <div class="sr-d">${c.acertos}/${prova.nq}</div>
-        </div>
-        <div style="flex:1">
-          <div style="font-weight:700;font-size:.9rem">${prova.nome}</div>
-          <div style="font-size:.72rem;color:var(--ink3)">${prova.mat} · ${prova.bim}º Bim · ${new Date(c.data).toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})}</div>
-          <div style="margin-top:5px"><span class="chip chip-b">Nota ${c.nota}</span></div>
-        </div>
-        <button class="btn btn-ghost btn-xs" onclick="delCById('${c.id}')">✕ Excluir</button>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:10px">
-        ${gab.map((g,i)=>{const r=resps[i]||'?';const ok=r===g;return `<span style="font-family:'DM Mono';font-size:.7rem;padding:2px 6px;border-radius:4px;background:${ok?'var(--green-bg)':'var(--red-bg)'};color:${ok?'var(--green)':'var(--red)'}">Q${i+1}:${r}</span>`;}).join('')}
-      </div>
-    </div>`;
-  }).join('');
-  openModal('m-hist');
-}
-
-function delCById(id){
-  confirmar('Excluir esta correção?','',()=>{
-    S.correcoes=S.correcoes.filter(c=>c.id!==id);
-    save(); renderAlunos(); verHistorico(); toast('Excluído.','ok');
-  });
-}
-
-// ════════════════════════════════════════════
-//  TURMAS PAGE
-// ════════════════════════════════════════════
-function renderTurmasPage(){
-  const el=document.getElementById('turmas-wrap');
-  if(!S.turmas.length){el.innerHTML='<div class="empty"><div class="ei">🏫</div>Nenhuma turma.</div>';return;}
-  el.innerHTML=S.turmas.map(t=>{
-    const alunos=S.alunos.filter(a=>a.turmaId===t.id);
-    const provas=S.provas.filter(p=>p.turmaId===t.id);
-    const cs=S.correcoes.filter(c=>c.turmaId===t.id);
-    const medias=alunos.map(a=>{const ac=cs.filter(c=>c.alunoId===a.id);return ac.length?ac.reduce((s,c)=>s+c.pct,0)/ac.length:null;}).filter(x=>x!==null);
-    const mt=medias.length?Math.round(medias.reduce((s,m)=>s+m,0)/medias.length):null;
-    const mats=[...new Set(provas.map(p=>p.mat))];
-    return `<div class="card" style="margin-bottom:14px">
-      <div style="display:flex;align-items:flex-start;gap:12px;justify-content:space-between;flex-wrap:wrap">
-        <div>
-          <div style="font-size:1.05rem;font-weight:800">${t.nome}</div>
-          <div style="font-size:.76rem;color:var(--ink3)">${t.disc||''} · ${t.ano}</div>
-        </div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap">
-          <button class="btn btn-ghost btn-sm" onclick="S.turmaId='${t.id}';save();renderTurmaSelect();trocarTurma();nav('correcao')">Abrir</button>
-          <button class="btn btn-ghost btn-sm" onclick="delTurma('${t.id}')">✕</button>
-        </div>
-      </div>
-      <hr>
-      <div style="display:flex;gap:18px;flex-wrap:wrap">
-        ${stBox(alunos.length,'Alunos','👥')}
-        ${stBox(provas.length,'Avaliações','📋')}
-        ${stBox(cs.length,'Correções','✅')}
-        ${mt!==null?stBox(mt+'%','Média',mt>=70?'🟢':mt>=50?'🟡':'🔴'):''}
-      </div>
-      ${mats.length?`<hr><div style="display:flex;gap:6px;flex-wrap:wrap">
-        ${mats.map(m=>`<span class="chip chip-n"><span class="prova-mat-badge ${matColor(m)}" style="font-size:.6rem;padding:1px 5px">${m[0]}</span>${m}</span>`).join('')}
-      </div>`:''}
-    </div>`;
-  }).join('');
-}
-
-function stBox(val,label,icon){
-  return `<div style="text-align:center"><div style="font-size:1.35rem;font-weight:800">${val}</div><div style="font-size:.64rem;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px">${icon} ${label}</div></div>`;
-}
-
-function delTurma(id){
-  confirmar('Excluir turma?','Alunos, avaliações e correções serão removidos permanentemente.',()=>{
-    S.turmas=S.turmas.filter(t=>t.id!==id);
-    S.provas=S.provas.filter(p=>p.turmaId!==id);
-    S.alunos=S.alunos.filter(a=>a.turmaId!==id);
-    S.correcoes=S.correcoes.filter(c=>c.turmaId!==id);
-    if(S.turmaId===id){S.turmaId=null;S.provaId=null;S.alunoId=null;}
-    save(); renderTurmaSelect(); renderTurmasPage(); showNoSel(); toast('Turma excluída.','ok');
-  });
-}
-
-// ════════════════════════════════════════════
-//  ORGANIZAR PAGE
-// ════════════════════════════════════════════
-function renderOrg(){
-  const el=document.getElementById('org-wrap');
-  const provas=S.provas.filter(p=>p.turmaId===S.turmaId);
-  if(!S.turmaId){el.innerHTML='<div class="empty"><div class="ei">🏫</div>Selecione uma turma.</div>';return;}
-  if(!provas.length){el.innerHTML='<div class="empty"><div class="ei">📋</div>Nenhuma avaliação. Crie uma nova!</div>';return;}
-
-  const tree={};
-  provas.forEach(p=>{
-    const b=p.bim||'1'; const m=p.mat||'Geral';
-    if(!tree[b]) tree[b]={};
-    if(!tree[b][m]) tree[b][m]=[];
-    tree[b][m].push(p);
-  });
-
-  let html='';
-  [1,2,3,4].forEach(b=>{
-    if(!tree[b]) return;
-    const totalP=Object.values(tree[b]).flat().length;
-    html+=`<div class="org-bim">
-      <div class="org-bim-head" onclick="this.nextElementSibling.classList.toggle('open')">
-        <h3>📅 ${b}º Bimestre</h3>
-        <span class="bdg">${totalP} avaliação${totalP!==1?'s':''}</span>
-        <span style="margin-left:auto;font-size:.8rem">▼</span>
-      </div>
-      <div class="org-bim-body open">`;
-    Object.keys(tree[b]).sort().forEach(m=>{
-      const ps=tree[b][m];
-      html+=`<div class="org-mat-group">
-        <div class="org-mat-title">
-          <span style="display:flex;align-items:center;gap:7px">
-            <span class="prova-mat-badge ${matColor(m)}">${m[0]}</span> ${m}
-          </span>
-          <span class="bdg bdg-b">${ps.length} teste${ps.length!==1?'s':''}</span>
-        </div>`;
-      ps.forEach(p=>{
-        const cs=S.correcoes.filter(c=>c.provaId===p.id);
-        const alunos=S.alunos.filter(a=>a.turmaId===S.turmaId);
-        const pendentes=alunos.length-cs.length;
-        const media=cs.length?Math.round(cs.reduce((s,c)=>s+c.pct,0)/cs.length):null;
-        html+=`<div class="org-prova-row">
-          <div style="flex:1;min-width:0">
-            <div style="font-weight:700;font-size:.85rem">${p.nome}</div>
-            <div style="font-size:.7rem;color:var(--ink3)">${p.nq} questões · Peso ${p.peso}</div>
-          </div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
-            <span class="chip chip-g">✅ ${cs.length}</span>
-            ${pendentes>0?`<span class="chip chip-a">⏳ ${pendentes}</span>`:''}
-            ${media!==null?`<span class="chip ${media>=70?'chip-g':media>=50?'chip-a':'chip-r'}">Média ${media}%</span>`:''}
-          </div>
-          <div style="display:flex;gap:5px">
-            <button class="btn btn-ghost btn-xs" onclick="verProva('${p.id}')">✏️ Ver</button>
-            <button class="btn btn-ghost btn-xs" onclick="S.provaId='${p.id}';save();renderProvaTree();nav('correcao');showNoSel()">Corrigir</button>
-            <button class="btn btn-ghost btn-xs" onclick="delProva('${p.id}')">✕</button>
-          </div>
-        </div>`;
-      });
-      html+='</div>';
-    });
-    html+='</div></div>';
-  });
-  el.innerHTML=html;
-}
-
-// ════════════════════════════════════════════
-//  RELATÓRIOS
-// ════════════════════════════════════════════
-function relTab(t,btn){
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('on'));
-  btn.classList.add('on');
-  document.getElementById('tp-'+t).classList.add('on');
-  renderRel(t);
-}
-function renderRel(t){
-  if(t==='geral') renderRelGeral();
-  if(t==='questao') renderRelQuestao();
-  if(t==='evolucao') renderRelEvolucao();
+  const list = S.provas.filter(p=>p.turmaId===S.turmaId);
+  el.innerHTML = list.map(p=>`<div class="st-row" onclick="S.provaId='${p.id}';abrirCorrecao();">${p.nome}</div>`).join('');
 }
 
 function renderRelGeral(){
   const el=document.getElementById('tp-geral');
-  const alunos=S.alunos.filter(a=>a.turmaId===S.turmaId);
-  const provas=S.provas.filter(p=>p.turmaId===S.turmaId);
-  if(!alunos.length){el.innerHTML='<div class="empty"><div class="ei">📊</div>Selecione uma turma.</div>';return;}
-
-  const cs=S.correcoes.filter(c=>c.turmaId===S.turmaId);
-  const mediasAluno=alunos.map(a=>{
-    const ac=cs.filter(c=>c.alunoId===a.id);
-    const m=ac.length?Math.round(ac.reduce((s,c)=>s+c.pct,0)/ac.length):null;
-    return{aluno:a,n:ac.length,media:m,ultima:ac.sort((x,y)=>new Date(y.data)-new Date(x.data))[0]};
-  }).sort((a,b)=>(b.media||0)-(a.media||0));
-
-  const mt=mediasAluno.filter(r=>r.media!==null);
-  const mediaT=mt.length?Math.round(mt.reduce((s,r)=>s+r.media,0)/mt.length):null;
-
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px">
-      ${miniStat('👥',alunos.length,'Alunos')}
-      ${miniStat('📋',provas.length,'Avaliações')}
-      ${miniStat('✅',cs.length,'Correções')}
-      ${mediaT!==null?miniStat('📊',mediaT+'%','Média Turma',mediaT>=70?'var(--green)':mediaT>=50?'var(--amber)':'var(--red)'):''}
+  const cs = S.correcoes.filter(c=>c.turmaId===S.turmaId);
+  const al = S.alunos.filter(a=>a.turmaId===S.turmaId);
+  el.innerHTML = `
+    <div style="display:flex; gap:20px; margin-bottom:20px;">
+      <div class="card" style="flex:1; text-align:center;"><h3>${al.length}</h3><p>Alunos</p></div>
+      <div class="card" style="flex:1; text-align:center;"><h3>${cs.length}</h3><p>Correções</p></div>
     </div>
     <div class="card">
-      <div class="sec-title" style="margin-bottom:12px">🏆 Ranking</div>
-      <table style="width:100%;border-collapse:collapse;font-size:.82rem">
-        <thead><tr style="border-bottom:2px solid var(--line)">
-          ${['#','Aluno','Provas','Média','Última',''].map(h=>`<th style="padding:7px 10px;text-align:left;font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:.9px;color:var(--ink3)">${h}</th>`).join('')}
-        </tr></thead>
-        <tbody>
-          ${mediasAluno.map((r,i)=>`<tr style="border-bottom:1px solid var(--line)">
-            <td style="padding:7px 10px;font-weight:800;color:var(--ink3)">${i+1}</td>
-            <td style="padding:7px 10px;font-weight:600">${r.aluno.nome}</td>
-            <td style="padding:7px 10px">${r.n}</td>
-            <td style="padding:7px 10px">${r.media!==null?`<span class="chip ${r.media>=70?'chip-g':r.media>=50?'chip-a':'chip-r'}">${r.media}%</span>`:'—'}</td>
-            <td style="padding:7px 10px">${r.ultima?`<span class="chip ${r.ultima.pct>=70?'chip-g':r.ultima.pct>=50?'chip-a':'chip-r'}">${r.ultima.pct}%</span>`:'—'}</td>
-            <td style="padding:7px 10px"><button class="btn btn-ghost btn-xs" onclick="S.alunoId='${r.aluno.id}';save();renderAlunos();nav('correcao');abrirCorrecao()">Ver</button></td>
-          </tr>`).join('')}
-        </tbody>
+      <h3>Ranking</h3>
+      <table style="width:100%; border-collapse:collapse;">
+        ${al.map(a=>`<tr><td style="padding:10px; border-bottom:1px solid #eee;">${a.nome}</td></tr>`).join('')}
       </table>
     </div>`;
 }
 
-function miniStat(icon,val,label,color='var(--blue)'){
-  return `<div class="card card-sm" style="text-align:center">
-    <div style="font-size:1.5rem;margin-bottom:2px">${icon}</div>
-    <div style="font-size:1.4rem;font-weight:800;color:${color}">${val}</div>
-    <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3)">${label}</div>
-  </div>`;
+function abrirCorrecao(){
+  if(!S.alunoId || !S.provaId) return;
+  document.getElementById('no-sel').style.display='none';
+  document.getElementById('corr-content').style.display='block';
+  document.getElementById('result-wrap').innerHTML = `<h3>Correção em andamento...</h3>`;
 }
 
-function renderRelQuestao(){
-  const el=document.getElementById('tp-questao');
-  const provas=S.provas.filter(p=>p.turmaId===S.turmaId);
-  if(!provas.length){el.innerHTML='<div class="empty"><div class="ei">📋</div>Nenhuma avaliação.</div>';return;}
+function openModal(id){ document.getElementById(id).classList.add('on'); }
+function closeModal(id){ document.getElementById(id).classList.remove('on'); }
 
-  let html='';
-  // group by mat
-  const byMat={};
-  provas.forEach(p=>{ if(!byMat[p.mat]) byMat[p.mat]=[]; byMat[p.mat].push(p); });
-
-  Object.entries(byMat).forEach(([mat,ps])=>{
-    html+=`<div class="card" style="margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
-        <span class="prova-mat-badge ${matColor(mat)}" style="font-size:.75rem;padding:3px 9px">${mat}</span>
-        <div class="sec-title">${mat}</div>
-      </div>`;
-    ps.forEach(prova=>{
-      const cs=S.correcoes.filter(c=>c.provaId===prova.id);
-      if(!cs.length){html+=`<div style="font-size:.8rem;color:var(--ink3);margin-bottom:10px;padding:8px 12px;background:var(--paper2);border-radius:7px">${prova.nome} (${prova.bim}º Bim) — sem correções</div>`;return;}
-      const gab=prova.gabarito.split('');
-      const stats=gab.map((g,i)=>{
-        const ac=cs.filter(c=>(c.respostas[i]||'')===g).length;
-        return{q:i+1,g,ac,tot:cs.length,pct:Math.round(ac/cs.length*100),tema:prova.temas[i]||null};
-      });
-      const sorted=[...stats].sort((a,b)=>a.pct-b.pct);
-      html+=`<div style="margin-bottom:16px">
-        <div style="font-weight:700;font-size:.85rem;margin-bottom:10px;color:var(--ink2)">${prova.nome} · ${prova.bim}º Bim (${cs.length} alunos)</div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-          <div>
-            <div style="font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--green);margin-bottom:7px">✅ Maior Acerto</div>
-            ${sorted.slice().reverse().slice(0,5).map(s=>bRow(s,true)).join('')}
-          </div>
-          <div>
-            <div style="font-size:.67rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--red);margin-bottom:7px">❌ Maior Erro</div>
-            ${sorted.slice(0,5).map(s=>bRow(s,false)).join('')}
-          </div>
-        </div>
-      </div>`;
-    });
-    html+='</div>';
-  });
-  el.innerHTML=html||'<div class="empty">Nenhuma correção.</div>';
-}
-
-function bRow(s,isAc){
-  const pct=isAc?s.pct:100-s.pct;
-  const cls=isAc?'bf-g':'bf-r';
-  const col=isAc?'var(--green)':'var(--red)';
-  return `<div class="bar-row">
-    <div class="bq">Q${s.q}</div>
-    <div><div class="bar-bg"><div class="bar-fill ${cls}" style="width:${pct}%"></div></div>${s.tema?`<div style="font-size:.58rem;color:var(--ink3)">${s.tema}</div>`:''}</div>
-    <div class="bgab">${s.g}</div>
-    <div class="bpct" style="color:${col}">${pct}%</div>
-  </div>`;
-}
-
-function renderRelEvolucao(){
-  const el=document.getElementById('tp-evolucao');
-  const alunos=S.alunos.filter(a=>a.turmaId===S.turmaId);
-  const provas=S.provas.filter(p=>p.turmaId===S.turmaId)
-    .sort((a,b)=>parseInt(a.bim)-parseInt(b.bim)||(a.mat||'').localeCompare(b.mat||''));
-  if(!alunos.length){el.innerHTML='<div class="empty"><div class="ei">📈</div>Nenhum aluno.</div>';return;}
-
-  const cols=provas.length;
-  el.innerHTML=`<div class="card">
-    <div class="sec-title" style="margin-bottom:14px">📈 Evolução — todas as avaliações</div>
-    <div style="overflow-x:auto">
-      <table style="width:100%;border-collapse:collapse;font-size:.78rem;min-width:${200+cols*80}px">
-        <thead><tr style="border-bottom:2px solid var(--line)">
-          <th style="padding:7px 10px;text-align:left;width:180px">Aluno</th>
-          ${provas.map(p=>`<th style="padding:7px 8px;text-align:center;font-size:.64rem;font-weight:800;text-transform:uppercase;color:var(--ink3);width:80px">
-            <div>${p.nome.substring(0,8)}..</div>
-            <div style="font-weight:500;color:var(--ink3)">${p.mat?.substring(0,6)||''} B${p.bim}</div>
-          </th>`).join('')}
-          <th style="padding:7px 8px;text-align:center;width:60px;font-size:.64rem;font-weight:800;text-transform:uppercase;color:var(--ink3)">Média</th>
-        </tr></thead>
-        <tbody>
-          ${alunos.map(a=>{
-            const acs=S.correcoes.filter(c=>c.alunoId===a.id);
-            const media=acs.length?Math.round(acs.reduce((s,c)=>s+c.pct,0)/acs.length):null;
-            return `<tr style="border-bottom:1px solid var(--line)">
-              <td style="padding:7px 10px;font-weight:600;display:flex;align-items:center;gap:7px">
-                <div class="st-av" style="width:24px;height:24px;font-size:.6rem">${ini(a.nome)}</div>
-                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.nome}</span>
-              </td>
-              ${provas.map(p=>{
-                const c=S.correcoes.find(x=>x.alunoId===a.id&&x.provaId===p.id);
-                const rc=!c?'':'c.pct>=70'?'chip-g':c.pct>=70?'chip-g':c.pct>=50?'chip-a':'chip-r';
-                return `<td style="padding:5px 6px;text-align:center">${c?`<span class="chip ${c.pct>=70?'chip-g':c.pct>=50?'chip-a':'chip-r'}" style="font-size:.7rem">${c.pct}%</span>`:'<span style="color:var(--ink3);font-size:.75rem">—</span>'}</td>`;
-              }).join('')}
-              <td style="padding:5px 6px;text-align:center">${media!==null?`<span class="chip ${media>=70?'chip-g':media>=50?'chip-a':'chip-r'}" style="font-size:.7rem;font-weight:800">${media}%</span>`:'—'}</td>
-            </tr>`;
-          }).join('')}
-        </tbody>
-      </table>
-    </div>
-  </div>`;
-}
-
-// ════════════════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════════════
-function uid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36) }
-function ini(n){ return n.split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase() }
-// Detecta quais alternativas o gabarito usa (ex: só A-D se nenhuma resposta for E)
-function opcoesProva(prova){
-  const todas=['A','B','C','D','E'];
-  if(!prova||!prova.gabarito) return todas;
-  const usadas=new Set(prova.gabarito.toUpperCase().split(''));
-  // Pega o máximo índice usado e retorna até ele
-  let max=1; // mínimo B
-  todas.forEach((l,i)=>{ if(usadas.has(l)) max=i; });
-  return todas.slice(0, max+1);
-}
-function v(id){ return (document.getElementById(id)?.value||'').trim() }
-function ultCorrecao(aid){
-  return S.correcoes.filter(c=>c.alunoId===aid).sort((a,b)=>new Date(b.data)-new Date(a.data))[0]||null;
-}
-function ultCorrecaoProva(aid,pid){
-  return S.correcoes.filter(c=>c.alunoId===aid&&c.provaId===pid).sort((a,b)=>new Date(b.data)-new Date(a.data))[0]||null;
-}
-function openModal(id){
-  document.getElementById(id).classList.add('on');
-  if(id==='m-backup') renderBackupStats();
-}
-function closeModal(id){ document.getElementById(id).classList.remove('on') }
-document.querySelectorAll('.overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')}));
-function toast(msg,type=''){
-  const b=document.getElementById('toast-box');
-  const t=document.createElement('div');
-  t.className='toast '+type; t.textContent=msg; b.appendChild(t);
-  setTimeout(()=>t.remove(),3500);
-}
-
-// ════════════════════════════════════════════
-//  BACKUP / SINCRONIZAÇÃO
-// ════════════════════════════════════════════
-function exportarBackup(){
-  const dados = {
-    versao: 2,
-    exportado: new Date().toISOString(),
-    turmas: S.turmas,
-    provas: S.provas,
-    alunos: S.alunos,
-    correcoes: S.correcoes
-  };
-  const json = JSON.stringify(dados, null, 2);
-  const blob = new Blob([json], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  const data = new Date().toLocaleDateString('pt-BR').replace(/\//g,'-');
-  a.href = url; a.download = `reagiNota_backup_${data}.json`;
-  a.click(); URL.revokeObjectURL(url);
-  toast('Backup exportado com sucesso!','ok');
-}
-
-function importarBackup(event){
-  const file = event.target.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try{
-      const dados = JSON.parse(e.target.result);
-      if(!dados.turmas || !dados.alunos) throw new Error('Arquivo inválido');
-
-      let addT=0, addP=0, addA=0, addC=0;
-
-      // Mesclar — adiciona apenas o que não existe (por id)
-      const idsT = new Set(S.turmas.map(x=>x.id));
-      dados.turmas.forEach(t=>{ if(!idsT.has(t.id)){ S.turmas.push(t); addT++; } });
-
-      const idsP = new Set(S.provas.map(x=>x.id));
-      dados.provas.forEach(p=>{ if(!idsP.has(p.id)){ S.provas.push(p); addP++; } });
-
-      const idsA = new Set(S.alunos.map(x=>x.id));
-      dados.alunos.forEach(a=>{ if(!idsA.has(a.id)){ S.alunos.push(a); addA++; } });
-
-      const idsC = new Set(S.correcoes.map(x=>x.id));
-      dados.correcoes.forEach(c=>{ if(!idsC.has(c.id)){ S.correcoes.push(c); addC++; } });
-
-      save();
-      renderTurmaSelect(); renderProvaTree(); renderAlunos(); renderBackupStats();
-      closeModal('m-backup');
-      toast(`✅ Importado: +${addT} turmas, +${addA} alunos, +${addP} provas, +${addC} correções`,'ok');
-    } catch(err){
-      toast('Erro ao importar: arquivo inválido.','err');
-    }
-    event.target.value='';
-  };
-  reader.readAsText(file);
-}
-
-function renderBackupStats(){
-  document.getElementById('backup-stats-body').innerHTML =
-    `<span><strong>${S.turmas.length}</strong> turmas</span>
-     <span><strong>${S.alunos.length}</strong> alunos</span>
-     <span><strong>${S.provas.length}</strong> avaliações</span>
-     <span><strong>${S.correcoes.length}</strong> correções</span>`;
-}
-
-// ════════════════════════════════════════════
-//  CONFIRMAR (substitui confirm() bloqueado em iframe)
-// ════════════════════════════════════════════
-function confirmar(msg, sub, onOk){
-  document.getElementById('confirm-msg').textContent = msg;
-  document.getElementById('confirm-sub').textContent = sub || '';
-  const btn = document.getElementById('confirm-ok');
-  // remove listener anterior
-  const novo = btn.cloneNode(true);
-  btn.parentNode.replaceChild(novo, btn);
-  novo.addEventListener('click', ()=>{ closeModal('m-confirm'); onOk(); });
-  openModal('m-confirm');
-}
-
-// ════════════════════════════════════════════
-//  INIT — Firebase auth callback cuida do render
-// ════════════════════════════════════════════
-// Renderização inicial com dados locais (antes do Firebase responder)
 renderTurmaSelect();
-renderProvaTree();
 renderAlunos();
+renderProvaTree();
 </script>
 </body>
 </html>
