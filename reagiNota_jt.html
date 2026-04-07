@@ -87,12 +87,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .modal { background: #fff; border-radius: 14px; padding: 26px; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,.15); }
  
 /* GABARITO ESTILO CAEd (BOLINHAS) */
-.gabarito-grid { display: flex; flex-direction: column; gap: 12px; }
-.q-row { display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 8px; background: var(--paper); border: 1.5px solid var(--line); }
-.q-num { width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 800; flex-shrink: 0; }
-.options-wrap { display: flex; gap: 10px; flex: 1; justify-content: space-around; }
+.gabarito-container { display: flex; flex-direction: column; gap: 10px; }
+.q-row { display: flex; align-items: center; gap: 15px; padding: 8px 12px; border-radius: 10px; background: #fff; border: 1.5px solid var(--line); transition: 0.2s; }
+.q-num { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .8rem; font-weight: 800; flex-shrink: 0; }
+.options-wrap { display: flex; gap: 12px; flex: 1; justify-content: flex-start; }
 .bubble { 
-    width: 34px; height: 34px; border-radius: 50%; 
+    width: 36px; height: 36px; border-radius: 50%; 
     border: 2px solid var(--ink2); display: flex; 
     align-items: center; justify-content: center; 
     font-weight: 700; cursor: pointer; transition: 0.2s;
@@ -101,12 +101,12 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .bubble:hover { border-color: var(--blue); color: var(--blue); }
 .bubble.selected { background: var(--ink); color: #fff; border-color: var(--ink); }
 
-/* Feedback de acerto/erro CAEd */
+/* Feedback visual de correção */
 .q-row.acerto { border-color: var(--green); background: var(--green-bg); }
 .q-row.erro { border-color: var(--red); background: var(--red-bg); }
 .q-row.acerto .q-num { background: var(--green); }
 .q-row.erro .q-num { background: var(--red); }
-.gab-tip { font-size: 0.65rem; color: var(--ink3); font-weight: 800; min-width: 40px; text-align: right; }
+.gab-info { font-size: 0.7rem; color: var(--ink3); font-weight: 800; margin-left: auto; text-transform: uppercase; }
 
 .nota-display { background: var(--ink); color: #fff; border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 20px; }
 .nota-val { font-size: 3.5rem; font-weight: 800; font-family: 'DM Mono', monospace; }
@@ -114,9 +114,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: .82rem; z-index: 9999; transition: 0.3s; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
-.scan-dropzone { border: 2px dashed var(--line); border-radius: 12px; padding: 20px; text-align: center; color: var(--ink2); cursor: pointer; transition: 0.2s; margin-bottom: 15px; background: var(--paper); }
-.scan-dropzone:hover { border-color: var(--blue); background: var(--blue-bg); }
-.scan-preview { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; display: none; }
+.scan-area { border: 2px dashed var(--line); border-radius: 12px; padding: 15px; text-align: center; margin-bottom: 15px; background: var(--paper); cursor: pointer; }
+.scan-preview { max-width: 100%; max-height: 150px; border-radius: 8px; margin-top: 10px; display: none; border: 1px solid var(--line); }
 </style>
 </head>
 <body onpaste="handlePaste(event)">
@@ -153,7 +152,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
  <div id="no-sel" class="empty" style="margin-top:80px">
  <div class="ei">🎯</div>
  <div style="font-weight:800;font-size:1rem;margin-bottom:7px">Selecione prova e aluno</div>
- <p style="max-width:300px;margin:0 auto;line-height:1.6">Layout de bolinhas padrão CAEd ativado.</p>
+ <p style="max-width:300px;margin:0 auto;line-height:1.6">Você pode colar (Ctrl+V) fotos aqui para escanear.</p>
  </div>
  <div id="corr-content" style="display:none"></div>
  </div>
@@ -167,27 +166,28 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
  </div>
  
  <div id="p-organizar" class="page">
- <h2>📂 Gerenciar Dados</h2>
+ <h2>📂 Organizar Dados</h2>
  <div class="card" style="margin-top:20px;">
- <h3>Provas da Turma</h3>
+ <h3>Provas</h3>
  <div id="org-provas-list"></div>
  </div>
  <div class="card">
- <h3>Alunos da Turma</h3>
+ <h3>Alunos</h3>
  <div id="org-alunos-list"></div>
  </div>
  </div>
  
  <div id="p-relatorios" class="page">
- <h2>📊 Relatórios de Desempenho</h2>
+ <h2>📊 Relatórios</h2>
  <div id="rel-content" style="margin-top:20px;"></div>
  </div>
  </div>
 </div>
  
+<!-- MODAIS -->
 <div class="overlay" id="m-nova-turma"><div class="modal"><h3>Nova Turma</h3><input type="text" id="t-nome" placeholder="Nome da Turma" style="margin:20px 0; width:100%; padding:10px;"><button class="btn btn-blue" onclick="criarTurma()">Criar</button></div></div>
 <div class="overlay" id="m-nova-prova"><div class="modal"><h3>Nova Prova</h3><input type="text" id="prova-nome" placeholder="Nome da Prova" style="margin-top:15px; width:100%; padding:10px;"><input type="number" id="prova-nq" placeholder="Nº de Questões" value="10" style="margin:10px 0; width:100%; padding:10px;"><div id="gabarito-campos"></div><button class="btn btn-ghost" onclick="gerarCamposGabarito()" id="btn-gerar-gab">Definir Gabarito</button><hr style="margin:15px 0;"><button class="btn btn-blue" onclick="criarProva()">Salvar Prova</button></div></div>
-<div class="overlay" id="m-lista-alunos"><div class="modal"><h3>Importar Alunos</h3><textarea id="lista-nomes" placeholder="Cole os nomes, um por linha" rows="10" style="margin:15px 0; width:100%; padding:10px;"></textarea><button class="btn btn-blue" onclick="importarLista()">Importar</button></div></div>
+<div class="overlay" id="m-lista-alunos"><div class="modal"><h3>Importar Alunos</h3><textarea id="lista-nomes" placeholder="Nomes, um por linha" rows="10" style="margin:15px 0; width:100%; padding:10px;"></textarea><button class="btn btn-blue" onclick="importarLista()">Importar</button></div></div>
 <div class="overlay" id="m-edit-prova"><div class="modal modal-lg"><h3>✏️ Editar Prova</h3><div id="edit-prova-body"></div></div></div>
 <div class="toast" id="toast"></div>
 
@@ -217,17 +217,15 @@ function openModal(id) { document.getElementById(id).classList.add('on'); if(id=
 function closeModal(id) { document.getElementById(id).classList.remove('on'); }
 document.querySelectorAll('.overlay').forEach(ov => ov.onclick = e => { if(e.target===ov) closeModal(ov.id); });
  
-// TURMAS & ALUNOS
-function criarTurma() { const n = document.getElementById('t-nome').value; if(!n) return; S.turmas.push({id: uid(), nome: n}); save(); renderTurmaSelect(); renderTurmasPage(); closeModal('m-nova-turma'); toast("Turma criada!"); }
+function criarTurma() { const n = document.getElementById('t-nome').value; if(!n) return; S.turmas.push({id: uid(), nome: n}); save(); renderTurmaSelect(); renderTurmasPage(); closeModal('m-nova-turma'); }
 function renderTurmaSelect() { const sel = document.getElementById('turma-sel'); sel.innerHTML = '<option value="">— Selecionar Turma —</option>'; S.turmas.forEach(t => { sel.innerHTML += `<option value="${t.id}" ${S.turmaId === t.id ? 'selected' : ''}>${t.nome}</option>`; }); }
 function trocarTurma() { S.turmaId = document.getElementById('turma-sel').value; S.provaId = null; S.alunoId = null; renderAlunos(); renderProvaTree(); save(); limparCorrecao(); }
 function renderTurmasPage() { document.getElementById('turmas-list').innerHTML = S.turmas.map(t => `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><span><b>${t.nome}</b></span><button class="btn btn-red btn-xs" onclick="excluirTurma('${t.id}')">Excluir</button></div>`).join(''); }
-function excluirTurma(id) { if(!confirm("Excluir turma?")) return; S.turmas = S.turmas.filter(t => t.id !== id); S.alunos = S.alunos.filter(a => a.turmaId !== id); if(S.turmaId === id) S.turmaId = null; save(); renderTurmaSelect(); renderTurmasPage(); }
+function excluirTurma(id) { if(!confirm("Excluir turma?")) return; S.turmas = S.turmas.filter(t => t.id !== id); S.alunos = S.alunos.filter(a => a.turmaId !== id); save(); renderTurmaSelect(); renderTurmasPage(); }
  
-// PROVAS
 function gerarCamposGabarito() {
  const nq = document.getElementById('prova-nq').value;
- document.getElementById('gabarito-campos').innerHTML = '<div class="gabarito-grid" style="grid-template-columns: 1fr;">' + Array.from({length: nq}, (_, i) => `
+ document.getElementById('gabarito-campos').innerHTML = '<div class="gabarito-container">' + Array.from({length: nq}, (_, i) => `
     <div class="q-row">
         <span class="q-num">${i+1}</span>
         <div class="options-wrap">
@@ -247,7 +245,7 @@ function criarProva() {
  const nome = document.getElementById('prova-nome').value;
  const nq = document.getElementById('prova-nq').value;
  S.provas.push({id: uid(), turmaId: S.turmaId, nome, nq, gabarito: window._tempGab || {}});
- save(); renderProvaTree(); closeModal('m-nova-prova'); toast("Prova salva!");
+ save(); renderProvaTree(); closeModal('m-nova-prova');
 }
 function renderProvaTree() { const div = document.getElementById('prova-tree'); const provas = S.provas.filter(p => p.turmaId === S.turmaId); div.innerHTML = provas.map(p => `<div class="st-row ${S.provaId === p.id ? 'on' : ''}" onclick="selProva('${p.id}')"><span>📋 ${p.nome}</span></div>`).join(''); }
 function selProva(id) { S.provaId = id; renderProvaTree(); if(S.alunoId) abrirCorrecao(); save(); }
@@ -256,7 +254,7 @@ function importarLista() { if(!S.turmaId) return alert("Selecione uma turma!"); 
 function renderAlunos(q = '') { const div = document.getElementById('aluno-list'); const alunos = S.alunos.filter(a => a.turmaId === S.turmaId && a.nome.toLowerCase().includes(q.toLowerCase())); div.innerHTML = alunos.map(a => `<div class="st-row ${S.alunoId === a.id ? 'on' : ''}" onclick="selAluno('${a.id}')"><div class="st-av">${a.nome[0]}</div><span>${a.nome}</span></div>`).join(''); }
 function selAluno(id) { S.alunoId = id; renderAlunos(); abrirCorrecao(); save(); }
  
-// CORREÇÃO COM BOLINHAS
+// CORREÇÃO ESTILO BOLINHAS CAEd
 function limparCorrecao() { document.getElementById('no-sel').style.display = 'block'; document.getElementById('corr-content').style.display = 'none'; }
 function abrirCorrecao() {
  if(!S.alunoId || !S.provaId) return;
@@ -265,33 +263,40 @@ function abrirCorrecao() {
  document.getElementById('no-sel').style.display = 'none';
  const div = document.getElementById('corr-content'); div.style.display = 'block';
  const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId) || {respostas: {}};
+ 
+ // Lógica de alternativas: Mostra apenas até D se não houver E no gabarito
  const gabValores = Object.values(prova.gabarito);
  const opcoes = gabValores.includes('E') ? ['A','B','C','D','E'] : ['A','B','C','D'];
  
  div.innerHTML = `
  <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-        <div><h3>${aluno.nome}</h3><p style="color:var(--ink3)">${prova.nome}</p></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <div><h3 style="font-size:1.2rem">${aluno.nome}</h3><p style="color:var(--ink3); font-size:0.8rem">${prova.nome}</p></div>
         <button class="btn btn-blue btn-xs" onclick="document.getElementById('camera-input').click()">📸 Escanear Foto</button>
     </div>
-    <div class="scan-dropzone" id="dropzone" onclick="document.getElementById('camera-input').click()">
-        🖼️ Arraste ou Cole (Ctrl+V) o gabarito
+    <div class="scan-area" id="dropzone" onclick="document.getElementById('camera-input').click()">
+        🖼️ Arraste ou Cole (Ctrl+V) o gabarito aqui
         <img id="prev-img" class="scan-preview">
     </div>
  </div>
- <div class="card"><div class="gabarito-grid">` + 
- Array.from({length: prova.nq}, (_, i) => {
-    const q = i+1; const resp = corr.respostas[q] || ""; const gab = prova.gabarito[q];
-    let corCls = resp ? (resp === gab ? "acerto" : "erro") : "";
-    return `
-    <div class="q-row ${corCls}">
-        <span class="q-num">${q}</span>
-        <div class="options-wrap">
-            ${opcoes.map(l => `<div class="bubble ${resp === l ? 'selected' : ''}" onclick="salvarResposta(${q}, '${l}')">${l}</div>`).join('')}
-        </div>
-        <div class="gab-tip">${gab ? 'Gab: '+gab : ''}</div>
-    </div>`;
- }).join('') + `</div><button class="btn btn-blue" style="margin-top:20px; width:100%" onclick="calcularNota()">✅ Calcular Nota</button></div><div id="result-nota"></div>`;
+ <div class="card">
+    <div class="gabarito-container">` + 
+    Array.from({length: prova.nq}, (_, i) => {
+        const q = i+1; const resp = corr.respostas[q] || ""; const gab = prova.gabarito[q];
+        let corCls = resp ? (resp === gab ? "acerto" : "erro") : "";
+        return `
+        <div class="q-row ${corCls}">
+            <span class="q-num">${q}</span>
+            <div class="options-wrap">
+                ${opcoes.map(l => `<div class="bubble ${resp === l ? 'selected' : ''}" onclick="salvarResposta(${q}, '${l}')">${l}</div>`).join('')}
+            </div>
+            <div class="gab-info">${gab ? 'Gab: '+gab : ''}</div>
+        </div>`;
+    }).join('') + 
+ `  </div>
+    <button class="btn btn-blue" style="margin-top:20px; width:100%" onclick="calcularNota()">✅ Calcular Nota</button>
+ </div>
+ <div id="result-nota"></div>`;
 }
 
 function handlePaste(e) {
@@ -302,13 +307,13 @@ function handlePaste(e) {
   }
 }
 
-async function processarFoto(file) {
+function processarFoto(file) {
   if (!file) return;
   const reader = new FileReader();
   reader.onload = (e) => {
     const img = document.getElementById('prev-img');
     if(img) { img.src = e.target.result; img.style.display = 'block'; }
-    toast("🤖 Foto capturada! Analisando...");
+    toast("🤖 Foto capturada! Analisando gabarito...");
   };
   reader.readAsDataURL(file);
 }
@@ -316,7 +321,6 @@ async function processarFoto(file) {
 function salvarResposta(q, v) { 
  let corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
  if(!corr) { corr = {id: uid(), alunoId: S.alunoId, provaId: S.provaId, turmaId: S.turmaId, respostas: {}}; S.correcoes.push(corr); }
- // Se clicar na mesma que já está marcada, desmarca
  if(corr.respostas[q] === v) delete corr.respostas[q];
  else corr.respostas[q] = v;
  save(); abrirCorrecao(); 
@@ -332,7 +336,6 @@ function calcularNota() {
  renderAlunos();
 }
  
-// ORGANIZAR & RELATÓRIOS
 function renderOrganizar() {
  const pDiv = document.getElementById('org-provas-list');
  const aDiv = document.getElementById('org-alunos-list');
@@ -346,7 +349,7 @@ function excluirProva(id) { S.provas = S.provas.filter(p => p.id !== id); save()
 function editarProva(id) {
  const p = S.provas.find(x => x.id === id); if(!p) return;
  const body = document.getElementById('edit-prova-body');
- body.innerHTML = `<input type="text" id="ep-nome" value="${p.nome}" style="width:100%; padding:10px; margin-bottom:10px;"><div class="gabarito-grid">` + 
+ body.innerHTML = `<input type="text" id="ep-nome" value="${p.nome}" style="width:100%; padding:10px; margin-bottom:15px;"><div class="gabarito-container">` + 
  Array.from({length: p.nq}, (_, i) => `
     <div class="q-row">
         <span class="q-num">${i+1}</span>
@@ -379,9 +382,6 @@ function renderRelatorios() {
  corrs.map(c => { const a = S.alunos.find(al => al.id === c.alunoId); return `<tr><td>${a?.nome || 'Excluído'}</td><td><b>${c.nota?.toFixed(1) || '0.0'}</b></td></tr>`; }).join('') + `</tbody></table></div>`;
 }
  
-function stringToColor(str) { let hash = 0; for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash); const c = (hash & 0x00FFFFFF).toString(16).toUpperCase(); return "#" + "00000".substring(0, 6 - c.length) + c; }
- 
-// INIT
 renderTurmaSelect(); renderAlunos(); renderProvaTree();
 document.addEventListener('jt_firebase_ready', () => { window._jt_load().then(d => { if(d) { S = d; renderTurmaSelect(); renderAlunos(); renderProvaTree(); } }); });
 </script>
