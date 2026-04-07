@@ -3,203 +3,224 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Planejador — UE João Tavares da Costa</title>
+    <title>Planejador - João Tavares</title>
     <style>
         :root { 
-            --primary: #cfd8dc; 
+            --primary: #f0f2f5; 
             --card-bg: #ffffff; 
             --text-dark: #263238; 
-            --header-bg: #546e7a; 
-            --accent: #ffccbc; 
-            --shadow: 0 4px 12px rgba(0,0,0,0.08); 
-            --bg-6: #546e7a; --bg-7: #78909c; --bg-8: #8d6e63; --bg-9: #6d4c41;
+            --header-bg: #455a64; 
+            --accent: #80cbc4;
+            --shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --bg-6: #90a4ae; --bg-7: #4db6ac; --bg-8: #7986cb; --bg-9: #607d8b;
         }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--primary); color: var(--text-dark); margin: 0; padding: 15px; line-height: 1.5; }
-        .container { width: 100%; max-width: 1200px; margin: auto; }
-        .top-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .btn-turma-top { background: white; border: 1px solid #b0bec5; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; color: var(--header-bg); transition: 0.2s; }
-        .btn-turma-top.active { background: var(--header-bg); color: white; border-color: var(--header-bg); }
-        .header-unidade { background: var(--header-bg); padding: 20px; border-radius: 15px; color: white; text-align: center; margin-bottom: 25px; box-shadow: var(--shadow); }
-        .header-unidade h1 { margin: 0; font-size: 1.6rem; }
-        .layout-principal { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
-        .sidebar-schedule { background: #eceff1; padding: 20px; border-radius: 20px; border: 1px solid #b0bec5; box-shadow: var(--shadow); position: sticky; top: 15px; }
-        .sidebar-schedule h3 { margin-top: 0; text-align: center; color: var(--header-bg); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
-        .day-label { font-size: 0.75rem; font-weight: bold; color: var(--header-bg); margin-top: 15px; text-transform: uppercase; }
-        .schedule-tag { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 8px; padding: 10px; border-radius: 8px; color: white; font-weight: 600; }
-        .section-card { background: var(--card-bg); padding: 20px; border-radius: 15px; margin-bottom: 20px; box-shadow: var(--shadow); border: 1px solid #cfd8dc; }
-        .roteiro-item { background: #fff; border: 1px solid #cfd8dc; border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
-        .roteiro-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; background: #fff; font-weight: bold; }
-        .roteiro-content { display: none; padding: 15px; border-top: 1px solid #eee; background: #fff; }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--primary); color: var(--text-dark); margin: 0; padding: 0; }
+        
+        .turmas-nav { background: #fff; padding: 15px; display: flex; justify-content: center; gap: 10px; border-bottom: 2px solid #ddd; position: sticky; top: 0; z-index: 100; }
+        .btn-turma { padding: 10px 20px; border: 2px solid var(--header-bg); border-radius: 8px; background: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-turma.active { background: var(--header-bg); color: white; }
+
+        .main-layout { display: grid; grid-template-columns: 350px 1fr; gap: 20px; padding: 20px; max-width: 1400px; margin: auto; }
+
+        .left-col { background: #fff; border-radius: 12px; padding: 20px; box-shadow: var(--shadow); height: fit-content; border-left: 6px solid var(--header-bg); }
+        .left-col h2 { font-size: 1.2rem; text-align: center; color: var(--header-bg); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+
+        .day-box { margin-bottom: 20px; }
+        .day-box h4 { margin: 10px 0; color: #546e7a; text-transform: uppercase; font-size: 0.8rem; }
+        .schedule-tag { padding: 8px; border-radius: 6px; color: white; font-size: 0.85rem; margin-bottom: 5px; font-weight: bold; }
+
+        .right-col { display: flex; flex-direction: column; gap: 15px; }
+        
+        .collapsible-section { background: #fff; border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 10px; }
+        .collapsible-header { padding: 15px 20px; background: #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-bottom: 1px solid #eee; }
+        .collapsible-content { padding: 20px; display: none; }
+        .collapsible-section.open .collapsible-content { display: block; }
+
+        .line-6 { background: var(--bg-6); } .line-7 { background: var(--bg-7); } .line-8 { background: var(--bg-8); } .line-9 { background: var(--bg-9); }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-family: inherit; }
+        .btn-main { background: var(--header-bg); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; }
+
+        .roteiro-item { border: 1px solid #ddd; border-radius: 10px; margin-bottom: 10px; background: #fff; overflow: hidden; }
+        .roteiro-header { padding: 12px; display: flex; justify-content: space-between; cursor: pointer; background: #fff; }
+        .roteiro-content { padding: 15px; display: none; border-top: 1px solid #eee; }
         .roteiro-item.open .roteiro-content { display: block; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1.5px solid #cfd8dc; border-radius: 10px; font-size: 0.95rem; box-sizing: border-box; }
-        .btn-main { background-color: var(--header-bg); color: white; border: none; padding: 15px; border-radius: 12px; cursor: pointer; width: 100%; font-weight: bold; font-size: 1rem; }
-        .row-compacta { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .data-badge { background: var(--header-bg); color: white; padding: 3px 10px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; margin-right: 10px; }
+
         .subtopico-view { display: flex; align-items: center; gap: 10px; padding: 8px; background: #f1f8e9; border-radius: 8px; margin-top: 5px; font-size: 0.9rem; border: 1px solid #dcedc8; cursor: pointer; }
         .subtopico-view.checked { background: #f8f9fa; border-color: #e0e0e0; color: #9e9e9e; text-decoration: line-through; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: #fff; padding: 25px; border-radius: 20px; width: 90%; max-width: 550px; max-height: 90vh; overflow-y: auto; }
-        @media(max-width:700px){.layout-principal{grid-template-columns:1fr}}
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; }
+        .subtopico-edit-row { display: flex; gap: 10px; margin-bottom: 5px; }
+
+        @media (max-width: 850px) { .main-layout { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="top-nav" id="turmaGrid"></div>
-    <div class="header-unidade">
-        <h1>João Tavares da Costa</h1>
-        <p>Planejamento Semanal - Raquel Aguiar</p>
-    </div>
-    <div class="layout-principal">
-        <div class="sidebar-schedule">
-            <h3>📅 Quadro da Semana</h3>
-            <div id="homeDaysGrid"></div>
-        </div>
-        <div id="painelTurma" style="display:none;">
-            <div class="section-card">
-                <h3 id="tituloTurmaDinamico" style="margin-top:0; color:var(--header-bg)">✍️ Novo Planejamento</h3>
-                <div class="row-compacta">
-                    <input type="text" id="dataInput" placeholder="Data (Apenas números)" maxlength="10" onkeyup="mascaraData(this)">
-                    <input type="text" id="aulaInput" placeholder="Aula (Ex: 1ª e 2ª)">
-                </div>
-                <textarea id="textoPrincipal" placeholder="O que será trabalhado?"></textarea>
-                <button class="btn-main" onclick="salvarNovo()">💾 Salvar Planejamento</button>
+
+<nav class="turmas-nav" id="turmaGrid"></nav>
+
+<div class="main-layout">
+    <aside class="left-col">
+        <h2>Quadro de Horários da Semana</h2>
+        <div id="homeDaysGrid"></div>
+    </aside>
+
+    <main class="right-col" id="painelTurma" style="display:none;">
+        <h2 id="tituloTurmaDinamico" style="margin: 0 0 10px 10px; color: var(--header-bg);"></h2>
+
+        <!-- SEÇÃO: HORÁRIO DA TURMA -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection(this)">Horário da Turma <span>▽</span></div>
+            <div class="collapsible-content">
+                <div id="gradeHorario" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;"></div>
             </div>
-            <div id="listaHistorico"></div>
         </div>
-    </div>
+
+        <!-- SEÇÃO: NOVO PLANEJAMENTO -->
+        <div class="collapsible-section">
+            <div class="collapsible-header" onclick="toggleSection(this)">Novo Planejamento <span>▽</span></div>
+            <div class="collapsible-content">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <input type="text" id="dataInput" placeholder="Data (Apenas números)" onkeyup="mascaraData(this)">
+                    <input type="text" id="aulaInput" placeholder="Aula (ex: 1ª)">
+                </div>
+                <textarea id="textoPrincipal" rows="4" placeholder="Escreva o conteúdo aqui..."></textarea>
+                <button class="btn-main" onclick="salvarNovo()">💾 Salvar na Pasta</button>
+            </div>
+        </div>
+
+        <div id="listaHistorico"></div>
+    </main>
 </div>
 
 <div id="modalEdicao" class="modal">
     <div class="modal-content">
         <h3 style="color:var(--header-bg)">Editar Registro</h3>
-        <div class="row-compacta">
-            <input type="text" id="editData" onkeyup="mascaraData(this)" maxlength="10">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <input type="text" id="editData" onkeyup="mascaraData(this)">
             <input type="text" id="editAula">
         </div>
         <textarea id="editTitulo" rows="4"></textarea>
         <div id="areaSubtopicosEdit"></div>
-        <button style="width:100%;margin-top:10px;padding:10px;cursor:pointer;border-radius:10px;border:1px solid #ddd;background:#f9f9f9;" onclick="adicionarLinhaSubtopico()">+ Novo Tópico</button>
-        <div style="margin-top:20px;display:flex;gap:10px;">
-            <button class="btn-main" onclick="salvarAlteracoes()" style="flex:2">💾 Atualizar</button>
-            <button class="btn-main" style="background:#90a4ae; flex:1" onclick="fecharModal()">Sair</button>
+        <button onclick="adicionarLinhaSubtopico()" style="width:100%; background:#f0f0f0; border:1px solid #ccc; padding:10px; border-radius:8px; cursor:pointer; margin-top:10px;">+ Adicionar Tópico</button>
+        <div style="margin-top:20px; display:flex; gap:10px;">
+            <button class="btn-main" onclick="salvarAlteracoes()" style="flex:2">Salvar Alterações</button>
+            <button class="btn-main" onclick="fecharModal()" style="flex:1; background:#90a4ae;">Cancelar</button>
         </div>
-        <button onclick="excluirRegistro()" style="width:100%;background:none;border:none;color:#d32f2f;cursor:pointer;margin-top:20px;font-weight:bold;">🗑️ EXCLUIR PERMANENTE</button>
+        <button onclick="excluirRegistro()" style="width:100%; background:none; border:none; color:red; cursor:pointer; margin-top:15px; font-weight:bold;">🗑️ Excluir Permanente</button>
     </div>
 </div>
 
 <script>
-    // URL DO BANCO COM SEUS DADOS REAIS
-    const URL_FIREBASE = "https://planejador-raquel-default-rtdb.firebaseio.com/joao_tavares_data.json";
-    const CORES = { "6º ano": "#546e7a", "7º ano": "#78909c", "8º ano": "#8d6e63", "9º ano": "#6d4c41" };
-    const DIAS_SEMANA = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
+    const URL_FIREBASE = "https://planejador-raquel-default-rtdb.firebaseio.com/joao_tavares_data.json"; 
+    const CLASSES = { "6º ano": "line-6", "7º ano": "line-7", "8º ano": "line-8", "9º ano": "line-9" };
+    const DIAS = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"];
     
     let banco = {}; 
     let turmaAtiva = ""; 
     let indexEditando = null;
     let idsAbertos = new Set();
 
+    function toggleSection(el) { el.parentElement.classList.toggle('open'); }
+
     async function carregar() {
         try {
             const res = await fetch(URL_FIREBASE);
-            const dadosRecuperados = await res.json();
-            banco = dadosRecuperados || {};
+            const novosDados = await res.json() || {};
             
-            if (!Object.keys(banco).length) {
-                console.warn("Banco de dados retornado vazio.");
+            // Só atualiza se não houver edição em curso para não perder o foco
+            if (document.getElementById('modalEdicao').style.display !== 'flex') {
+                banco = novosDados;
+                renderizarTurmas();
+                renderizarHome();
+                if(turmaAtiva) {
+                    renderizarGrade();
+                    renderizarHistorico();
+                }
             }
-
-            renderizarTurmas(); 
-            renderizarHome();
-            if(turmaAtiva) renderizarHistorico();
-        } catch (e) {
-            console.error("Erro na conexão:", e);
-        }
+        } catch (e) { console.error("Erro ao carregar:", e); }
     }
-
-    // Atualização automática a cada 5 segundos (apenas se não estiver editando)
-    setInterval(() => { 
-        if(document.getElementById('modalEdicao').style.display !== 'flex') carregar(); 
-    }, 5000);
 
     function mascaraData(i) {
         let v = i.value.replace(/\D/g, "");
-        if(v.length >= 2) v = v.substring(0,2) + "/" + v.substring(2);
-        if(v.length >= 5) v = v.substring(0,5) + "/" + v.substring(5,9);
+        if (v.length >= 2) v = v.substring(0,2) + "/" + v.substring(2);
+        if (v.length >= 5) v = v.substring(0,5) + "/" + v.substring(5,9);
         i.value = v;
     }
 
     function renderizarTurmas() {
-        const grid = document.getElementById('turmaGrid'); 
-        grid.innerHTML = '';
-        ["6º ano","7º ano","8º ano","9º ano"].forEach(nome => {
-            const id = `JT_${nome.replace(/\s/g,'_')}`;
+        const nav = document.getElementById('turmaGrid'); nav.innerHTML = '';
+        Object.keys(CLASSES).forEach(nome => {
+            const id = `JT_${nome.replace(/\s/g, '_')}`;
+            if(!banco[id]) banco[id] = { roteiros: [], horários: {} };
             const btn = document.createElement('button');
-            btn.className = `btn-turma-top ${turmaAtiva===id?'active':''}`;
-            btn.innerText = nome;
+            btn.className = `btn-turma ${turmaAtiva === id ? 'active' : ''}`;
+            btn.innerHTML = nome;
             btn.onclick = () => { 
-                turmaAtiva=id; 
-                idsAbertos.clear(); 
-                document.getElementById('painelTurma').style.display='block'; 
-                document.getElementById('tituloTurmaDinamico').innerText = `✍️ Planejamento: ${nome}`;
-                renderizarTurmas(); 
-                renderizarHistorico(); 
+                turmaAtiva = id; 
+                idsAbertos.clear();
+                document.getElementById('painelTurma').style.display = 'flex';
+                document.getElementById('tituloTurmaDinamico').innerText = nome;
+                renderizarTurmas(); renderizarGrade(); renderizarHistorico(); 
             };
-            grid.appendChild(btn);
+            nav.appendChild(btn);
         });
     }
 
     function renderizarHome() {
-        const grid = document.getElementById('homeDaysGrid'); 
-        grid.innerHTML = '';
-        
-        DIAS_SEMANA.forEach(dia => {
+        const grid = document.getElementById('homeDaysGrid'); grid.innerHTML = '';
+        DIAS.forEach(dia => {
             let aulasDia = [];
-            ["6º ano","7º ano","8º ano","9º ano"].forEach(nome => {
-                const id = `JT_${nome.replace(/\s/g,'_')}`;
+            Object.keys(CLASSES).forEach(nome => {
+                const id = `JT_${nome.replace(/\s/g, '_')}`;
                 if(banco[id]?.horários?.[dia]) {
-                    banco[id].horários[dia].forEach(h => {
-                        if(h && h.trim()) aulasDia.push({h, t:nome});
-                    });
+                    banco[id].horários[dia].forEach(h => { if(h && h.trim()) aulasDia.push({h, nome}); });
                 }
             });
-
-            if (aulasDia.length > 0) {
-                let html = `<div class="day-label">${dia}</div>`;
-                aulasDia.sort((a,b)=>(parseInt(a.h)||0)-(parseInt(b.h)||0)).forEach(item => { 
-                    html += `<div class="schedule-tag" style="background:${CORES[item.t]}">${item.h} - ${item.t}</div>`; 
+            
+            if(aulasDia.length > 0) {
+                let html = `<div class="day-box"><h4>${dia}</h4>`;
+                aulasDia.sort((a,b) => parseInt(a.h) - parseInt(b.h));
+                aulasDia.forEach(item => {
+                    html += `<div class="schedule-tag ${CLASSES[item.nome]}">${item.h} - ${item.nome}</div>`;
                 });
-                grid.innerHTML += html;
+                grid.innerHTML += html + `</div>`;
             }
         });
     }
 
-    function gerenciarAbertura(idx, elemento) {
-        if(idsAbertos.has(idx)){
-            idsAbertos.delete(idx);
-            elemento.classList.remove('open');
-        } else {
-            idsAbertos.add(idx);
-            elemento.classList.add('open');
-        }
+    function renderizarGrade() {
+        const cont = document.getElementById('gradeHorario'); cont.innerHTML = '';
+        DIAS.slice(0, 3).forEach(dia => { // Mostra Segunda, Terça e Quarta na grade de edição
+            if(!banco[turmaAtiva].horários[dia]) banco[turmaAtiva].horários[dia] = [""];
+            let html = `<div style="background:#f9f9f9; padding:10px; border-radius:8px;"><b>${dia}</b><br>`;
+            banco[turmaAtiva].horários[dia].forEach((v, idx) => {
+                html += `<div style="display:flex; gap:2px;"><input type="text" value="${v}" style="padding:5px; margin-bottom:2px;" onblur="banco['${turmaAtiva}'].horários['${dia}'][${idx}]=this.value; sincronizar();"></div>`;
+            });
+            html += `<button onclick="banco['${turmaAtiva}'].horários['${dia}'].push(''); renderizarGrade();" style="width:100%; background:#eee; border:none; cursor:pointer;">+</button></div>`;
+            cont.innerHTML += html;
+        });
+    }
+
+    async function sincronizar() { 
+        await fetch(URL_FIREBASE, { method: 'PUT', body: JSON.stringify(banco) }); 
+        renderizarHome(); 
     }
 
     function renderizarHistorico() {
-        const lista = document.getElementById('listaHistorico');
-        lista.innerHTML = '<h3>📚 Histórico de Planejamento</h3>';
+        const lista = document.getElementById('listaHistorico'); 
+        lista.innerHTML = '<h3 style="margin-left:10px; color:#455a64;">Histórico</h3>';
         
-        if(!banco[turmaAtiva] || !banco[turmaAtiva].roteiros) {
-            lista.innerHTML += '<p style="text-align:center; color:#999;">Nenhum registro encontrado para esta turma.</p>';
-            return;
-        }
+        if(!banco[turmaAtiva] || !banco[turmaAtiva].roteiros) return;
 
         banco[turmaAtiva].roteiros.forEach((r, idx) => {
-            let subs = (r.subtopicos||[]).map((s,sIdx) => {
-                const isChecked = (typeof s === 'object') ? s.feito : false;
-                const texto = (typeof s === 'object') ? s.texto : s;
+            let subs = (r.subtopicos || []).map((s, sIdx) => {
+                const isChecked = typeof s === 'object' ? s.feito : false;
+                const texto = typeof s === 'object' ? s.texto : s;
                 return `
-                    <div class="subtopico-view ${isChecked?'checked':''}" onclick="event.stopPropagation();toggleCheck(${idx},${sIdx})">
-                        <input type="checkbox" ${isChecked?'checked':''}> 
-                        <span>${texto}</span>
+                    <div class="subtopico-view ${isChecked ? 'checked' : ''}" onclick="event.stopPropagation();toggleCheck(${idx}, ${sIdx})">
+                        <input type="checkbox" ${isChecked ? 'checked' : ''}> <span>${texto}</span>
                     </div>`;
             }).join('');
 
@@ -207,128 +228,79 @@
             const item = document.createElement('div');
             item.className = `roteiro-item ${isOpen}`;
             item.innerHTML = `
-                <div class="roteiro-header" onclick="gerenciarAbertura(${idx},this.parentElement)">
-                    <div><span class="data-badge">${r.data}</span> <b>${r.aula}</b></div>
-                    <span>▼</span>
+                <div class="roteiro-header" onclick="toggleItem(${idx}, this.parentElement)">
+                    <span>${r.data} - ${r.aula}</span> <span>▽</span>
                 </div>
                 <div class="roteiro-content">
-                    <button onclick="abrirModal(${idx})" style="float:right;cursor:pointer;padding:5px 10px;border-radius:8px;border:1px solid #cfd8dc; background:white;">✏️ Editar</button>
-                    <div style="white-space:pre-wrap;margin-top:10px; font-weight:500;">${r.titulo}</div>
-                    <div style="margin-top:10px;">${subs}</div>
+                    <p style="white-space:pre-wrap; font-weight: bold; margin-bottom:10px;">${r.titulo}</p>
+                    ${subs}
+                    <button class="btn-main" onclick="abrirModal(${idx})" style="margin-top:15px; padding:8px; font-size:0.8rem; width:auto;">✏️ Editar Registro</button>
                 </div>`;
             lista.appendChild(item);
         });
     }
 
-    async function sincronizar() { 
-        try {
-            await fetch(URL_FIREBASE, { method:'PUT', body:JSON.stringify(banco) });
-            renderizarHome();
-        } catch (e) {
-            alert("Erro ao salvar dados. Verifique sua internet.");
-        }
+    function toggleItem(idx, el) {
+        if(idsAbertos.has(idx)) idsAbertos.delete(idx);
+        else idsAbertos.add(idx);
+        el.classList.toggle('open');
     }
 
     function toggleCheck(roteiroIdx, subIdx) {
         let r = banco[turmaAtiva].roteiros[roteiroIdx];
         let sub = r.subtopicos[subIdx];
-        
-        if(typeof sub === 'string') {
-            r.subtopicos[subIdx] = { texto: sub, feito: true };
-        } else {
-            r.subtopicos[subIdx].feito = !r.subtopicos[subIdx].feito;
-        }
-        
-        sincronizar(); 
-        renderizarHistorico();
+        if(typeof sub === 'string') r.subtopicos[subIdx] = { texto: sub, feito: true };
+        else r.subtopicos[subIdx].feito = !r.subtopicos[subIdx].feito;
+        sincronizar(); renderizarHistorico();
     }
 
     function salvarNovo() {
-        const d = document.getElementById('dataInput').value;
-        const a = document.getElementById('aulaInput').value;
-        const t = document.getElementById('textoPrincipal').value;
-        
-        if(!d || !t) return alert("Preencha ao menos a data e o conteúdo principal.");
-        
-        if(!banco[turmaAtiva]) banco[turmaAtiva] = { roteiros: [], horários: {} };
+        const d = document.getElementById('dataInput').value, a = document.getElementById('aulaInput').value, t = document.getElementById('textoPrincipal').value;
+        if(!d || !t) return alert("Preencha Data e Conteúdo!");
         if(!banco[turmaAtiva].roteiros) banco[turmaAtiva].roteiros = [];
-        
         banco[turmaAtiva].roteiros.unshift({ data: d, aula: a, titulo: t, subtopicos: [] });
-        
-        sincronizar(); 
-        renderizarHistorico();
-        
-        document.getElementById('dataInput').value = ''; 
-        document.getElementById('aulaInput').value = ''; 
-        document.getElementById('textoPrincipal').value = '';
+        sincronizar(); renderizarHistorico();
+        document.getElementById('dataInput').value=''; document.getElementById('aulaInput').value=''; document.getElementById('textoPrincipal').value='';
     }
 
     function abrirModal(idx) {
-        indexEditando = idx; 
-        const r = banco[turmaAtiva].roteiros[idx];
-        
-        document.getElementById('editData').value = r.data || ""; 
-        document.getElementById('editAula').value = r.aula || ""; 
-        document.getElementById('editTitulo').value = r.titulo || "";
-        
-        const area = document.getElementById('areaSubtopicosEdit'); 
-        area.innerHTML = '';
-        
+        indexEditando = idx; const r = banco[turmaAtiva].roteiros[idx];
+        document.getElementById('editData').value = r.data; 
+        document.getElementById('editAula').value = r.aula; 
+        document.getElementById('editTitulo').value = r.titulo;
+        const area = document.getElementById('areaSubtopicosEdit'); area.innerHTML = '';
         (r.subtopicos || []).forEach(s => {
-            const texto = (typeof s === 'object') ? s.texto : s;
-            area.innerHTML += `
-                <div style="display:flex;gap:10px;">
-                    <textarea class="input-sub" style="min-height:45px;margin:5px 0;">${texto}</textarea>
-                    <button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">❌</button>
-                </div>`;
+            const texto = typeof s === 'object' ? s.texto : s;
+            area.innerHTML += `<div class="subtopico-edit-row"><input type="text" class="input-sub" value="${texto}"> <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer;">❌</button></div>`;
         });
         document.getElementById('modalEdicao').style.display = 'flex';
     }
 
     function adicionarLinhaSubtopico() {
-        const div = document.createElement('div'); 
-        div.style.display = "flex"; 
-        div.style.gap = "10px";
-        div.innerHTML = `<textarea class="input-sub" style="min-height:45px;margin:5px 0;" placeholder="Novo tópico..."></textarea><button onclick="this.parentElement.remove()" style="background:none; border:none; cursor:pointer;">❌</button>`;
+        const div = document.createElement('div'); div.className = 'subtopico-edit-row';
+        div.innerHTML = `<input type="text" class="input-sub" placeholder="Novo tópico..."> <button onclick="this.parentElement.remove()" style="border:none; background:none; cursor:pointer;">❌</button>`;
         document.getElementById('areaSubtopicosEdit').appendChild(div);
     }
 
+    function fecharModal() { document.getElementById('modalEdicao').style.display = 'none'; indexEditando = null; }
+    
     function salvarAlteracoes() {
+        const r = banco[turmaAtiva].roteiros[indexEditando];
+        const subsAntigos = r.subtopicos || [];
+        r.data = document.getElementById('editData').value;
+        r.aula = document.getElementById('editAula').value;
+        r.titulo = document.getElementById('editTitulo').value;
         const inputs = document.querySelectorAll('.input-sub');
-        const roteiro = banco[turmaAtiva].roteiros[indexEditando];
-        const subsAntigos = roteiro.subtopicos || [];
-        
-        roteiro.data = document.getElementById('editData').value;
-        roteiro.aula = document.getElementById('editAula').value;
-        roteiro.titulo = document.getElementById('editTitulo').value;
-        
-        roteiro.subtopicos = Array.from(inputs).map((input, idx) => {
-            return {
-                texto: input.value,
-                feito: (subsAntigos[idx] && typeof subsAntigos[idx] === 'object') ? subsAntigos[idx].feito : false
-            };
-        }).filter(v => v.texto.trim() !== "");
-        
-        sincronizar(); 
-        renderizarHistorico(); 
-        fecharModal();
+        r.subtopicos = Array.from(inputs).map((input, idx) => ({
+            texto: input.value,
+            feito: (subsAntigos[idx] && typeof subsAntigos[idx] === 'object') ? subsAntigos[idx].feito : false
+        })).filter(v => v.texto !== "");
+        sincronizar(); renderizarHistorico(); fecharModal();
     }
 
-    function fecharModal() {
-        document.getElementById('modalEdicao').style.display = 'none'; 
-        indexEditando = null;
-    }
+    function excluirRegistro() { if(confirm("Excluir permanentemente?")) { banco[turmaAtiva].roteiros.splice(indexEditando, 1); sincronizar(); renderizarHistorico(); fecharModal(); } }
 
-    function excluirRegistro() {
-        if(confirm("Deseja apagar este planejamento permanentemente?")) {
-            banco[turmaAtiva].roteiros.splice(indexEditando, 1);
-            sincronizar();
-            renderizarHistorico();
-            fecharModal();
-        }
-    }
-
-    // Início
+    setInterval(carregar, 5000);
     carregar();
 </script>
 </body>
