@@ -10,1312 +10,317 @@ import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/fireba
 import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
  
 const firebaseConfig = {
-  apiKey: "AIzaSyCHR8cuC25TCDyZJNkV2R_04oTdUSdVAyk",
-  authDomain: "corretor-gabarito.firebaseapp.com",
-  databaseURL: "https://corretor-gabarito-default-rtdb.firebaseio.com",
-  projectId: "corretor-gabarito",
-  storageBucket: "corretor-gabarito.firebasestorage.app",
-  messagingSenderId: "823312147686",
-  appId: "1:823312147686:web:196d3492a3a37d8a460727"
+ apiKey: "AIzaSyCHR8cuC25TCDyZJNkV2R_04oTdUSdVAyk",
+ authDomain: "corretor-gabarito.firebaseapp.com",
+ databaseURL: "https://corretor-gabarito-default-rtdb.firebaseio.com",
+ projectId: "corretor-gabarito",
+ storageBucket: "corretor-gabarito.firebasestorage.app",
+ messagingSenderId: "823312147686",
+ appId: "1:823312147686:web:196d3492a3a37d8a460727"
 };
  
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
  
-// NAMESPACE EXCLUSIVO JOÃO TAVARES
 const NAMESPACE = 'joaotavares_v2';
  
-window._jt_save = async (data) => {
-  await set(ref(db, NAMESPACE), data);
-};
+window._jt_save = async (data) => { await set(ref(db, NAMESPACE), data); };
 window._jt_load = async () => {
-  const snap = await get(ref(db, NAMESPACE));
-  return snap.exists() ? snap.val() : null;
+ const snap = await get(ref(db, NAMESPACE));
+ return snap.exists() ? snap.val() : null;
 };
 window._jt_listen = (cb) => {
-  onValue(ref(db, NAMESPACE), snap => {
-    if (snap.exists()) cb(snap.val());
-  });
+ onValue(ref(db, NAMESPACE), snap => { if (snap.exists()) cb(snap.val()); });
 };
 window._jt_ready = true;
 document.dispatchEvent(new Event('jt_firebase_ready'));
 </script>
 <style>
 :root {
-  --ink: #161616;
-  --ink2: #5a5a6a;
-  --ink3: #9898a8;
-  --paper: #f8f7f4;
-  --paper2: #efede8;
-  --paper3: #e5e2db;
-  --line: #dddad4;
-  --blue: #2752e8;
-  --blue-bg: #eef1fd;
-  --green: #1a7a4a;
-  --green-bg: #e6f4ed;
-  --red: #c8202e;
-  --red-bg: #fdedef;
-  --amber: #a06020;
-  --amber-bg: #fdf3e7;
-  --r: 10px;
-  --sh: 0 1px 4px rgba(0,0,0,.07), 0 4px 20px rgba(0,0,0,.06);
+ --ink: #161616; --ink2: #5a5a6a; --ink3: #9898a8;
+ --paper: #f8f7f4; --paper2: #efede8; --paper3: #e5e2db;
+ --line: #dddad4; --blue: #2752e8; --blue-bg: #eef1fd;
+ --green: #1a7a4a; --green-bg: #e6f4ed;
+ --red: #c8202e; --red-bg: #fdedef;
+ --amber: #a06020; --amber-bg: #fdf3e7;
+ --r: 10px; --sh: 0 1px 4px rgba(0,0,0,.07), 0 4px 20px rgba(0,0,0,.06);
 }
  
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
  
-html { height: 100%; }
+/* AJUSTE DE SCROLL: Permitir rolagem global se necessário */
+html { height: 100%; overflow: auto; }
 body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--paper);
-  color: var(--ink);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+ font-family: 'DM Sans', sans-serif;
+ background: var(--paper);
+ color: var(--ink);
+ min-height: 100%;
+ display: flex;
+ flex-direction: column;
 }
  
-/* ── TOPBAR ── */
 .topbar {
-  height: 54px;
-  background: var(--ink);
-  color: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 20px;
-  gap: 16px;
-  flex-shrink: 0;
-  z-index: 100;
-  box-shadow: 0 2px 12px rgba(0,0,0,.3);
+ height: 54px; background: var(--ink); color: #fff;
+ display: flex; align-items: center; padding: 0 20px;
+ gap: 16px; flex-shrink: 0; z-index: 100;
+ box-shadow: 0 2px 12px rgba(0,0,0,.3);
 }
 .tb-logo { display: flex; align-items: center; gap: 10px; }
-.tb-mark {
-  width: 32px; height: 32px;
-  background: #e63946;
-  border-radius: 7px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'DM Mono', monospace;
-  font-weight: 700; font-size: 1rem; color: #fff;
-}
-.tb-name { font-weight: 800; font-size: 1rem; letter-spacing: -.3px; }
-.tb-sub { font-size: .72rem; color: rgba(255,255,255,.45); margin-left: 2px; }
-.tb-sep { width: 1px; height: 24px; background: rgba(255,255,255,.15); }
+.tb-mark { width: 32px; height: 32px; background: #e63946; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-family: 'DM Mono', monospace; font-weight: 700; color: #fff; }
+.tb-name { font-weight: 800; font-size: 1rem; }
 .tb-nav { display: flex; gap: 2px; }
-.tb-btn {
-  background: transparent; border: none;
-  color: rgba(255,255,255,.55);
-  padding: 6px 14px; border-radius: 7px;
-  cursor: pointer; font-family: inherit;
-  font-size: .82rem; font-weight: 600;
-  transition: all .15s;
-  display: flex; align-items: center; gap: 6px;
-}
-.tb-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
+.tb-btn { background: transparent; border: none; color: rgba(255,255,255,.55); padding: 6px 14px; border-radius: 7px; cursor: pointer; font-family: inherit; font-size: .82rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 .tb-btn.on { background: #e63946; color: #fff; }
-.tb-turma {
-  margin-left: auto;
-  background: rgba(255,255,255,.1);
-  border: 1px solid rgba(255,255,255,.18);
-  color: #fff; padding: 5px 12px; border-radius: 7px;
-  font-size: .8rem; cursor: pointer; min-width: 200px;
-  font-family: inherit;
-}
-.tb-turma option { color: var(--ink); background: #fff; }
+.tb-turma { margin-left: auto; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #fff; padding: 5px 12px; border-radius: 7px; font-size: .8rem; cursor: pointer; min-width: 200px; font-family: inherit; }
  
-/* ── LAYOUT ── */
 .body { display: flex; flex: 1; overflow: hidden; }
- 
-.sidebar {
-  width: 270px;
-  background: #fff;
-  border-right: 1px solid var(--line);
-  display: flex; flex-direction: column;
-  flex-shrink: 0;
-}
-.sb-sec {
-  padding: 14px;
-  border-bottom: 1px solid var(--line);
-  display: flex; flex-direction: column;
-  min-height: 0;
-}
+.sidebar { width: 270px; background: #fff; border-right: 1px solid var(--line); display: flex; flex-direction: column; flex-shrink: 0; }
+.sb-sec { padding: 14px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
 .sb-sec:last-child { flex: 1; border-bottom: none; }
-.sb-head {
-  display: flex; align-items: center; justify-content: space-between;
-  font-size: .67rem; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 1.4px;
-  color: var(--ink3); margin-bottom: 10px; flex-shrink: 0;
-}
+.sb-head { display: flex; align-items: center; justify-content: space-between; font-size: .67rem; font-weight: 800; text-transform: uppercase; color: var(--ink3); margin-bottom: 10px; }
 .sb-scroll { overflow-y: auto; flex: 1; padding: 4px 0; }
  
-.main { flex: 1; overflow-y: auto; background: var(--paper); }
+/* ÁREA PRINCIPAL COM SCROLL LIBERADO */
+.main { flex: 1; overflow-y: auto; background: var(--paper); padding-bottom: 40px; }
 .page { display: none; padding: 26px 28px; }
 .page.on { display: block; }
  
-/* ── BUTTONS ── */
-.btn {
-  border: none; border-radius: 8px; cursor: pointer;
-  font-family: inherit; font-weight: 700; font-size: .82rem;
-  padding: 9px 16px;
-  display: inline-flex; align-items: center; gap: 7px;
-  transition: all .15s;
-}
+.btn { border: none; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 700; font-size: .82rem; padding: 9px 16px; display: inline-flex; align-items: center; gap: 7px; transition: 0.15s; }
 .btn-blue { background: var(--blue); color: #fff; }
-.btn-blue:hover { background: #1e40c8; box-shadow: 0 4px 12px rgba(39,82,232,.3); }
 .btn-red { background: var(--red); color: #fff; }
-.btn-red:hover { background: #a0161c; }
 .btn-ghost { background: var(--paper2); color: var(--ink2); border: 1px solid var(--line); }
-.btn-ghost:hover { background: var(--paper3); }
-.btn-green { background: var(--green); color: #fff; }
-.btn-xs { padding: 4px 9px; font-size: .71rem; }
-.btn-sm { padding: 6px 12px; font-size: .76rem; }
-.btn-full { width: 100%; justify-content: center; }
  
-/* ── FORMS ── */
-.field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 13px; }
-.field label {
-  font-size: .68rem; font-weight: 800;
-  text-transform: uppercase; color: var(--ink3);
-  letter-spacing: .8px;
-}
-input[type=text], input[type=number], select, textarea {
-  background: var(--paper);
-  border: 1.5px solid var(--line);
-  border-radius: 8px; padding: 9px 12px;
-  width: 100%; font-family: inherit; font-size: .87rem;
-  color: var(--ink); transition: border-color .15s;
-}
-input[type=text]:focus, input[type=number]:focus, select:focus, textarea:focus {
-  outline: none; border-color: var(--blue);
-  box-shadow: 0 0 0 3px rgba(39,82,232,.1);
-}
- 
-/* ── CARD ── */
-.card {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: var(--r);
-  padding: 20px;
-  box-shadow: var(--sh);
-  margin-bottom: 16px;
-}
- 
-/* ── STUDENT ROW ── */
-.st-row {
-  display: flex; align-items: center; gap: 9px;
-  padding: 8px 12px; border-radius: 8px;
-  cursor: pointer; transition: background .1s;
-  font-size: .82rem; color: var(--ink);
-  border-left: 3px solid transparent;
-}
-.st-row:hover { background: var(--paper2); }
+.card { background: #fff; border: 1px solid var(--line); border-radius: var(--r); padding: 20px; box-shadow: var(--sh); margin-bottom: 16px; }
+.st-row { display: flex; align-items: center; gap: 9px; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: .82rem; border-left: 3px solid transparent; }
 .st-row.on { background: var(--blue-bg); border-left-color: var(--blue); }
-.st-av {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: var(--ink); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .68rem; font-weight: 800; flex-shrink: 0;
-}
-.st-av-blue { background: var(--blue); }
-.st-av-green { background: var(--green); }
-.st-av-red { background: var(--red); }
+.st-av { width: 30px; height: 30px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: 800; flex-shrink: 0; }
  
-/* ── EMPTY STATE ── */
-.empty { text-align: center; padding: 40px 20px; color: var(--ink3); font-size: .87rem; }
+.empty { text-align: center; padding: 40px 20px; color: var(--ink3); }
 .empty .ei { font-size: 2.4rem; margin-bottom: 10px; opacity: .35; }
  
-/* ── OVERLAYS / MODALS ── */
-.overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.45);
-  z-index: 500; display: none;
-  align-items: center; justify-content: center; padding: 16px;
-}
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 500; display: none; align-items: center; justify-content: center; padding: 16px; }
 .overlay.on { display: flex; }
-.modal {
-  background: #fff; border-radius: 14px;
-  padding: 26px; width: 100%; max-width: 520px;
-  max-height: 92vh; overflow-y: auto;
-  box-shadow: 0 8px 40px rgba(0,0,0,.15);
-}
-.modal-lg { max-width: 700px; }
-.modal-header {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 20px;
-}
-.modal-header h3 { font-size: 1.05rem; font-weight: 800; }
-.modal-close {
-  background: var(--paper2); border: none; cursor: pointer;
-  border-radius: 6px; width: 30px; height: 30px;
-  font-size: 1rem; display: flex; align-items: center; justify-content: center;
-}
+.modal { background: #fff; border-radius: 14px; padding: 26px; width: 100%; max-width: 520px; max-height: 92vh; overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,.15); }
  
-/* ── BADGE ── */
-.badge {
-  display: inline-flex; align-items: center;
-  padding: 2px 8px; border-radius: 20px;
-  font-size: .68rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .5px;
-}
-.badge-blue { background: var(--blue-bg); color: var(--blue); }
-.badge-green { background: var(--green-bg); color: var(--green); }
-.badge-red { background: var(--red-bg); color: var(--red); }
-.badge-amber { background: var(--amber-bg); color: var(--amber); }
- 
-/* ── CORREÇÃO ── */
-.gabarito-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 8px;
-}
-.q-cell {
-  background: var(--paper); border: 1.5px solid var(--line);
-  border-radius: 8px; padding: 8px 12px;
-  display: flex; align-items: center; gap: 8px;
-  font-size: .82rem;
-}
-.q-num {
-  width: 24px; height: 24px; border-radius: 50%;
-  background: var(--ink); color: #fff;
-  display: flex; align-items: center; justify-content: center;
-  font-size: .65rem; font-weight: 800; flex-shrink: 0;
-}
-.q-cell select {
-  width: auto; flex: 1; padding: 4px 6px;
-  font-size: .8rem; border-radius: 6px; border: 1.5px solid var(--line);
-  background: #fff;
-}
+.gabarito-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.q-cell { background: var(--paper); border: 1.5px solid var(--line); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; gap: 8px; font-size: .82rem; }
+.q-num { width: 24px; height: 24px; border-radius: 50%; background: var(--ink); color: #fff; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 800; }
 .q-cell.acerto { background: var(--green-bg); border-color: #a8d5bc; }
 .q-cell.erro { background: var(--red-bg); border-color: #f4b8be; }
-.q-cell.neutro { background: var(--paper); }
  
-/* ── NOTA BIG ── */
-.nota-display {
-  background: linear-gradient(135deg, var(--blue) 0%, #1e3fa8 100%);
-  color: #fff; border-radius: 14px; padding: 24px;
-  text-align: center; margin-bottom: 20px;
-}
+.nota-display { background: var(--ink); color: #fff; border-radius: 14px; padding: 24px; text-align: center; margin-bottom: 20px; }
 .nota-val { font-size: 3.5rem; font-weight: 800; font-family: 'DM Mono', monospace; }
-.nota-label { font-size: .78rem; opacity: .75; margin-top: 4px; }
  
-/* ── RELATÓRIO ── */
-.rank-row {
-  display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px; background: var(--paper);
-  border-radius: 8px; margin-bottom: 6px; font-size: .83rem;
-}
-.rank-pos {
-  width: 28px; height: 28px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800; font-size: .72rem; flex-shrink: 0;
-}
-.rank-bar-wrap {
-  flex: 1; background: var(--line); border-radius: 4px; height: 6px; overflow: hidden;
-}
-.rank-bar { height: 100%; background: var(--blue); border-radius: 4px; transition: width .5s; }
+.rank-row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--paper); border-radius: 8px; margin-bottom: 6px; font-size: .83rem; }
+.rank-pos { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .72rem; flex-shrink: 0; }
  
-/* ── TURMAS PAGE ── */
-.turma-card {
-  background: #fff; border: 1px solid var(--line);
-  border-radius: 10px; padding: 16px 20px;
-  display: flex; align-items: center; gap: 14px;
-  margin-bottom: 10px; cursor: pointer;
-  transition: all .15s;
-}
-.turma-card:hover { border-color: var(--blue); box-shadow: var(--sh); }
-.turma-icon {
-  width: 44px; height: 44px; border-radius: 10px;
-  background: var(--blue-bg); color: var(--blue);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem; flex-shrink: 0;
-}
-.turma-info { flex: 1; }
-.turma-nome { font-weight: 700; font-size: .95rem; }
-.turma-meta { font-size: .75rem; color: var(--ink3); margin-top: 2px; }
- 
-/* ── ORGANIZAR ── */
-.org-tab {
-  display: flex; gap: 8px; margin-bottom: 20px;
-  border-bottom: 1px solid var(--line); padding-bottom: 12px;
-}
-.org-tab-btn {
-  padding: 7px 16px; border-radius: 8px 8px 0 0;
-  background: none; border: none; cursor: pointer;
-  font-family: inherit; font-size: .83rem; font-weight: 600;
-  color: var(--ink2); border-bottom: 2px solid transparent;
-  transition: all .15s;
-}
-.org-tab-btn.on { color: var(--blue); border-bottom-color: var(--blue); }
- 
-/* ── SECTION HEADER ── */
-.sec-hd {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 16px;
-}
-.sec-hd h2 { font-size: 1.1rem; font-weight: 800; }
-.sec-hd h3 { font-size: .95rem; font-weight: 700; color: var(--ink2); }
- 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
- 
-/* ── TOAST ── */
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
-  background: var(--ink); color: #fff;
-  padding: 10px 20px; border-radius: 30px;
-  font-size: .82rem; font-weight: 600;
-  z-index: 9999; transition: transform .3s;
-  pointer-events: none;
-}
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--ink); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: .82rem; z-index: 9999; transition: 0.3s; }
 .toast.show { transform: translateX(-50%) translateY(0); }
- 
-/* Aluno list search */
-.sb-search {
-  margin-bottom: 7px; font-size: .77rem; padding: 6px 10px;
-  border: 1.5px solid var(--line); border-radius: 8px;
-  background: var(--paper); font-family: inherit;
-  flex-shrink: 0; width: 100%;
-}
-.sb-search:focus { outline: none; border-color: var(--blue); }
 </style>
 </head>
 <body>
  
-<!-- TOPBAR -->
 <div class="topbar">
-  <div class="tb-logo">
-    <div class="tb-mark">⚗️</div>
-    <div>
-      <div class="tb-name">ReagiNota</div>
-    </div>
-  </div>
-  <div class="tb-sep"></div>
-  <div class="tb-nav">
-    <button class="tb-btn on" onclick="nav('correcao')" id="n-correcao">📋 Correção</button>
-    <button class="tb-btn" onclick="nav('turmas')" id="n-turmas">🏫 Turmas</button>
-    <button class="tb-btn" onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
-    <button class="tb-btn" onclick="nav('relatorios')" id="n-relatorios">📊 Relatórios</button>
-  </div>
-  <select class="tb-turma" id="turma-sel" onchange="trocarTurma()">
-    <option value="">— Selecionar Turma —</option>
-  </select>
+ <div class="tb-logo"><div class="tb-mark">⚗️</div><div class="tb-name">ReagiNota</div></div>
+ <div class="tb-sep"></div>
+ <div class="tb-nav">
+ <button class="tb-btn on" onclick="nav('correcao')" id="n-correcao">📋 Correção</button>
+ <button class="tb-btn" onclick="nav('turmas')" id="n-turmas">🏫 Turmas</button>
+ <button class="tb-btn" onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
+ <button class="tb-btn" onclick="nav('relatorios')" id="n-relatorios">📊 Relatórios</button>
+ </div>
+ <select class="tb-turma" id="turma-sel" onchange="trocarTurma()">
+ <option value="">— Selecionar Turma —</option>
+ </select>
 </div>
  
 <div class="body">
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <div class="sb-sec" style="flex:0 0 auto">
-      <div class="sb-head">
-        Provas
-        <button class="btn btn-xs btn-blue" onclick="openModal('m-nova-prova')">+ Nova</button>
-      </div>
-      <div id="prova-tree" class="sb-scroll" style="max-height:180px"></div>
-    </div>
-    <div class="sb-sec">
-      <div class="sb-head">
-        Alunos
-        <button class="btn btn-xs btn-blue" onclick="openModal('m-lista-alunos')">📋 Lista</button>
-      </div>
-      <input class="sb-search" type="text" placeholder="🔍 Buscar aluno..." oninput="renderAlunos(this.value)">
-      <div id="aluno-list" class="sb-scroll"></div>
-    </div>
-  </div>
+ <div class="sidebar">
+ <div class="sb-sec" style="flex:0 0 auto">
+ <div class="sb-head">Provas <button class="btn btn-xs btn-blue" onclick="openModal('m-nova-prova')">+ Nova</button></div>
+ <div id="prova-tree" class="sb-scroll" style="max-height:180px"></div>
+ </div>
+ <div class="sb-sec">
+ <div class="sb-head">Alunos <button class="btn btn-xs btn-blue" onclick="openModal('m-lista-alunos')">📋 Lista</button></div>
+ <input type="text" placeholder="🔍 Buscar aluno..." style="width:100%; padding:8px; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;" oninput="renderAlunos(this.value)">
+ <div id="aluno-list" class="sb-scroll"></div>
+ </div>
+ </div>
  
-  <!-- MAIN CONTENT -->
-  <div class="main">
+ <div class="main">
+ <div id="p-correcao" class="page on">
+ <div id="no-sel" class="empty" style="margin-top:80px">
+ <div class="ei">🎯</div>
+ <div style="font-weight:800;font-size:1rem;margin-bottom:7px">Selecione prova e aluno</div>
+ <p style="max-width:300px;margin:0 auto;line-height:1.6">Escolha uma turma, selecione uma prova e clique num aluno.</p>
+ </div>
+ <div id="corr-content" style="display:none"></div>
+ </div>
  
-    <!-- CORREÇÃO -->
-    <div id="p-correcao" class="page on">
-      <div id="no-sel" class="empty" style="margin-top:80px">
-        <div class="ei">🎯</div>
-        <div style="font-weight:800;font-size:1rem;margin-bottom:7px">Selecione prova e aluno</div>
-        <p style="max-width:300px;margin:0 auto;line-height:1.6">Escolha uma turma, selecione uma prova na lista à esquerda e clique num aluno para iniciar a correção.</p>
-      </div>
-      <div id="corr-content" style="display:none"></div>
-    </div>
+ <div id="p-turmas" class="page">
+ <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+ <h2>🏫 Turmas</h2>
+ <button class="btn btn-blue" onclick="openModal('m-nova-turma')">+ Nova Turma</button>
+ </div>
+ <div id="turmas-list"></div>
+ </div>
  
-    <!-- TURMAS -->
-    <div id="p-turmas" class="page">
-      <div class="sec-hd">
-        <h2>🏫 Turmas</h2>
-        <button class="btn btn-blue" onclick="openModal('m-nova-turma')">+ Nova Turma</button>
-      </div>
-      <div id="turmas-list"></div>
-    </div>
+ <div id="p-organizar" class="page">
+ <h2>📂 Gerenciar Dados</h2>
+ <div class="card" style="margin-top:20px;">
+ <h3>Provas da Turma</h3>
+ <div id="org-provas-list"></div>
+ </div>
+ <div class="card">
+ <h3>Alunos da Turma</h3>
+ <div id="org-alunos-list"></div>
+ </div>
+ </div>
  
-    <!-- ORGANIZAR -->
-    <div id="p-organizar" class="page">
-      <div class="sec-hd">
-        <h2>📂 Organizar</h2>
-      </div>
-      <div class="org-tab">
-        <button class="org-tab-btn on" onclick="orgTab('alunos',this)">👥 Alunos</button>
-        <button class="org-tab-btn" onclick="orgTab('provas',this)">📋 Provas</button>
-      </div>
-      <div id="org-alunos-panel">
-        <div class="card">
-          <div class="sec-hd">
-            <h3>Gerenciar Alunos</h3>
-            <button class="btn btn-sm btn-blue" onclick="openModal('m-add-aluno')">+ Adicionar Aluno</button>
-          </div>
-          <div id="org-alunos-list"></div>
-        </div>
-      </div>
-      <div id="org-provas-panel" style="display:none">
-        <div class="card">
-          <div class="sec-hd">
-            <h3>Gerenciar Provas</h3>
-            <button class="btn btn-sm btn-blue" onclick="openModal('m-nova-prova')">+ Nova Prova</button>
-          </div>
-          <div id="org-provas-list"></div>
-        </div>
-      </div>
-    </div>
- 
-    <!-- RELATÓRIOS -->
-    <div id="p-relatorios" class="page">
-      <div class="sec-hd">
-        <h2>📊 Relatórios de Desempenho</h2>
-      </div>
-      <div id="rel-content">
-        <div class="empty">
-          <div class="ei">📊</div>
-          <div style="font-weight:700">Selecione uma turma e prova</div>
-          <p>Os relatórios aparecerão aqui.</p>
-        </div>
-      </div>
-    </div>
- 
-  </div>
+ <div id="p-relatorios" class="page">
+ <h2>📊 Relatórios de Desempenho</h2>
+ <div id="rel-content" style="margin-top:20px;"></div>
+ </div>
+ </div>
 </div>
  
-<!-- ═══════════════════ MODAIS ═══════════════════ -->
- 
-<!-- NOVA TURMA -->
-<div class="overlay" id="m-nova-turma">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>🏫 Nova Turma</h3>
-      <button class="modal-close" onclick="closeModal('m-nova-turma')">✕</button>
-    </div>
-    <div class="field">
-      <label>Nome da Turma</label>
-      <input type="text" id="t-nome" placeholder="Ex: 8º Ano A">
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-blue btn-full" onclick="criarTurma()">Criar Turma</button>
-      <button class="btn btn-ghost" onclick="closeModal('m-nova-turma')">Cancelar</button>
-    </div>
-  </div>
-</div>
- 
-<!-- NOVA PROVA -->
-<div class="overlay" id="m-nova-prova">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>📋 Nova Prova</h3>
-      <button class="modal-close" onclick="closeModal('m-nova-prova')">✕</button>
-    </div>
-    <div class="field">
-      <label>Turma</label>
-      <select id="prova-turma-sel">
-        <option value="">— Selecionar Turma —</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Nome da Prova</label>
-      <input type="text" id="prova-nome" placeholder="Ex: Prova Bimestral Q1">
-    </div>
-    <div class="field">
-      <label>Número de Questões</label>
-      <input type="number" id="prova-nq" value="10" min="1" max="50">
-    </div>
-    <div id="gabarito-campos"></div>
-    <div id="btn-gabarito-area">
-      <button class="btn btn-ghost btn-full" onclick="gerarCamposGabarito()" style="margin-bottom:12px">
-        🔢 Definir Gabarito
-      </button>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-blue btn-full" onclick="criarProva()">Criar Prova</button>
-      <button class="btn btn-ghost" onclick="closeModal('m-nova-prova')">Cancelar</button>
-    </div>
-  </div>
-</div>
- 
-<!-- LISTA DE ALUNOS (importar) -->
-<div class="overlay" id="m-lista-alunos">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <h3>📋 Importar Lista de Alunos</h3>
-      <button class="modal-close" onclick="closeModal('m-lista-alunos')">✕</button>
-    </div>
-    <div class="field">
-      <label>Turma</label>
-      <select id="lista-turma-sel">
-        <option value="">— Selecionar Turma —</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Cole a lista (um nome por linha)</label>
-      <textarea id="lista-nomes" rows="10" placeholder="Ana Silva&#10;Bruno Costa&#10;Carlos Lima&#10;..."></textarea>
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-blue btn-full" onclick="importarLista()">📥 Importar</button>
-      <button class="btn btn-ghost" onclick="closeModal('m-lista-alunos')">Cancelar</button>
-    </div>
-  </div>
-</div>
- 
-<!-- ADD ALUNO INDIVIDUAL -->
-<div class="overlay" id="m-add-aluno">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>👤 Adicionar Aluno</h3>
-      <button class="modal-close" onclick="closeModal('m-add-aluno')">✕</button>
-    </div>
-    <div class="field">
-      <label>Turma</label>
-      <select id="add-aluno-turma">
-        <option value="">— Selecionar Turma —</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Nome do Aluno</label>
-      <input type="text" id="add-aluno-nome" placeholder="Nome completo">
-    </div>
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-blue btn-full" onclick="addAluno()">Adicionar</button>
-      <button class="btn btn-ghost" onclick="closeModal('m-add-aluno')">Cancelar</button>
-    </div>
-  </div>
-</div>
- 
-<!-- EDITAR PROVA -->
-<div class="overlay" id="m-edit-prova">
-  <div class="modal modal-lg">
-    <div class="modal-header">
-      <h3>✏️ Editar Prova</h3>
-      <button class="modal-close" onclick="closeModal('m-edit-prova')">✕</button>
-    </div>
-    <div id="edit-prova-body"></div>
-  </div>
-</div>
- 
-<!-- TOAST -->
+<div class="overlay" id="m-nova-turma"><div class="modal"><h3>Nova Turma</h3><input type="text" id="t-nome" placeholder="Nome da Turma" style="margin:20px 0; width:100%; padding:10px;"><button class="btn btn-blue" onclick="criarTurma()">Criar</button></div></div>
+<div class="overlay" id="m-nova-prova"><div class="modal"><h3>Nova Prova</h3><input type="text" id="prova-nome" placeholder="Nome da Prova" style="margin-top:15px; width:100%; padding:10px;"><input type="number" id="prova-nq" placeholder="Nº de Questões" value="10" style="margin:10px 0; width:100%; padding:10px;"><div id="gabarito-campos"></div><button class="btn btn-ghost" onclick="gerarCamposGabarito()" id="btn-gerar-gab">Definir Gabarito</button><hr style="margin:15px 0;"><button class="btn btn-blue" onclick="criarProva()">Salvar Prova</button></div></div>
+<div class="overlay" id="m-lista-alunos"><div class="modal"><h3>Importar Alunos</h3><textarea id="lista-nomes" placeholder="Cole os nomes, um por linha" rows="10" style="margin:15px 0; width:100%; padding:10px;"></textarea><button class="btn btn-blue" onclick="importarLista()">Importar</button></div></div>
+<div class="overlay" id="m-edit-prova"><div class="modal modal-lg"><h3>✏️ Editar Prova</h3><div id="edit-prova-body"></div></div></div>
 <div class="toast" id="toast"></div>
  
 <script>
-// ══════════════════════════════════════════════════════════
-// ESTADO — ISOLADO COMPLETAMENTE DE OUTROS SISTEMAS
-// ══════════════════════════════════════════════════════════
 const JT_KEY = 'reaginota_joaotavares_v2';
+let S = { turmas: [], provas: [], alunos: [], correcoes: [], turmaId: null, provaId: null, alunoId: null };
  
-let S = {
-  turmas: [],
-  provas: [],
-  alunos: [],
-  correcoes: [],
-  turmaId: null,
-  provaId: null,
-  alunoId: null
-};
+function save() { localStorage.setItem(JT_KEY, JSON.stringify(S)); if(window._jt_save) window._jt_save(S); }
+function load() { const raw = localStorage.getItem(JT_KEY); if (raw) S = JSON.parse(raw); }
+load();
  
-function saveLocal() {
-  localStorage.setItem(JT_KEY, JSON.stringify(S));
-}
- 
-function loadLocal() {
-  try {
-    const raw = localStorage.getItem(JT_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      // Garantir que não há dados de outros sistemas
-      S = {
-        turmas: parsed.turmas || [],
-        provas: parsed.provas || [],
-        alunos: parsed.alunos || [],
-        correcoes: parsed.correcoes || [],
-        turmaId: parsed.turmaId || null,
-        provaId: parsed.provaId || null,
-        alunoId: parsed.alunoId || null
-      };
-    }
-  } catch(e) {
-    console.warn('Erro ao carregar dados locais:', e);
-  }
-}
- 
-function uid() {
-  return 'jt_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
-}
- 
-// Sync Firebase
-async function syncFirebase() {
-  if (!window._jt_save) return;
-  try {
-    await window._jt_save({
-      turmas: S.turmas,
-      provas: S.provas,
-      alunos: S.alunos,
-      correcoes: S.correcoes
-    });
-  } catch(e) {
-    console.warn('Firebase sync error:', e);
-  }
-}
- 
-async function loadFirebase() {
-  if (!window._jt_load) return;
-  try {
-    const data = await window._jt_load();
-    if (data) {
-      S.turmas = data.turmas || [];
-      S.provas = data.provas || [];
-      S.alunos = data.alunos || [];
-      S.correcoes = data.correcoes || [];
-      saveLocal();
-      renderAll();
-    }
-  } catch(e) {
-    console.warn('Firebase load error:', e);
-  }
-}
- 
-function save() {
-  saveLocal();
-  syncFirebase();
-}
- 
-// ══════════════════════════════════════════════════════════
-// NAVEGAÇÃO
-// ══════════════════════════════════════════════════════════
 function nav(p) {
-  document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
-  document.querySelectorAll('.tb-btn').forEach(x => x.classList.remove('on'));
-  document.getElementById('p-' + p).classList.add('on');
-  document.getElementById('n-' + p).classList.add('on');
- 
-  if (p === 'turmas') renderTurmasPage();
-  if (p === 'organizar') renderOrganizar();
-  if (p === 'relatorios') renderRelatorios();
+ document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+ document.querySelectorAll('.tb-btn').forEach(x => x.classList.remove('on'));
+ document.getElementById('p-' + p).classList.add('on');
+ document.getElementById('n-' + p).classList.add('on');
+ if(p === 'turmas') renderTurmasPage();
+ if(p === 'organizar') renderOrganizar();
+ if(p === 'relatorios') renderRelatorios();
 }
  
-// ══════════════════════════════════════════════════════════
+function toast(m) { const t = document.getElementById('toast'); t.innerText = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2000); }
+function uid() { return 'jt_' + Date.now(); }
+function openModal(id) { document.getElementById(id).classList.add('on'); if(id==='m-nova-prova') document.getElementById('btn-gerar-gab').style.display='block'; }
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+document.querySelectorAll('.overlay').forEach(ov => ov.onclick = e => { if(e.target===ov) closeModal(ov.id); });
+ 
 // TURMAS
-// ══════════════════════════════════════════════════════════
-function criarTurma() {
-  const nome = document.getElementById('t-nome').value.trim();
-  if (!nome) return toast('Digite o nome da turma');
-  S.turmas.push({ id: uid(), nome });
-  document.getElementById('t-nome').value = '';
-  closeModal('m-nova-turma');
-  save();
-  renderAll();
-  toast('Turma criada!');
-}
+function criarTurma() { const n = document.getElementById('t-nome').value; if(!n) return; S.turmas.push({id: uid(), nome: n}); save(); renderTurmaSelect(); renderTurmasPage(); closeModal('m-nova-turma'); toast("Turma criada!"); }
+function renderTurmaSelect() { const sel = document.getElementById('turma-sel'); sel.innerHTML = '<option value="">— Selecionar Turma —</option>'; S.turmas.forEach(t => { sel.innerHTML += `<option value="${t.id}" ${S.turmaId === t.id ? 'selected' : ''}>${t.nome}</option>`; }); }
+function trocarTurma() { S.turmaId = document.getElementById('turma-sel').value; S.provaId = null; S.alunoId = null; renderAlunos(); renderProvaTree(); save(); limparCorrecao(); }
+function renderTurmasPage() { document.getElementById('turmas-list').innerHTML = S.turmas.map(t => `<div class="card" style="display:flex; justify-content:space-between; align-items:center;"><span><b>${t.nome}</b></span><button class="btn btn-red btn-xs" onclick="excluirTurma('${t.id}')">Excluir</button></div>`).join(''); }
+function excluirTurma(id) { if(!confirm("Excluir turma?")) return; S.turmas = S.turmas.filter(t => t.id !== id); S.alunos = S.alunos.filter(a => a.turmaId !== id); if(S.turmaId === id) S.turmaId = null; save(); renderTurmaSelect(); renderTurmasPage(); }
  
-function renderTurmaSelect() {
-  const sel = document.getElementById('turma-sel');
-  sel.innerHTML = '<option value="">— Selecionar Turma —</option>';
-  S.turmas.forEach(t => {
-    const o = document.createElement('option');
-    o.value = t.id; o.textContent = t.nome;
-    if (t.id === S.turmaId) o.selected = true;
-    sel.appendChild(o);
-  });
-}
- 
-function populateSelects() {
-  ['prova-turma-sel','lista-turma-sel','add-aluno-turma'].forEach(selId => {
-    const sel = document.getElementById(selId);
-    if (!sel) return;
-    sel.innerHTML = '<option value="">— Selecionar Turma —</option>';
-    S.turmas.forEach(t => {
-      const o = document.createElement('option');
-      o.value = t.id; o.textContent = t.nome;
-      if (selId === 'prova-turma-sel' && t.id === S.turmaId) o.selected = true;
-      if (selId === 'lista-turma-sel' && t.id === S.turmaId) o.selected = true;
-      if (selId === 'add-aluno-turma' && t.id === S.turmaId) o.selected = true;
-      sel.appendChild(o);
-    });
-  });
-}
- 
-function trocarTurma() {
-  S.turmaId = document.getElementById('turma-sel').value || null;
-  S.provaId = null;
-  S.alunoId = null;
-  renderAlunos();
-  renderProvaTree();
-  limparCorrecao();
-  save();
-}
- 
-function renderTurmasPage() {
-  const el = document.getElementById('turmas-list');
-  if (!S.turmas.length) {
-    el.innerHTML = '<div class="empty"><div class="ei">🏫</div><div>Nenhuma turma cadastrada</div><p>Clique em "+ Nova Turma" para começar.</p></div>';
-    return;
-  }
-  el.innerHTML = S.turmas.map(t => {
-    const alunos = S.alunos.filter(a => a.turmaId === t.id).length;
-    const provas = S.provas.filter(p => p.turmaId === t.id).length;
-    return `
-    <div class="turma-card" onclick="irParaTurma('${t.id}')">
-      <div class="turma-icon">🏫</div>
-      <div class="turma-info">
-        <div class="turma-nome">${t.nome}</div>
-        <div class="turma-meta">${alunos} aluno(s) · ${provas} prova(s)</div>
-      </div>
-      <button class="btn btn-xs btn-red" onclick="event.stopPropagation();excluirTurma('${t.id}')">🗑️</button>
-    </div>`;
-  }).join('');
-}
- 
-function irParaTurma(id) {
-  S.turmaId = id;
-  document.getElementById('turma-sel').value = id;
-  renderAlunos();
-  renderProvaTree();
-  save();
-  nav('correcao');
-}
- 
-function excluirTurma(id) {
-  if (!confirm('Excluir esta turma? Todos os dados serão perdidos.')) return;
-  S.turmas = S.turmas.filter(t => t.id !== id);
-  S.alunos = S.alunos.filter(a => a.turmaId !== id);
-  S.provas = S.provas.filter(p => p.turmaId !== id);
-  S.correcoes = S.correcoes.filter(c => c.turmaId !== id);
-  if (S.turmaId === id) { S.turmaId = null; S.provaId = null; S.alunoId = null; }
-  save();
-  renderAll();
-  toast('Turma excluída');
-}
- 
-// ══════════════════════════════════════════════════════════
 // PROVAS
-// ══════════════════════════════════════════════════════════
 function gerarCamposGabarito() {
-  const nq = parseInt(document.getElementById('prova-nq').value) || 10;
-  const area = document.getElementById('gabarito-campos');
-  document.getElementById('btn-gabarito-area').style.display = 'none';
-  let html = '<div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;letter-spacing:.8px">Gabarito</div>';
-  html += '<div class="gabarito-grid">';
-  for (let i = 1; i <= nq; i++) {
-    html += `<div class="q-cell">
-      <div class="q-num">${i}</div>
-      <select id="gab-q-${i}" style="flex:1;padding:4px;font-size:.8rem;border-radius:6px;border:1.5px solid var(--line);background:#fff">
-        <option value="">—</option>
-        <option value="A">A</option><option value="B">B</option>
-        <option value="C">C</option><option value="D">D</option>
-        <option value="E">E</option>
-      </select>
-    </div>`;
-  }
-  html += '</div>';
-  area.innerHTML = html;
+ const nq = document.getElementById('prova-nq').value;
+ document.getElementById('gabarito-campos').innerHTML = '<div class="gabarito-grid">' + Array.from({length: nq}, (_, i) => `<div class="q-cell"><span class="q-num">${i+1}</span><select id="gab-${i+1}"><option value="">-</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>`).join('') + '</div>';
+ document.getElementById('btn-gerar-gab').style.display = 'none';
 }
- 
 function criarProva() {
-  const turmaId = document.getElementById('prova-turma-sel').value;
-  const nome = document.getElementById('prova-nome').value.trim();
-  const nq = parseInt(document.getElementById('prova-nq').value) || 10;
-  if (!turmaId) return toast('Selecione uma turma');
-  if (!nome) return toast('Digite o nome da prova');
- 
-  const gabarito = {};
-  for (let i = 1; i <= nq; i++) {
-    const sel = document.getElementById('gab-q-' + i);
-    gabarito[i] = sel ? sel.value : '';
-  }
- 
-  S.provas.push({ id: uid(), turmaId, nome, nq, gabarito });
-  document.getElementById('prova-nome').value = '';
-  document.getElementById('gabarito-campos').innerHTML = '';
-  document.getElementById('btn-gabarito-area').style.display = '';
-  closeModal('m-nova-prova');
-  save();
-  renderProvaTree();
-  toast('Prova criada!');
+ if(!S.turmaId) return alert("Selecione uma turma!");
+ const nome = document.getElementById('prova-nome').value;
+ const nq = document.getElementById('prova-nq').value;
+ const gab = {}; for(let i=1; i<=nq; i++) gab[i] = document.getElementById('gab-'+i)?.value || "";
+ S.provas.push({id: uid(), turmaId: S.turmaId, nome, nq, gabarito: gab});
+ save(); renderProvaTree(); closeModal('m-nova-prova'); toast("Prova salva!");
 }
+function renderProvaTree() { const div = document.getElementById('prova-tree'); const provas = S.provas.filter(p => p.turmaId === S.turmaId); div.innerHTML = provas.map(p => `<div class="st-row ${S.provaId === p.id ? 'on' : ''}" onclick="selProva('${p.id}')"><span>📋 ${p.nome}</span></div>`).join(''); }
+function selProva(id) { S.provaId = id; renderProvaTree(); if(S.alunoId) abrirCorrecao(); save(); }
  
-function renderProvaTree() {
-  const el = document.getElementById('prova-tree');
-  const list = S.provas.filter(p => p.turmaId === S.turmaId);
-  if (!list.length) {
-    el.innerHTML = '<div style="padding:8px 12px;font-size:.77rem;color:var(--ink3)">Nenhuma prova</div>';
-    return;
-  }
-  el.innerHTML = list.map(p => `
-    <div class="st-row ${S.provaId === p.id ? 'on' : ''}" onclick="selProva('${p.id}')">
-      <div class="st-av st-av-blue" style="font-size:.6rem">📋</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:600;font-size:.82rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.nome}</div>
-        <div style="font-size:.68rem;color:var(--ink3)">${p.nq} questões</div>
-      </div>
-    </div>`).join('');
-}
- 
-function selProva(id) {
-  S.provaId = id;
-  renderProvaTree();
-  if (S.alunoId) abrirCorrecao();
-  save();
-}
- 
-// ══════════════════════════════════════════════════════════
 // ALUNOS
-// ══════════════════════════════════════════════════════════
-function importarLista() {
-  const turmaId = document.getElementById('lista-turma-sel').value;
-  const raw = document.getElementById('lista-nomes').value;
-  if (!turmaId) return toast('Selecione uma turma');
-  if (!raw.trim()) return toast('Cole a lista de alunos');
+function importarLista() { if(!S.turmaId) return alert("Selecione uma turma!"); const nomes = document.getElementById('lista-nomes').value.split('\n'); nomes.forEach(n => { if(n.trim()) S.alunos.push({id: uid()+Math.random(), turmaId: S.turmaId, nome: n.trim()}); }); save(); renderAlunos(); closeModal('m-lista-alunos'); }
+function renderAlunos(q = '') { const div = document.getElementById('aluno-list'); const alunos = S.alunos.filter(a => a.turmaId === S.turmaId && a.nome.toLowerCase().includes(q.toLowerCase())); div.innerHTML = alunos.map(a => `<div class="st-row ${S.alunoId === a.id ? 'on' : ''}" onclick="selAluno('${a.id}')"><div class="st-av">${a.nome[0]}</div><span>${a.nome}</span></div>`).join(''); }
+function selAluno(id) { S.alunoId = id; renderAlunos(); abrirCorrecao(); save(); }
  
-  const nomes = raw.split('\n').map(n => n.trim()).filter(Boolean);
-  let adicionados = 0;
-  nomes.forEach(nome => {
-    const existe = S.alunos.find(a => a.turmaId === turmaId && a.nome.toLowerCase() === nome.toLowerCase());
-    if (!existe) {
-      S.alunos.push({ id: uid(), turmaId, nome });
-      adicionados++;
-    }
-  });
- 
-  document.getElementById('lista-nomes').value = '';
-  closeModal('m-lista-alunos');
-  save();
-  renderAlunos();
-  renderOrganizar();
-  toast(`${adicionados} aluno(s) importado(s)`);
-}
- 
-function addAluno() {
-  const turmaId = document.getElementById('add-aluno-turma').value;
-  const nome = document.getElementById('add-aluno-nome').value.trim();
-  if (!turmaId) return toast('Selecione uma turma');
-  if (!nome) return toast('Digite o nome');
- 
-  const existe = S.alunos.find(a => a.turmaId === turmaId && a.nome.toLowerCase() === nome.toLowerCase());
-  if (existe) return toast('Aluno já cadastrado');
- 
-  S.alunos.push({ id: uid(), turmaId, nome });
-  document.getElementById('add-aluno-nome').value = '';
-  closeModal('m-add-aluno');
-  save();
-  renderAlunos();
-  renderOrganizar();
-  toast('Aluno adicionado!');
-}
- 
-function renderAlunos(q = '') {
-  const el = document.getElementById('aluno-list');
-  let list = S.alunos.filter(a => a.turmaId === S.turmaId);
-  if (q) list = list.filter(a => a.nome.toLowerCase().includes(q.toLowerCase()));
-  list.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
- 
-  if (!list.length) {
-    el.innerHTML = '<div style="padding:8px 12px;font-size:.77rem;color:var(--ink3)">' +
-      (S.turmaId ? 'Nenhum aluno' : 'Selecione uma turma') + '</div>';
-    return;
-  }
-  el.innerHTML = list.map(a => {
-    const iniciais = a.nome.split(' ').slice(0, 2).map(x => x[0]).join('').toUpperCase();
-    const corr = S.correcoes.find(c => c.alunoId === a.id && c.provaId === S.provaId);
-    const temNota = corr && corr.nota !== undefined;
-    return `<div class="st-row ${S.alunoId === a.id ? 'on' : ''}" onclick="selAluno('${a.id}')">
-      <div class="st-av" style="background:${stringToColor(a.nome)}">${iniciais}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.nome}</div>
-      </div>
-      ${temNota ? `<div class="badge badge-blue">${corr.nota.toFixed(1)}</div>` : ''}
-    </div>`;
-  }).join('');
-}
- 
-function stringToColor(str) {
-  const colors = ['#2752e8','#1a7a4a','#c8202e','#a06020','#6a34c8','#1a6a7a','#c85820','#2874a6'];
-  let hash = 0;
-  for (let c of str) hash = ((hash << 5) - hash) + c.charCodeAt(0);
-  return colors[Math.abs(hash) % colors.length];
-}
- 
-function selAluno(id) {
-  S.alunoId = id;
-  renderAlunos();
-  if (!S.provaId) return toast('Selecione uma prova primeiro');
-  abrirCorrecao();
-}
- 
-// ══════════════════════════════════════════════════════════
 // CORREÇÃO
-// ══════════════════════════════════════════════════════════
-function limparCorrecao() {
-  document.getElementById('no-sel').style.display = '';
-  document.getElementById('corr-content').style.display = 'none';
-}
- 
+function limparCorrecao() { document.getElementById('no-sel').style.display = 'block'; document.getElementById('corr-content').style.display = 'none'; }
 function abrirCorrecao() {
-  if (!S.alunoId || !S.provaId) { limparCorrecao(); return; }
-  const aluno = S.alunos.find(a => a.id === S.alunoId);
-  const prova = S.provas.find(p => p.id === S.provaId);
-  if (!aluno || !prova) return;
+ if(!S.alunoId || !S.provaId) return;
+ const aluno = S.alunos.find(a => a.id === S.alunoId);
+ const prova = S.provas.find(p => p.id === S.provaId);
+ document.getElementById('no-sel').style.display = 'none';
+ const div = document.getElementById('corr-content'); div.style.display = 'block';
+ const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId) || {respostas: {}};
  
-  nav('correcao');
-  document.getElementById('no-sel').style.display = 'none';
-  const cont = document.getElementById('corr-content');
-  cont.style.display = 'block';
+ // LÓGICA DE ALTERNATIVAS DINÂMICAS:
+ const gabValores = Object.values(prova.gabarito);
+ const opcoes = gabValores.includes('E') ? ['A','B','C','D','E'] : ['A','B','C','D'];
  
-  const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId) || { respostas: {} };
-  const iniciais = aluno.nome.split(' ').slice(0, 2).map(x => x[0]).join('').toUpperCase();
-  const turma = S.turmas.find(t => t.id === prova.turmaId);
- 
-  let html = `
-  <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px">
-    <div class="st-av" style="width:48px;height:48px;font-size:.9rem;background:${stringToColor(aluno.nome)}">${iniciais}</div>
-    <div>
-      <div style="font-size:1.15rem;font-weight:800">${aluno.nome}</div>
-      <div style="font-size:.78rem;color:var(--ink3)">${turma ? turma.nome + ' · ' : ''}${prova.nome}</div>
-    </div>
-    ${corr.nota !== undefined ? `<div style="margin-left:auto"><div class="nota-display" style="padding:12px 20px;min-width:100px">
-      <div class="nota-val" style="font-size:2rem">${corr.nota.toFixed(1)}</div>
-      <div class="nota-label">nota</div>
-    </div></div>` : ''}
-  </div>
-  <div class="card">
-    <div class="sec-hd"><h3>Respostas do Aluno</h3></div>
-    <div class="gabarito-grid" id="respostas-grid">`;
- 
-  for (let i = 1; i <= prova.nq; i++) {
-    const gabResp = prova.gabarito[i] || '';
-    const alunoResp = corr.respostas[i] || '';
-    let cls = 'neutro';
-    if (alunoResp && gabResp) {
-      cls = alunoResp === gabResp ? 'acerto' : 'erro';
-    }
-    html += `<div class="q-cell ${cls}" id="qcell-${i}">
-      <div class="q-num">${i}</div>
-      <select onchange="atualizarResposta(${i}, this.value, '${gabResp}')" style="flex:1;padding:4px;font-size:.8rem;border-radius:6px;border:1.5px solid var(--line);background:#fff">
-        <option value="">—</option>
-        <option value="A" ${alunoResp==='A'?'selected':''}>A</option>
-        <option value="B" ${alunoResp==='B'?'selected':''}>B</option>
-        <option value="C" ${alunoResp==='C'?'selected':''}>C</option>
-        <option value="D" ${alunoResp==='D'?'selected':''}>D</option>
-        <option value="E" ${alunoResp==='E'?'selected':''}>E</option>
-      </select>
-      ${gabResp ? `<div style="font-size:.65rem;color:var(--ink3)">Gab:${gabResp}</div>` : ''}
-    </div>`;
-  }
- 
-  html += `</div></div>
-  <div style="display:flex;gap:10px;margin-top:16px">
-    <button class="btn btn-blue btn-full" onclick="calcularNota()">✅ Calcular Nota</button>
-    <button class="btn btn-ghost" onclick="limparRespostas()">🔄 Limpar</button>
-  </div>
-  <div id="resultado-nota" style="margin-top:16px"></div>`;
- 
-  cont.innerHTML = html;
+ div.innerHTML = `<div class="card"><h3>${aluno.nome}</h3><p>${prova.nome}</p><div class="gabarito-grid" style="margin-top:20px;">` + 
+ Array.from({length: prova.nq}, (_, i) => {
+ const q = i+1; const resp = corr.respostas[q] || ""; const gab = prova.gabarito[q];
+ let cor = resp ? (resp === gab ? "acerto" : "erro") : "";
+ return `<div class="q-cell ${cor}"><span class="q-num">${q}</span><select onchange="salvarResposta(${q}, this.value)"><option value="">-</option>${opcoes.map(l => `<option ${resp === l ? 'selected':''}>${l}</option>`).join('')}</select></div>`;
+ }).join('') + `</div><button class="btn btn-blue" style="margin-top:20px;" onclick="calcularNota()">Calcular Nota</button></div><div id="result-nota"></div>`;
 }
- 
-function atualizarResposta(q, valor, gabResp) {
-  if (!S.correcoes) S.correcoes = [];
-  let corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
-  if (!corr) {
-    corr = { id: uid(), alunoId: S.alunoId, provaId: S.provaId, turmaId: S.turmaId, respostas: {} };
-    S.correcoes.push(corr);
-  }
-  corr.respostas[q] = valor;
- 
-  // Atualizar cor da célula
-  const cell = document.getElementById('qcell-' + q);
-  if (cell) {
-    cell.className = 'q-cell';
-    if (valor && gabResp) {
-      cell.classList.add(valor === gabResp ? 'acerto' : 'erro');
-    } else {
-      cell.classList.add('neutro');
-    }
-  }
-  saveLocal();
+function salvarResposta(q, v) { 
+ let corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
+ if(!corr) { corr = {id: uid(), alunoId: S.alunoId, provaId: S.provaId, turmaId: S.turmaId, respostas: {}}; S.correcoes.push(corr); }
+ corr.respostas[q] = v; save(); abrirCorrecao(); 
 }
- 
 function calcularNota() {
-  const prova = S.provas.find(p => p.id === S.provaId);
-  if (!prova) return;
-  let corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
-  if (!corr) {
-    corr = { id: uid(), alunoId: S.alunoId, provaId: S.provaId, turmaId: S.turmaId, respostas: {} };
-    S.correcoes.push(corr);
-  }
- 
-  let acertos = 0;
-  for (let i = 1; i <= prova.nq; i++) {
-    if (corr.respostas[i] && prova.gabarito[i] && corr.respostas[i] === prova.gabarito[i]) {
-      acertos++;
-    }
-  }
- 
-  const total = prova.nq;
-  const nota = (acertos / total) * 10;
-  corr.nota = nota;
-  corr.acertos = acertos;
-  corr.total = total;
- 
-  save();
-  renderAlunos();
- 
-  const el = document.getElementById('resultado-nota');
-  const cls = nota >= 7 ? 'green' : nota >= 5 ? 'amber' : 'red';
-  el.innerHTML = `
-  <div class="nota-display" style="background:${nota>=7?'linear-gradient(135deg,#1a7a4a,#0f5435)':nota>=5?'linear-gradient(135deg,#a06020,#7a4a18)':'linear-gradient(135deg,#c8202e,#9a1520)'}">
-    <div class="nota-val">${nota.toFixed(1)}</div>
-    <div class="nota-label">${acertos} de ${total} questões corretas (${(acertos/total*100).toFixed(0)}%)</div>
-  </div>`;
-  toast('Nota calculada: ' + nota.toFixed(1));
+ const prova = S.provas.find(p => p.id === S.provaId);
+ const corr = S.correcoes.find(c => c.alunoId === S.alunoId && c.provaId === S.provaId);
+ if(!corr) return;
+ let acertos = 0; for(let q in prova.gabarito) if(prova.gabarito[q] === corr.respostas[q]) acertos++;
+ const nota = (acertos / prova.nq) * 10; corr.nota = nota; save();
+ document.getElementById('result-nota').innerHTML = `<div class="nota-display"><div class="nota-val">${nota.toFixed(1)}</div><p>${acertos} acertos de ${prova.nq}</p></div>`;
+ renderAlunos();
 }
  
-function limparRespostas() {
-  S.correcoes = S.correcoes.filter(c => !(c.alunoId === S.alunoId && c.provaId === S.provaId));
-  save();
-  abrirCorrecao();
-  toast('Respostas limpas');
-}
- 
-// ══════════════════════════════════════════════════════════
-// ORGANIZAR
-// ══════════════════════════════════════════════════════════
-function orgTab(tab, el) {
-  document.querySelectorAll('.org-tab-btn').forEach(b => b.classList.remove('on'));
-  el.classList.add('on');
-  document.getElementById('org-alunos-panel').style.display = tab === 'alunos' ? '' : 'none';
-  document.getElementById('org-provas-panel').style.display = tab === 'provas' ? '' : 'none';
-}
- 
+// ORGANIZAR & RELATÓRIOS
 function renderOrganizar() {
-  // Alunos
-  const alEl = document.getElementById('org-alunos-list');
-  if (!S.turmaId) {
-    alEl.innerHTML = '<div class="empty"><div>Selecione uma turma na barra superior</div></div>';
-  } else {
-    const list = S.alunos.filter(a => a.turmaId === S.turmaId);
-    list.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
-    if (!list.length) {
-      alEl.innerHTML = '<div class="empty"><div>Nenhum aluno nesta turma</div></div>';
-    } else {
-      alEl.innerHTML = list.map((a, i) => {
-        const iniciais = a.nome.split(' ').slice(0, 2).map(x => x[0]).join('').toUpperCase();
-        return `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">
-          <div style="color:var(--ink3);font-size:.72rem;width:24px;text-align:right">${i+1}</div>
-          <div class="st-av" style="background:${stringToColor(a.nome)}">${iniciais}</div>
-          <div style="flex:1">${a.nome}</div>
-          <button class="btn btn-xs btn-red" onclick="excluirAluno('${a.id}')">🗑️</button>
-        </div>`;
-      }).join('');
-    }
-  }
+ const pDiv = document.getElementById('org-provas-list');
+ const aDiv = document.getElementById('org-alunos-list');
+ const provas = S.provas.filter(p => p.turmaId === S.turmaId);
+ const alunos = S.alunos.filter(a => a.turmaId === S.turmaId);
  
-  // Provas
-  const pvEl = document.getElementById('org-provas-list');
-  const provas = S.provas.filter(p => p.turmaId === S.turmaId);
-  if (!S.turmaId) {
-    pvEl.innerHTML = '<div class="empty"><div>Selecione uma turma na barra superior</div></div>';
-  } else if (!provas.length) {
-    pvEl.innerHTML = '<div class="empty"><div>Nenhuma prova nesta turma</div></div>';
-  } else {
-    pvEl.innerHTML = provas.map(p => `
-      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)">
-        <div style="font-size:1.2rem">📋</div>
-        <div style="flex:1">
-          <div style="font-weight:600">${p.nome}</div>
-          <div style="font-size:.73rem;color:var(--ink3)">${p.nq} questões</div>
-        </div>
-        <button class="btn btn-xs btn-ghost" onclick="editarProva('${p.id}')">✏️ Editar Gabarito</button>
-        <button class="btn btn-xs btn-red" onclick="excluirProva('${p.id}')">🗑️</button>
-      </div>`).join('');
-  }
+ pDiv.innerHTML = provas.map(p => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>📋 ${p.nome}</span><div><button class="btn btn-ghost btn-xs" onclick="editarProva('${p.id}')">✏️ Gabarito</button> <button class="btn btn-red btn-xs" onclick="excluirProva('${p.id}')">🗑️</button></div></div>`).join('');
+ aDiv.innerHTML = alunos.map(a => `<div style="display:flex; justify-content:space-between; padding:5px; border-bottom:1px solid #eee;"><span>${a.nome}</span><button class="btn btn-red btn-xs" onclick="excluirAluno('${a.id}')">Excluir</button></div>`).join('');
 }
- 
-function excluirAluno(id) {
-  if (!confirm('Excluir este aluno?')) return;
-  S.alunos = S.alunos.filter(a => a.id !== id);
-  S.correcoes = S.correcoes.filter(c => c.alunoId !== id);
-  if (S.alunoId === id) { S.alunoId = null; limparCorrecao(); }
-  save();
-  renderAlunos();
-  renderOrganizar();
-  toast('Aluno excluído');
-}
- 
-function excluirProva(id) {
-  if (!confirm('Excluir esta prova?')) return;
-  S.provas = S.provas.filter(p => p.id !== id);
-  S.correcoes = S.correcoes.filter(c => c.provaId !== id);
-  if (S.provaId === id) { S.provaId = null; limparCorrecao(); }
-  save();
-  renderProvaTree();
-  renderOrganizar();
-  toast('Prova excluída');
-}
+function excluirAluno(id) { S.alunos = S.alunos.filter(a => a.id !== id); save(); renderOrganizar(); renderAlunos(); }
+function excluirProva(id) { S.provas = S.provas.filter(p => p.id !== id); save(); renderOrganizar(); renderProvaTree(); }
  
 function editarProva(id) {
-  const prova = S.provas.find(p => p.id === id);
-  if (!prova) return;
-  const body = document.getElementById('edit-prova-body');
-  let html = `<div class="field"><label>Nome da Prova</label><input type="text" id="ep-nome" value="${prova.nome}"></div>`;
-  html += `<div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:var(--ink3);margin-bottom:8px">Gabarito</div>`;
-  html += '<div class="gabarito-grid">';
-  for (let i = 1; i <= prova.nq; i++) {
-    const v = prova.gabarito[i] || '';
-    html += `<div class="q-cell"><div class="q-num">${i}</div>
-      <select id="ep-q-${i}" style="flex:1;padding:4px;font-size:.8rem">
-        <option value="">—</option>
-        <option value="A" ${v==='A'?'selected':''}>A</option>
-        <option value="B" ${v==='B'?'selected':''}>B</option>
-        <option value="C" ${v==='C'?'selected':''}>C</option>
-        <option value="D" ${v==='D'?'selected':''}>D</option>
-        <option value="E" ${v==='E'?'selected':''}>E</option>
-      </select></div>`;
-  }
-  html += `</div><div style="margin-top:16px;display:flex;gap:8px">
-    <button class="btn btn-blue btn-full" onclick="salvarEdicaoProva('${id}')">Salvar</button>
-    <button class="btn btn-ghost" onclick="closeModal('m-edit-prova')">Cancelar</button>
-  </div>`;
-  body.innerHTML = html;
-  openModal('m-edit-prova');
+ const p = S.provas.find(x => x.id === id); if(!p) return;
+ const body = document.getElementById('edit-prova-body');
+ body.innerHTML = `<input type="text" id="ep-nome" value="${p.nome}" style="width:100%; padding:10px; margin-bottom:10px;"><div class="gabarito-grid">` + 
+ Array.from({length: p.nq}, (_, i) => `<div class="q-cell"><span class="q-num">${i+1}</span><select id="ep-gab-${i+1}"><option value="">-</option><option ${p.gabarito[i+1]==='A'?'selected':''}>A</option><option ${p.gabarito[i+1]==='B'?'selected':''}>B</option><option ${p.gabarito[i+1]==='C'?'selected':''}>C</option><option ${p.gabarito[i+1]==='D'?'selected':''}>D</option><option ${p.gabarito[i+1]==='E'?'selected':''}>E</option></select></div>`).join('') + 
+ `</div><button class="btn btn-blue" style="margin-top:20px; width:100%" onclick="salvarEdicaoProva('${id}')">Salvar Alterações</button>`;
+ openModal('m-edit-prova');
 }
- 
 function salvarEdicaoProva(id) {
-  const prova = S.provas.find(p => p.id === id);
-  if (!prova) return;
-  prova.nome = document.getElementById('ep-nome').value.trim() || prova.nome;
-  for (let i = 1; i <= prova.nq; i++) {
-    const sel = document.getElementById('ep-q-' + i);
-    if (sel) prova.gabarito[i] = sel.value;
-  }
-  closeModal('m-edit-prova');
-  save();
-  renderProvaTree();
-  renderOrganizar();
-  toast('Prova atualizada!');
+ const p = S.provas.find(x => x.id === id);
+ p.nome = document.getElementById('ep-nome').value;
+ for(let i=1; i<=p.nq; i++) p.gabarito[i] = document.getElementById('ep-gab-'+i).value;
+ save(); renderOrganizar(); renderProvaTree(); closeModal('m-edit-prova'); toast("Gabarito atualizado!");
 }
  
-// ══════════════════════════════════════════════════════════
-// RELATÓRIOS
-// ══════════════════════════════════════════════════════════
 function renderRelatorios() {
-  const el = document.getElementById('rel-content');
-  if (!S.turmaId || !S.provaId) {
-    el.innerHTML = `<div class="empty"><div class="ei">📊</div><div style="font-weight:700">Selecione uma turma e prova</div><p>Navegue para Correção, selecione turma e prova, depois volte aqui.</p></div>`;
-    return;
-  }
-  const prova = S.provas.find(p => p.id === S.provaId);
-  const turma = S.turmas.find(t => t.id === S.turmaId);
-  if (!prova || !turma) return;
- 
-  const alunos = S.alunos.filter(a => a.turmaId === S.turmaId);
-  const correcoes = alunos.map(a => {
-    const c = S.correcoes.find(x => x.alunoId === a.id && x.provaId === S.provaId);
-    return { aluno: a, nota: c?.nota, acertos: c?.acertos };
-  }).filter(x => x.nota !== undefined);
- 
-  correcoes.sort((a, b) => b.nota - a.nota);
- 
-  const total = correcoes.length;
-  if (!total) {
-    el.innerHTML = `<div class="card"><p style="color:var(--ink3)">Nenhuma correção registrada para esta prova ainda.</p></div>`;
-    return;
-  }
- 
-  const media = correcoes.reduce((s, c) => s + c.nota, 0) / total;
-  const max = correcoes[0].nota;
-  const min = correcoes[correcoes.length-1].nota;
- 
-  let html = `
-  <div class="card">
-    <div class="sec-hd"><h3>${turma.nome} · ${prova.nome}</h3></div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
-      <div style="background:var(--blue-bg);border-radius:8px;padding:14px;text-align:center">
-        <div style="font-size:1.6rem;font-weight:800;color:var(--blue);font-family:'DM Mono',monospace">${media.toFixed(1)}</div>
-        <div style="font-size:.72rem;color:var(--ink3);margin-top:4px">Média da turma</div>
-      </div>
-      <div style="background:var(--green-bg);border-radius:8px;padding:14px;text-align:center">
-        <div style="font-size:1.6rem;font-weight:800;color:var(--green);font-family:'DM Mono',monospace">${max.toFixed(1)}</div>
-        <div style="font-size:.72rem;color:var(--ink3);margin-top:4px">Maior nota</div>
-      </div>
-      <div style="background:var(--red-bg);border-radius:8px;padding:14px;text-align:center">
-        <div style="font-size:1.6rem;font-weight:800;color:var(--red);font-family:'DM Mono',monospace">${min.toFixed(1)}</div>
-        <div style="font-size:.72rem;color:var(--ink3);margin-top:4px">Menor nota</div>
-      </div>
-    </div>
-    <div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:var(--ink3);margin-bottom:10px;letter-spacing:.8px">Ranking</div>`;
- 
-  correcoes.forEach((c, i) => {
-    const pct = (c.nota / 10) * 100;
-    const cls = c.nota >= 7 ? 'background:#1a7a4a' : c.nota >= 5 ? 'background:#a06020' : 'background:#c8202e';
-    const iniciais = c.aluno.nome.split(' ').slice(0,2).map(x=>x[0]).join('').toUpperCase();
-    html += `<div class="rank-row">
-      <div class="rank-pos" style="${cls};color:#fff">${i+1}</div>
-      <div class="st-av" style="background:${stringToColor(c.aluno.nome)}">${iniciais}</div>
-      <div style="flex:1;min-width:0">
-        <div style="font-weight:600;font-size:.83rem">${c.aluno.nome}</div>
-        <div class="rank-bar-wrap"><div class="rank-bar" style="width:${pct}%;background:${c.nota>=7?'var(--green)':c.nota>=5?'var(--amber)':'var(--red)'}"></div></div>
-      </div>
-      <div style="font-weight:800;font-family:'DM Mono',monospace;font-size:.9rem;min-width:36px;text-align:right">${c.nota.toFixed(1)}</div>
-    </div>`;
-  });
- 
-  html += '</div>';
-  el.innerHTML = html;
+ const div = document.getElementById('rel-content');
+ if(!S.turmaId) return div.innerHTML = "<p>Selecione uma turma.</p>";
+ const corrs = S.correcoes.filter(c => S.turmaId === c.turmaId || S.alunos.find(a => a.id === c.alunoId && a.turmaId === S.turmaId));
+ if(!corrs.length) return div.innerHTML = "<p>Nenhuma nota lançada.</p>";
+ div.innerHTML = `<div class="card"><table style="width:100%; text-align:left;"><thead><tr><th>Aluno</th><th>Nota</th></tr></thead><tbody>` + 
+ corrs.map(c => { const a = S.alunos.find(al => al.id === c.alunoId); return `<tr><td>${a?.nome || 'Excluído'}</td><td><b>${c.nota?.toFixed(1) || '0.0'}</b></td></tr>`; }).join('') + `</tbody></table></div>`;
 }
  
-// ══════════════════════════════════════════════════════════
-// MODAIS & UTILITIES
-// ══════════════════════════════════════════════════════════
-function openModal(id) {
-  populateSelects();
-  document.getElementById(id).classList.add('on');
-}
-function closeModal(id) {
-  document.getElementById(id).classList.remove('on');
-}
+function stringToColor(str) { let hash = 0; for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash); const c = (hash & 0x00FFFFFF).toString(16).toUpperCase(); return "#" + "00000".substring(0, 6 - c.length) + c; }
  
-// Fechar modal clicando fora
-document.querySelectorAll('.overlay').forEach(ov => {
-  ov.addEventListener('click', function(e) {
-    if (e.target === this) this.classList.remove('on');
-  });
-});
- 
-function toast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), 2500);
-}
- 
-// ══════════════════════════════════════════════════════════
-// RENDER ALL
-// ══════════════════════════════════════════════════════════
-function renderAll() {
-  renderTurmaSelect();
-  renderAlunos();
-  renderProvaTree();
-  populateSelects();
-}
- 
-// ══════════════════════════════════════════════════════════
 // INIT
-// ══════════════════════════════════════════════════════════
-loadLocal();
-renderAll();
- 
-// Aguardar Firebase
-if (window._jt_ready) {
-  loadFirebase();
-} else {
-  document.addEventListener('jt_firebase_ready', loadFirebase);
-}
+renderTurmaSelect(); renderAlunos(); renderProvaTree();
+document.addEventListener('jt_firebase_ready', () => { window._jt_load().then(d => { if(d) { S = d; renderTurmaSelect(); renderAlunos(); renderProvaTree(); } }); });
 </script>
 </body>
 </html>
- 
