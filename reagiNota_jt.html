@@ -308,6 +308,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);
       <input type="number" id="prova-nq" value="10" min="1" max="100" style="margin-bottom:0">
     </div>
     <div style="flex:1">
+      <label style="font-size:.7rem;color:var(--ink3);font-weight:700;display:block;margin-bottom:4px">VALOR DA PROVA (pts)</label>
+      <input type="number" id="prova-valor" value="10" min="0.5" max="100" step="0.5" style="margin-bottom:0" placeholder="ex: 10">
+    </div>
+    <div style="flex:1">
       <label style="font-size:.7rem;color:var(--ink3);font-weight:700;display:block;margin-bottom:4px">ALTERNATIVAS</label>
       <select id="prova-alts" style="margin-bottom:0;padding:9px 12px;border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:.85rem;width:100%">
         <option value="4">A B C D</option>
@@ -386,14 +390,20 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);
 const LS_KEY = 'rn_joaotavares_da_costa_v1';
 let S = { turmas:[], provas:[], alunos:[], correcoes:[], turmaId:null, provaId:null, alunoId:null };
  
+let _saveTimer=null;
 function save() {
   localStorage.setItem(LS_KEY, JSON.stringify(S));
   setSyncStatus('saving');
-  if (window._jt_save) {
-    window._jt_save(S)
-      .then(()  => setSyncStatus('ok'))
-      .catch(() => setSyncStatus('err'));
-  }
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(() => {
+    if (!window._jt_save) { setSyncStatus('err'); return; }
+    const _attempt = (n) => {
+      window._jt_save(S)
+        .then(() => setSyncStatus('ok'))
+        .catch(() => { if(n>0) setTimeout(()=>_attempt(n-1), 3000); else setSyncStatus('err'); });
+    };
+    _attempt(2);
+  }, 400);
 }
 function load() {
   try { const r=localStorage.getItem(LS_KEY); if(r) S=JSON.parse(r); }
@@ -533,6 +543,7 @@ function abrirNovaProva(){
   document.getElementById('btn-salvar-prova').textContent='✅ Criar Prova';
   document.getElementById('prova-nome').value='';
   document.getElementById('prova-nq').value='10';
+  document.getElementById('prova-valor').value='10';
   document.getElementById('prova-alts').value='4';
   document.getElementById('gabarito-setup').innerHTML='';
   openModal('m-prova');
@@ -544,6 +555,7 @@ function abrirEditarProva(id){
   document.getElementById('btn-salvar-prova').textContent='💾 Salvar Alterações';
   document.getElementById('prova-nome').value=p.nome;
   document.getElementById('prova-nq').value=p.nq;
+  document.getElementById('prova-valor').value=p.valor||10;
   document.getElementById('prova-alts').value=p.alts||4;
   gerarSetupGab(true);
   openModal('m-prova');
@@ -579,15 +591,16 @@ function salvarProva(){
   const nome=document.getElementById('prova-nome').value.trim();
   if(!nome)return toast('Informe o nome da prova!');
   const nq=parseInt(document.getElementById('prova-nq').value)||10;
+  const valor=parseFloat(document.getElementById('prova-valor').value)||10;
   const alts=parseInt(document.getElementById('prova-alts').value);
   if(_editandoProvaId){
     const p=S.provas.find(x=>x.id===_editandoProvaId);
-    if(p){p.nome=nome;p.nq=nq;p.alts=alts;p.gabarito=window._tempGab||{};}
+    if(p){p.nome=nome;p.nq=nq;p.valor=valor;p.alts=alts;p.gabarito=window._tempGab||{};}
     save();renderProvaTree();fecharModalProva();
     if(S.provaId===_editandoProvaId&&S.alunoId)abrirCorrecao();
     toast('Prova atualizada!','var(--green)');
   } else {
-    S.provas.push({id:uid(),turmaId:S.turmaId,nome,nq,alts,gabarito:window._tempGab||{}});
+    S.provas.push({id:uid(),turmaId:S.turmaId,nome,nq,valor,alts,gabarito:window._tempGab||{}});
     save();renderProvaTree();fecharModalProva();
     toast('Prova criada!','var(--green)');
   }
@@ -600,7 +613,7 @@ function renderProvaTree(){
   div.innerHTML=provas.map(p=>`
     <div class="st-row ${S.provaId===p.id?'on':''}" onclick="selecionarProva('${p.id}')">
       <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">📋 ${p.nome}</span>
-      <span style="font-size:.6rem;color:var(--ink3);flex-shrink:0">${p.nq}q</span>
+      <span style="font-size:.6rem;color:var(--ink3);flex-shrink:0">${p.nq}q · ${p.valor||10}pts</span>
       <span onclick="event.stopPropagation();abrirEditarProva('${p.id}')"
         style="font-size:.65rem;cursor:pointer;padding:2px 5px;border-radius:4px;background:var(--paper2);color:var(--ink2);flex-shrink:0" title="Editar gabarito">✏️</span>
     </div>`).join('');
@@ -722,12 +735,13 @@ function calcNota(silencioso){
     if(gab[q]===corr.respostas[q])ac++;else er++;
   }
   const total=Object.keys(gab).length;
-  const nota=total>0?(ac/p.nq)*10:0;
-  const cor=nota>=6?'var(--green)':nota>=4?'#c97a00':'var(--red)';
+  const valorProva=p.valor||10;
+  const nota=total>0?(ac/p.nq)*valorProva:0;
+  const cor=nota>=(valorProva*0.7)?'var(--green)':nota>=(valorProva*0.5)?'#c97a00':'var(--red)';
   document.getElementById('result-nota').innerHTML=`
     <div style="background:${cor};color:#fff;border-radius:var(--r);padding:20px;text-align:center">
       <div style="font-size:2.2rem;font-weight:800;font-family:'DM Mono',monospace">${nota.toFixed(1)}</div>
-      <div style="font-size:.75rem;color:rgba(255,255,255,.55);margin-top:4px">Nota Final</div>
+      <div style="font-size:.75rem;color:rgba(255,255,255,.55);margin-top:4px">Nota Final (valor: ${valorProva})</div>
       <div style="margin-top:10px;font-size:.72rem;display:flex;gap:14px;justify-content:center;color:rgba(255,255,255,.7)">
         <span>✅ ${ac} acertos</span><span>❌ ${er} erros</span><span>⬜ ${br} em branco</span>
       </div>
@@ -754,9 +768,10 @@ function renderRelatorio(){
     const corr=S.correcoes.find(c=>c.alunoId===a.id&&c.provaId===provaId);
     const resp=corr?corr.respostas:{};
     const acertos=total>0?Object.keys(gab).filter(q=>gab[q]===resp[q]).length:0;
-    const nota=total>0?((acertos/p.nq)*10).toFixed(1):'-';
+    const vp=p.valor||10;
+    const nota=total>0?((acertos/p.nq)*vp).toFixed(1):'-';
     const pendente=!corr||Object.keys(resp).length===0;
-    const status=pendente?'Pendente':nota>=6?'Aprovado':'Reprovado';
+    const status=pendente?'Pendente':parseFloat(nota)>=(vp*0.7)?'Aprovado':'Reprovado';
     const badge=status==='Aprovado'?'badge-green':status==='Reprovado'?'badge-red':'badge-gray';
     return{nome:a.nome,acertos,nota,status,badge,pendente};
   });
@@ -783,10 +798,10 @@ function renderRelatorio(){
     </div>
     <div class="card" style="padding:0;overflow:hidden">
       <table class="rel-table">
-        <thead><tr><th>#</th><th>Nome</th><th>Acertos</th><th>Nota</th><th>Status</th></tr></thead>
+        <thead><tr><th>#</th><th>Nome</th><th>Acertos</th><th>Nota / ${p.valor||10} pts</th><th>Status</th></tr></thead>
         <tbody>${rows.map((r,i)=>`<tr>
           <td style="color:var(--ink3)">${i+1}</td><td><b>${r.nome}</b></td>
-          <td>${!r.pendente?`${r.acertos}/${p.nq}`:'—'}</td>
+          <td>${!r.pendente?`${r.acertos} de ${p.nq}`:'—'}</td>
           <td><b>${r.nota}</b></td>
           <td><span class="badge ${r.badge}">${r.status}</span></td>
         </tr>`).join('')}</tbody>
@@ -807,7 +822,7 @@ function exportarCSV(){
  
   // Cabeçalho: Nome | Prova1 Acertos | Prova1 Nota | Prova1 Status | Prova2...
   const cols=['Nome'];
-  provas.forEach(p=>{cols.push(`${p.nome} - Acertos`,`${p.nome} - Nota`,`${p.nome} - Status`);});
+  provas.forEach(p=>{cols.push(`${p.nome} - Acertos`,`${p.nome} - Total Qs`,`${p.nome} - Nota`,`${p.nome} - Status`);});
   csv+=cols.map(c=>`"${c.replace(/"/g,'""')}"`).join(';')+'\n';
  
   alunos.forEach(a=>{
@@ -817,10 +832,11 @@ function exportarCSV(){
       const corr=S.correcoes.find(c=>c.alunoId===a.id&&c.provaId===p.id);
       const resp=corr?corr.respostas:{};
       const acertos=total>0?Object.keys(gab).filter(q=>gab[q]===resp[q]).length:0;
-      const nota=total>0?((acertos/p.nq)*10).toFixed(1).replace('.',','):'-';
+      const vp=p.valor||10;
+      const nota=total>0?((acertos/p.nq)*vp).toFixed(1).replace('.',','):'-';
       const pendente=!corr||Object.keys(resp).length===0;
-      const status=pendente?'Pendente':parseFloat(nota.replace(',','.')  )>=6?'Aprovado':'Reprovado';
-      row.push(pendente?'-':`${acertos}/${p.nq}`, nota, status);
+      const status=pendente?'Pendente':parseFloat(nota.replace(',','.'))>=(vp*0.7)?'Aprovado':'Reprovado';
+      row.push(pendente?'-':String(acertos), String(p.nq), nota, status);
     });
     csv+=row.join(';')+'\n';
   });
