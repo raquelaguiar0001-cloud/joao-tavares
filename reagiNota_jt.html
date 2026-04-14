@@ -1,349 +1,2021 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>ReagiNota — UE João Tavares da Costa</title>
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=DM+Mono:wght@400;700&display=swap" rel="stylesheet">
+
 <script type="module">
+
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+
 import { getDatabase, ref, set, get, onValue } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 
+ 
+
 const firebaseConfig = {
+
   apiKey: "AIzaSyCHR8cuC25TCDyZJNkV2R_04oTdUSdVAyk",
+
   authDomain: "corretor-gabarito.firebaseapp.com",
+
   databaseURL: "https://corretor-gabarito-default-rtdb.firebaseio.com",
+
   projectId: "corretor-gabarito",
+
   storageBucket: "corretor-gabarito.firebasestorage.app",
+
   messagingSenderId: "823312147686",
+
   appId: "1:823312147686:web:196d3492a3a37d8a460727"
+
 };
 
+ 
+
 const app = initializeApp(firebaseConfig);
+
 const db  = getDatabase(app);
 
+ 
+
+/* ═══ NAMESPACE EXCLUSIVO — João Tavares da Costa ═══ */
+
 const NAMESPACE = 'escola_joaotavares_da_costa_v1';
+
 const LS_KEY    = 'rn_joaotavares_da_costa_v1';
 
+ 
+
 window._jt_save   = async (data) => { await set(ref(db, NAMESPACE), data); };
+
 window._jt_load   = async () => { const s = await get(ref(db,NAMESPACE)); return s.exists()?s.val():null; };
+
 window._jt_listen = (cb) => { onValue(ref(db,NAMESPACE), s=>{ if(s.exists()) cb(s.val()); }); };
+
 window._JT_LS_KEY = LS_KEY;
+
 window._jt_ready  = true;
+
 document.dispatchEvent(new Event('jt_firebase_ready'));
+
 </script>
+
 <style>
+
 :root {
+
   --ink:#161616; --ink2:#5a5a6a; --ink3:#9898a8;
+
   --paper:#f8f7f4; --paper2:#efede8; --paper3:#e5e2db;
+
   --line:#dddad4; --blue:#2752e8; --blue-bg:#eef1fd;
+
   --green:#1a7a4a; --green-bg:#e6f4ed;
+
   --red:#c8202e; --red-bg:#fdedef;
+
   --r:10px; --sh:0 1px 4px rgba(0,0,0,.07),0 4px 20px rgba(0,0,0,.06);
+
 }
+
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+ 
+
+/* ── LAYOUT RAIZ — FIX SCROLL */
+
 html,body{height:100%;overflow:hidden;}
-body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);display:flex;flex-direction:column;}
-.topbar{height:54px;background:var(--ink);color:#fff;display:flex;align-items:center;padding:0 16px;gap:10px;flex-shrink:0;z-index:200;}
+
+body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);
+
+     display:flex;flex-direction:column;}
+
+ 
+
+/* ── TOPBAR */
+
+.topbar{height:54px;background:var(--ink);color:#fff;display:flex;align-items:center;
+
+        padding:0 16px;gap:10px;flex-shrink:0;z-index:200;}
+
 .tb-logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
-.tb-mark{width:32px;height:32px;background:#e63946;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-weight:700;color:#fff;font-size:.9rem;}
+
+.tb-mark{width:32px;height:32px;background:#e63946;border-radius:7px;display:flex;
+
+         align-items:center;justify-content:center;font-family:'DM Mono',monospace;
+
+         font-weight:700;color:#fff;font-size:.9rem;}
+
 .tb-name{font-weight:800;font-size:.95rem;}
+
 .tb-school{font-size:.68rem;color:rgba(255,255,255,.4);flex-shrink:0;}
+
 .tb-nav{display:flex;gap:2px;flex-shrink:0;}
-.tb-btn{background:transparent;border:none;color:rgba(255,255,255,.55);padding:6px 11px;border-radius:7px;cursor:pointer;font-family:inherit;font-size:.78rem;font-weight:600;transition:.15s;white-space:nowrap;}
+
+.tb-btn{background:transparent;border:none;color:rgba(255,255,255,.55);padding:6px 11px;
+
+        border-radius:7px;cursor:pointer;font-family:inherit;font-size:.78rem;
+
+        font-weight:600;transition:.15s;white-space:nowrap;}
+
 .tb-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+
 .tb-btn.on{background:#e63946;color:#fff;}
+
+ 
+
+/* ── SYNC DOT */
+
 .sync-dot{width:7px;height:7px;border-radius:50%;background:#555;flex-shrink:0;transition:.3s;}
+
 .sync-dot.ok{background:#1a7a4a;}
+
 .sync-dot.err{background:#c8202e;}
+
 .sync-dot.saving{background:#c97a00;animation:pulse .6s infinite;}
+
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+ 
+
+/* ── TURMA DROPDOWN */
+
 .turma-dropdown{margin-left:auto;position:relative;min-width:200px;flex-shrink:0;}
-.turma-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;background:#e63946;border:none;color:#fff;padding:7px 13px;border-radius:8px;font-size:.82rem;font-weight:700;font-family:inherit;cursor:pointer;width:100%;transition:.15s;box-shadow:0 2px 8px rgba(230,57,70,.4);}
+
+.turma-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;
+
+  background:#e63946;border:none;color:#fff;padding:7px 13px;border-radius:8px;
+
+  font-size:.82rem;font-weight:700;font-family:inherit;cursor:pointer;width:100%;
+
+  transition:.15s;box-shadow:0 2px 8px rgba(230,57,70,.4);}
+
+.turma-trigger .caret{font-size:.6rem;opacity:.8;transition:.2s;flex-shrink:0;}
+
 .turma-trigger.open .caret{transform:rotate(180deg);}
-.turma-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:240px;background:#fff;border-radius:10px;border:1px solid var(--line);box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:999;overflow:hidden;max-height:320px;overflow-y:auto;}
+
+.turma-menu{display:none;position:absolute;top:calc(100% + 6px);right:0;min-width:240px;
+
+  background:#fff;border-radius:10px;border:1px solid var(--line);
+
+  box-shadow:0 8px 32px rgba(0,0,0,.18);z-index:999;overflow:hidden;
+
+  max-height:320px;overflow-y:auto;}
+
 .turma-menu.open{display:block;}
-.turma-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-size:.82rem;color:var(--ink);transition:.12s;border-bottom:1px solid var(--line);}
+
+.turma-opt{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;
+
+  font-size:.82rem;color:var(--ink);transition:.12s;border-bottom:1px solid var(--line);}
+
+.turma-opt:last-child{border-bottom:none;}
+
+.turma-opt:hover{background:var(--blue-bg);}
+
 .turma-opt.selected{background:var(--blue-bg);color:var(--blue);font-weight:700;}
+
+.turma-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+.turma-opt-empty{padding:12px 14px;color:var(--ink3);font-size:.8rem;font-style:italic;}
+
+ 
+
+/* ── BODY / SIDEBAR / MAIN */
+
 .body{display:flex;flex:1;overflow:hidden;min-height:0;}
-.sidebar{width:260px;background:#fff;border-right:1px solid var(--line);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;}
+
+.sidebar{width:260px;background:#fff;border-right:1px solid var(--line);
+
+         display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;}
+
 .sb-sec{padding:12px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;}
+
 .sb-sec-flex{flex:1;overflow:hidden;display:flex;flex-direction:column;}
-.sb-head{display:flex;align-items:center;justify-content:space-between;font-size:.65rem;font-weight:800;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;letter-spacing:.05em;}
+
+.sb-head{display:flex;align-items:center;justify-content:space-between;
+
+         font-size:.65rem;font-weight:800;text-transform:uppercase;
+
+         color:var(--ink3);margin-bottom:8px;letter-spacing:.05em;}
+
 .sb-scroll{overflow-y:auto;flex:1;}
+
 .main{flex:1;overflow-y:auto;padding:20px;background:var(--paper);}
+
 .page{display:none;}.page.on{display:block;}
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:15px;box-shadow:var(--sh);margin-bottom:12px;}
-.st-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;font-size:.8rem;border-left:3px solid transparent;transition:.15s;}
+
+ 
+
+/* ── CARDS / ROWS */
+
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);
+
+      padding:15px;box-shadow:var(--sh);margin-bottom:12px;}
+
+.st-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;
+
+        cursor:pointer;font-size:.8rem;border-left:3px solid transparent;transition:.15s;}
+
+.st-row:hover{background:var(--paper2);}
+
 .st-row.on{background:var(--blue-bg);border-left-color:var(--blue);}
-.btn{border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:700;font-size:.75rem;padding:7px 12px;display:inline-flex;align-items:center;gap:5px;}
+
+.st-av{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;
+
+       display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:800;flex-shrink:0;}
+
+ 
+
+/* ── BOTÕES */
+
+.btn{border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-weight:700;
+
+     font-size:.75rem;padding:7px 12px;display:inline-flex;align-items:center;gap:5px;transition:.15s;}
+
+.btn:hover{filter:brightness(1.08);}
+
 .btn-blue{background:var(--blue);color:#fff;}
+
 .btn-red{background:var(--red);color:#fff;}
+
+.btn-green{background:var(--green);color:#fff;}
+
 .btn-ghost{background:var(--paper2);color:var(--ink2);border:1px solid var(--line);}
+
 .btn-xs{padding:4px 8px;font-size:.7rem;}
+
+ 
+
+/* ── GRADE QUESTÕES */
+
 .gabarito-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px;}
-.q-row{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;background:#fff;border:1px solid var(--line);}
-.q-num{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0;}
-.bubble{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ink2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;cursor:pointer;}
+
+.q-row{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;
+
+       background:#fff;border:1px solid var(--line);transition:.15s;}
+
+.q-num{width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;
+
+       display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;flex-shrink:0;}
+
+.options-wrap{display:flex;gap:5px;}
+
+.bubble{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ink2);
+
+        display:flex;align-items:center;justify-content:center;font-size:.7rem;
+
+        font-weight:700;cursor:pointer;transition:.12s;background:#fff;color:var(--ink2);}
+
+.bubble:hover{border-color:var(--ink);color:var(--ink);}
+
 .bubble.selected{background:var(--ink);color:#fff;border-color:var(--ink);}
+
 .q-row.acerto{border-color:var(--green);background:var(--green-bg);}
+
 .q-row.acerto .q-num{background:var(--green);}
+
 .q-row.erro{border-color:var(--red);background:var(--red-bg);}
+
 .q-row.erro .q-num{background:var(--red);}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:none;align-items:center;justify-content:center;padding:16px;}
+
+.gab-tip{font-size:.6rem;color:var(--ink3);font-weight:800;margin-left:auto;}
+
+ 
+
+/* ── MODAL */
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;
+
+         display:none;align-items:center;justify-content:center;padding:16px;}
+
 .overlay.on{display:flex;}
-.modal{background:#fff;border-radius:12px;padding:22px;width:100%;max-width:460px;box-shadow:0 8px 40px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;}
-.modal input, .modal select, .modal textarea {width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:7px;margin-bottom:10px;font-family:inherit;}
+
+.modal{background:#fff;border-radius:12px;padding:22px;width:100%;max-width:460px;
+
+       box-shadow:0 8px 40px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto;}
+
+.modal-wide{max-width:560px;}
+
+.modal h3{margin-bottom:14px;font-size:1rem;}
+
+.modal input,.modal textarea,.modal select{
+
+  width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:7px;
+
+  font-family:inherit;font-size:.85rem;margin-bottom:10px;outline:none;}
+
+.modal input:focus,.modal textarea:focus{border-color:var(--blue);}
+
+ 
+
+/* ── RELATÓRIO */
+
 .rel-table{width:100%;border-collapse:collapse;font-size:.8rem;}
-.rel-table th{background:var(--ink);color:#fff;padding:8px 10px;text-align:left;}
+
+.rel-table th{background:var(--ink);color:#fff;padding:8px 10px;text-align:left;font-size:.7rem;}
+
 .rel-table td{padding:7px 10px;border-bottom:1px solid var(--line);}
-.badge{padding:2px 8px;border-radius:20px;font-size:.65rem;font-weight:700;}
+
+.rel-table tr:hover td{background:var(--paper2);}
+
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.65rem;font-weight:700;}
+
 .badge-green{background:var(--green-bg);color:var(--green);}
+
 .badge-red{background:var(--red-bg);color:var(--red);}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 18px;border-radius:20px;font-size:.8rem;z-index:1000;opacity:0;transition:.3s;}
+
+.badge-gray{background:var(--paper3);color:var(--ink2);}
+
+ 
+
+/* ── TOAST */
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+
+       background:var(--ink);color:#fff;padding:9px 18px;border-radius:20px;
+
+       font-size:.8rem;z-index:1000;opacity:0;pointer-events:none;transition:.3s;white-space:nowrap;}
+
 .toast.show{opacity:1;}
+
+ 
+
+/* ── SCAN */
+
+.scan-drop-zone{border:2px dashed var(--line);border-radius:10px;padding:20px 16px;
+
+  text-align:center;cursor:pointer;transition:.15s;background:var(--paper);color:var(--ink3);font-size:.82rem;}
+
+.scan-drop-zone:hover,.scan-drop-zone.drag{border-color:var(--blue);background:var(--blue-bg);color:var(--blue);}
+
+.scan-drop-zone input[type=file]{display:none;}
+
+.scan-preview{max-width:100%;max-height:180px;border-radius:8px;margin-top:10px;display:block;margin-left:auto;margin-right:auto;}
+
+.scan-result-row{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;background:var(--paper2);font-size:.8rem;}
+
+.scan-result-row .q-num{background:var(--blue);}
+
+ 
+
+/* ── EMPTY */
+
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+
+       padding:60px 20px;color:var(--ink3);font-size:.85rem;gap:8px;}
+
+.empty-icon{font-size:2.2rem;}
+
 </style>
+
 </head>
+
 <body>
 
+ 
+
+<!-- TOPBAR -->
+
 <div class="topbar">
-  <div class="tb-logo"><div class="tb-mark">RN</div><div class="tb-name">ReagiNota</div></div>
+
+  <div class="tb-logo">
+
+    <div class="tb-mark">RN</div>
+
+    <div><div class="tb-name">ReagiNota</div></div>
+
+  </div>
+
   <span class="tb-school">UE João Tavares da Costa</span>
+
   <div class="tb-nav">
-    <button class="tb-btn on" onclick="nav('correcao')" id="n-correcao">📋 Correção</button>
-    <button class="tb-btn" onclick="nav('turmas')" id="n-turmas">🏫 Turmas</button>
-    <button class="tb-btn" onclick="nav('relatorio')" id="n-relatorio">📊 Relatório</button>
-    <button class="tb-btn" onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
+
+    <button class="tb-btn on" onclick="nav('correcao')"  id="n-correcao">📋 Correção</button>
+
+    <button class="tb-btn"    onclick="nav('turmas')"    id="n-turmas">🏫 Turmas</button>
+
+    <button class="tb-btn"    onclick="nav('relatorio')" id="n-relatorio">📊 Relatório</button>
+
+    <button class="tb-btn"    onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
+
   </div>
-  <div style="display:flex;align-items:center;gap:5px;font-size:.62rem;color:rgba(255,255,255,.45)">
+
+  <div style="display:flex;align-items:center;gap:5px;font-size:.62rem;color:rgba(255,255,255,.45);flex-shrink:0">
+
     <div class="sync-dot" id="sync-dot"></div>
+
     <span id="sync-label">—</span>
+
   </div>
+
   <div class="turma-dropdown" id="turma-dropdown">
-    <button class="turma-trigger" onclick="toggleTurmaMenu()"><span id="turma-label">— Selecionar Turma —</span><span class="caret">▼</span></button>
+
+    <button class="turma-trigger" id="turma-trigger" onclick="toggleTurmaMenu()">
+
+      <span id="turma-label">— Selecionar Turma —</span>
+
+      <span class="caret">▼</span>
+
+    </button>
+
     <div class="turma-menu" id="turma-menu"></div>
+
   </div>
+
 </div>
+
+ 
+
+<!-- BODY -->
 
 <div class="body">
+
+ 
+
+  <!-- SIDEBAR -->
+
   <div class="sidebar">
-    <div class="sb-sec">
-      <div class="sb-head">Provas <button class="btn btn-xs btn-blue" onclick="abrirNovaProva()">+ Nova</button></div>
+
+    <div class="sb-sec" style="flex-shrink:0">
+
+      <div class="sb-head">
+
+        Provas
+
+        <button class="btn btn-xs btn-blue" onclick="abrirNovaProva()">+ Nova</button>
+
+      </div>
+
       <div id="prova-tree" class="sb-scroll" style="max-height:160px"></div>
+
     </div>
+
     <div class="sb-sec sb-sec-flex">
-      <div class="sb-head">Alunos <button class="btn btn-xs btn-blue" onclick="openModal('m-lista-alunos')">Lista</button></div>
+
+      <div class="sb-head">
+
+        Alunos
+
+        <div style="display:flex;gap:4px">
+
+          <button class="btn btn-xs btn-ghost" onclick="openModal('m-add-aluno')">+1</button>
+
+          <button class="btn btn-xs btn-blue"  onclick="openModal('m-lista-alunos')">Lista</button>
+
+        </div>
+
+      </div>
+
       <div id="aluno-list" class="sb-scroll"></div>
+
     </div>
+
   </div>
+
+ 
+
+  <!-- MAIN -->
 
   <div class="main">
+
+ 
+
     <div id="p-correcao" class="page on">
+
       <div id="corr-header"></div>
+
       <div id="corr-grid" class="gabarito-grid"></div>
+
       <div id="result-nota" style="margin-top:15px;max-width:280px"></div>
+
     </div>
+
+ 
+
     <div id="p-turmas" class="page">
-        <h2 style="font-size:1.1rem;margin-bottom:16px">🏫 Turmas</h2>
-        <div id="turmas-list"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+
+        <h2 style="font-size:1.1rem">🏫 Turmas</h2>
+
         <button class="btn btn-blue" onclick="openModal('m-nova-turma')">+ Nova Turma</button>
+
+      </div>
+
+      <div id="turmas-list"></div>
+
     </div>
+
+ 
+
     <div id="p-relatorio" class="page">
-        <select id="rel-prova-sel" onchange="renderRelatorio()"></select>
-        <button class="btn btn-ghost" onclick="exportarCSV()">⬇️ CSV</button>
-        <div id="rel-content" style="margin-top:15px"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+
+        <h2 style="font-size:1.1rem">📊 Relatório de Notas</h2>
+
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+
+          <select id="rel-prova-sel" style="padding:7px 12px;border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:.82rem;min-width:180px" onchange="renderRelatorio()">
+
+            <option value="">— Selecionar Prova —</option>
+
+          </select>
+
+          <button class="btn btn-ghost" onclick="exportarCSV()">⬇️ CSV</button>
+
+        </div>
+
+      </div>
+
+      <div id="rel-content"></div>
+
     </div>
-    <div id="p-organizar" class="page"><div id="org-content"></div></div>
+
+ 
+
+    <div id="p-organizar" class="page">
+
+      <h2 style="font-size:1.1rem;margin-bottom:16px">📂 Organizar Dados</h2>
+
+      <div id="org-content"></div>
+
+    </div>
+
+ 
+
   </div>
+
 </div>
 
-<div class="overlay" id="m-prova"><div class="modal">
-  <h3 id="prova-modal-titulo">📋 Prova</h3>
-  <input type="text" id="prova-nome" placeholder="Nome da Prova">
-  <div style="display:flex;gap:8px">
-    <div style="flex:1"><label style="font-size:.7rem">QUESTÕES</label><input type="number" id="prova-nq" value="10"></div>
-    <div style="flex:1"><label style="font-size:.7rem">VALOR (0-10)</label><input type="number" id="prova-valor" value="10" step="0.5"></div>
-  </div>
-  <select id="prova-alts"><option value="4">A B C D</option><option value="5">A B C D E</option></select>
-  <button class="btn btn-ghost" onclick="gerarSetupGab(false)">🔧 Definir Gabarito</button>
-  <div id="gabarito-setup" style="max-height:200px;overflow-y:auto;margin:10px 0;display:grid;gap:5px"></div>
-  <div style="display:flex;gap:8px;justify-content:flex-end">
-    <button class="btn btn-ghost" onclick="closeModal('m-prova')">Cancelar</button>
-    <button class="btn btn-blue" onclick="salvarProva()">Salvar</button>
-  </div>
-</div></div>
+ 
+
+<!-- MODAIS -->
+
+ 
 
 <div class="overlay" id="m-nova-turma"><div class="modal">
-    <h3>🏫 Nova Turma</h3>
-    <input type="text" id="t-nome" placeholder="Nome da Turma">
-    <button class="btn btn-blue" onclick="criarTurma()">Criar</button>
+
+  <h3>🏫 Nova Turma</h3>
+
+  <input type="text" id="t-nome" placeholder="Nome da Turma (ex: 9º ANO A)">
+
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+
+    <button class="btn btn-ghost" onclick="closeModal('m-nova-turma')">Cancelar</button>
+
+    <button class="btn btn-blue" onclick="criarTurma()">Criar Turma</button>
+
+  </div>
+
 </div></div>
 
-<div class="overlay" id="m-lista-alunos"><div class="modal">
-    <h3>👥 Lista de Alunos</h3>
-    <textarea id="lista-nomes" rows="8" placeholder="Um nome por linha"></textarea>
-    <button class="btn btn-blue" onclick="importarLista()">Importar</button>
+ 
+
+<div class="overlay" id="m-edit-turma"><div class="modal">
+
+  <h3>✏️ Editar Turma</h3>
+
+  <input type="text" id="et-nome" placeholder="Nome da Turma">
+
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+
+    <button class="btn btn-ghost" onclick="closeModal('m-edit-turma')">Cancelar</button>
+
+    <button class="btn btn-blue" id="btn-salvar-et">Atualizar</button>
+
+  </div>
+
 </div></div>
+
+ 
+
+<!-- MODAL PROVA — Nova e Editar -->
+
+<div class="overlay" id="m-prova"><div class="modal modal-wide">
+
+  <h3 id="prova-modal-titulo">📋 Nova Prova</h3>
+
+  <input type="text" id="prova-nome" placeholder="Nome da Prova (ex: Inglês 1º BIM)">
+
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+
+    <div style="flex:1">
+
+      <label style="font-size:.7rem;color:var(--ink3);font-weight:700;display:block;margin-bottom:4px">Nº DE QUESTÕES</label>
+
+      <input type="number" id="prova-nq" value="10" min="1" max="100" style="margin-bottom:0">
+
+    </div>
+
+    <div style="flex:1">
+
+      <label style="font-size:.7rem;color:var(--ink3);font-weight:700;display:block;margin-bottom:4px">ALTERNATIVAS</label>
+
+      <select id="prova-alts" style="margin-bottom:0;padding:9px 12px;border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:.85rem;width:100%">
+
+        <option value="4">A B C D</option>
+
+        <option value="5">A B C D E</option>
+
+      </select>
+
+    </div>
+
+  </div>
+
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+
+    <button class="btn btn-ghost" style="flex:1" onclick="gerarSetupGab(false)">🔧 Definir Gabarito</button>
+
+    <button class="btn btn-ghost" style="flex:1" onclick="abrirScanModal('gabarito')">📷 Gabarito por Foto</button>
+
+  </div>
+
+  <div id="gabarito-setup" style="max-height:220px;overflow-y:auto;margin-bottom:10px;display:grid;gap:5px"></div>
+
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+
+    <button class="btn btn-ghost" onclick="fecharModalProva()">Cancelar</button>
+
+    <button class="btn btn-blue" id="btn-salvar-prova" onclick="salvarProva()">✅ Criar Prova</button>
+
+  </div>
+
+</div></div>
+
+ 
+
+<div class="overlay" id="m-add-aluno"><div class="modal">
+
+  <h3>👤 Adicionar Aluno</h3>
+
+  <input type="text" id="aluno-nome-single" placeholder="Nome completo do aluno">
+
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+
+    <button class="btn btn-ghost" onclick="closeModal('m-add-aluno')">Cancelar</button>
+
+    <button class="btn btn-blue" onclick="adicionarUmAluno()">Adicionar</button>
+
+  </div>
+
+</div></div>
+
+ 
+
+<div class="overlay" id="m-lista-alunos"><div class="modal">
+
+  <h3>📋 Importar Lista de Alunos</h3>
+
+  <p style="font-size:.75rem;color:var(--ink3);margin-bottom:10px">Um nome por linha. Duplicados são ignorados.</p>
+
+  <textarea id="lista-nomes" placeholder="Maria Silva&#10;João Santos&#10;Ana Oliveira..." rows="9"></textarea>
+
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+
+    <button class="btn btn-ghost" onclick="closeModal('m-lista-alunos')">Cancelar</button>
+
+    <button class="btn btn-blue" onclick="importarLista()">Importar</button>
+
+  </div>
+
+</div></div>
+
+ 
+
+<div class="overlay" id="m-del-aluno"><div class="modal">
+
+  <h3>🗑️ Remover Aluno?</h3>
+
+  <p id="del-aluno-msg" style="font-size:.85rem;margin-bottom:16px;color:var(--ink2)"></p>
+
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+
+    <button class="btn btn-ghost" onclick="closeModal('m-del-aluno')">Cancelar</button>
+
+    <button class="btn btn-red" id="btn-confirm-del-aluno">Remover</button>
+
+  </div>
+
+</div></div>
+
+ 
+
+<!-- MODAL SCAN — para gabarito da prova E respostas do aluno -->
+
+<div class="overlay" id="m-scan"><div class="modal modal-wide">
+
+  <h3 id="scan-titulo">📷 Ler por Foto</h3>
+
+  <p id="scan-desc" style="font-size:.75rem;color:var(--ink3);margin-bottom:12px"></p>
+
+  <div class="scan-drop-zone" id="scan-drop"
+
+       onclick="document.getElementById('scan-file-input').click()"
+
+       ondragover="event.preventDefault();this.classList.add('drag')"
+
+       ondragleave="this.classList.remove('drag')"
+
+       ondrop="handleScanDrop(event)">
+
+    <div id="scan-drop-label">
+
+      <div style="font-size:1.8rem;margin-bottom:6px">📷</div>
+
+      <div><b>Clique, arraste ou cole (Ctrl+V) a imagem</b></div>
+
+      <div style="font-size:.72rem;margin-top:4px;opacity:.7">JPG, PNG, WEBP · Funciona com câmera do celular</div>
+
+    </div>
+
+    <img id="scan-preview-img" class="scan-preview" style="display:none">
+
+    <input type="file" id="scan-file-input" accept="image/*" capture="environment" onchange="handleScanFile(this.files[0])">
+
+  </div>
+
+  <div id="scan-status" style="margin-top:10px;font-size:.8rem;color:var(--ink2);min-height:20px"></div>
+
+  <div id="scan-results" style="margin-top:10px;max-height:200px;overflow-y:auto"></div>
+
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
+
+    <button class="btn btn-ghost" onclick="closeModal('m-scan')">Cancelar</button>
+
+    <button class="btn btn-blue" id="btn-aplicar-scan" style="display:none" onclick="aplicarScan()">✅ Aplicar</button>
+
+  </div>
+
+</div></div>
+
+ 
 
 <div class="toast" id="toast"></div>
 
+ 
+
 <script>
+
+// ═══ ESTADO ═══════════════════════════════════════════════════════════════════
+
+const LS_KEY = 'rn_joaotavares_da_costa_v1';
+
 let S = { turmas:[], provas:[], alunos:[], correcoes:[], turmaId:null, provaId:null, alunoId:null };
-let _isSyncing = false;
+
+ 
 
 function save() {
-  localStorage.setItem(window._JT_LS_KEY, JSON.stringify(S));
+
+  localStorage.setItem(LS_KEY, JSON.stringify(S));
+
   setSyncStatus('saving');
-  if (window._jt_save && !_isSyncing) {
-    window._jt_save(S).then(()=>setSyncStatus('ok')).catch(()=>setSyncStatus('err'));
+
+  if (window._jt_save) {
+
+    window._jt_save(S)
+
+      .then(()  => setSyncStatus('ok'))
+
+      .catch(() => setSyncStatus('err'));
+
   }
+
 }
+
+function load() {
+
+  try { const r=localStorage.getItem(LS_KEY); if(r) S=JSON.parse(r); }
+
+  catch(e){}
+
+}
+
+load();
+
+ 
+
+// ═══ SYNC ═════════════════════════════════════════════════════════════════════
 
 function setSyncStatus(s) {
-  const d=document.getElementById('sync-dot'), l=document.getElementById('sync-label');
+
+  const d=document.getElementById('sync-dot'),l=document.getElementById('sync-label');
+
   d.className='sync-dot '+s;
-  l.textContent=s==='ok'?'Sincronizado':s==='saving'?'Enviando...':'Erro';
+
+  l.textContent=s==='ok'?'Salvo':s==='saving'?'Salvando…':'Erro sync';
+
 }
 
-function nav(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
-  document.querySelectorAll('.tb-btn').forEach(x=>x.classList.remove('on'));
-  document.getElementById('p-'+p).classList.add('on');
-  document.getElementById('n-'+p).classList.add('on');
-  if(p==='relatorio') { popularRelProvasSel(); renderRelatorio(); }
-}
+ 
 
-function toggleTurmaMenu(){ document.getElementById('turma-menu').classList.toggle('open'); }
+// ═══ UTILS ════════════════════════════════════════════════════════════════════
 
-function selecionarTurmaMenu(id){
-  S.turmaId=id; S.provaId=null; S.alunoId=null;
-  save(); renderTurmaSelect(); renderAlunos(); renderProvaTree();
-  document.getElementById('turma-menu').classList.remove('open');
-}
+function toast(m,c){
 
-function renderTurmaSelect(){
-  const menu=document.getElementById('turma-menu'), label=document.getElementById('turma-label');
-  const cur=S.turmas.find(t=>t.id===S.turmaId);
-  label.textContent = cur ? cur.nome : '— Selecionar Turma —';
-  menu.innerHTML = S.turmas.map(t=>`<div class="turma-opt ${S.turmaId===t.id?'selected':''}" onclick="selecionarTurmaMenu('${t.id}')">${t.nome}</div>`).join('');
-}
+  const t=document.getElementById('toast');t.innerText=m;t.style.background=c||'var(--ink)';
 
-function abrirNovaProva(){
-  window._tempGab={};
-  document.getElementById('prova-nome').value='';
-  document.getElementById('prova-nq').value='10';
-  document.getElementById('prova-valor').value='10';
-  document.getElementById('gabarito-setup').innerHTML='';
-  openModal('m-prova');
-}
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);
 
-function gerarSetupGab(manter){
-  const n=parseInt(document.getElementById('prova-nq').value)||10;
-  const alt=parseInt(document.getElementById('prova-alts').value);
-  const ops=alt===5?['A','B','C','D','E']:['A','B','C','D'];
-  document.getElementById('gabarito-setup').innerHTML=Array.from({length:n},(_,i)=>{
-    const q=i+1; const current = window._tempGab[q] || '';
-    return `<div class="q-row"><span>${q}</span>${ops.map(l=>`<div class="bubble ${current===l?'selected':''}" onclick="window._tempGab[${q}]='${l}';gerarSetupGab(true)">${l}</div>`).join('')}</div>`;
-  }).join('');
-}
-
-function salvarProva(){
-  const nome=document.getElementById('prova-nome').value;
-  const nq=parseInt(document.getElementById('prova-nq').value);
-  const valor=parseFloat(document.getElementById('prova-valor').value);
-  if(!nome || !S.turmaId) return;
-  S.provas.push({id:'p'+Date.now(), turmaId:S.turmaId, nome, nq, valor, gabarito:window._tempGab});
-  save(); renderProvaTree(); closeModal('m-prova');
-}
-
-function renderProvaTree(){
-  const div=document.getElementById('prova-tree');
-  const provas=S.provas.filter(p=>p.turmaId===S.turmaId);
-  div.innerHTML=provas.map(p=>`<div class="st-row ${S.provaId===p.id?'on':''}" onclick="S.provaId='${p.id}';save();renderProvaTree();abrirCorrecao()">${p.nome}</div>`).join('');
-}
-
-function renderAlunos(){
-  const div=document.getElementById('aluno-list');
-  const alunos=S.alunos.filter(a=>a.turmaId===S.turmaId);
-  div.innerHTML=alunos.map(a=>`<div class="st-row ${S.alunoId===a.id?'on':''}" onclick="S.alunoId='${a.id}';save();renderAlunos();abrirCorrecao()">${a.nome}</div>`).join('');
-}
-
-function abrirCorrecao(){
-  if(!S.alunoId || !S.provaId) return;
-  const p=S.provas.find(x=>x.id===S.provaId), a=S.alunos.find(x=>x.id===S.alunoId);
-  const corr=S.correcoes.find(c=>c.alunoId===S.alunoId && c.provaId===S.provaId) || {respostas:{}};
-  document.getElementById('corr-header').innerHTML=`<b>${a.nome}</b><br><small>${p.nome} (Vale ${p.valor})</small>`;
-  const alts=p.alts==5?['A','B','C','D','E']:['A','B','C','D'];
-  document.getElementById('corr-grid').innerHTML=Array.from({length:p.nq},(_,i)=>{
-    const q=i+1; const r=corr.respostas[q]||''; const g=p.gabarito[q]||'';
-    const cls = r ? (r===g?'acerto':'erro') : '';
-    return `<div class="q-row ${cls}"><span>${q}</span>${alts.map(l=>`<div class="bubble ${r===l?'selected':''}" onclick="salvarResp(${q},'${l}')">${l}</div>`).join('')} <small style="margin-left:auto">${g}</small></div>`;
-  }).join('');
-  calcNota();
-}
-
-function salvarResp(q,v){
-  let c=S.correcoes.find(x=>x.alunoId===S.alunoId && x.provaId===S.provaId);
-  if(!c){ c={alunoId:S.alunoId, provaId:S.provaId, turmaId:S.turmaId, respostas:{}}; S.correcoes.push(c); }
-  c.respostas[q] = c.respostas[q]===v ? null : v;
-  save(); abrirCorrecao();
-}
-
-function calcNota(){
-  const p=S.provas.find(x=>x.id===S.provaId), c=S.correcoes.find(x=>x.alunoId===S.alunoId && x.provaId===S.provaId);
-  if(!p || !c) return;
-  let acertos=0; Object.keys(p.gabarito).forEach(q=>{ if(p.gabarito[q]===c.respostas[q]) acertos++; });
-  const nota = (acertos / p.nq) * p.valor;
-  document.getElementById('result-nota').innerHTML=`<div class="card" style="background:var(--blue);color:#fff;text-align:center"><h2>${nota.toFixed(1)}</h2><small>${acertos} acertos de ${p.nq}</small></div>`;
-}
-
-function popularRelProvasSel(){
-    const s=document.getElementById('rel-prova-sel');
-    s.innerHTML=S.provas.filter(p=>p.turmaId===S.turmaId).map(p=>`<option value="${p.id}">${p.nome}</option>`).join('');
-}
-
-function renderRelatorio(){
-    const pid=document.getElementById('rel-prova-sel').value; if(!pid) return;
-    const p=S.provas.find(x=>x.id===pid);
-    const alunos=S.alunos.filter(a=>a.turmaId===S.turmaId);
-    let html='<table class="rel-table"><tr><th>Aluno</th><th>Nota</th></tr>';
-    alunos.forEach(a=>{
-        const c=S.correcoes.find(x=>x.alunoId===a.id && x.provaId===pid);
-        let ac=0; if(c) Object.keys(p.gabarito).forEach(q=>{if(p.gabarito[q]===c.respostas[q])ac++});
-        const nota=c ? ((ac/p.nq)*p.valor).toFixed(1) : '-';
-        html+=`<tr><td>${a.nome}</td><td>${nota}</td></tr>`;
-    });
-    document.getElementById('rel-content').innerHTML=html+'</table>';
-}
-
-function criarTurma(){
-    const n=document.getElementById('t-nome').value; if(!n) return;
-    S.turmas.push({id:'t'+Date.now(), nome:n}); save(); renderTurmaSelect(); closeModal('m-nova-turma');
-}
-
-function importarLista(){
-    const txt=document.getElementById('lista-nomes').value;
-    txt.split('\n').forEach(n=>{ if(n.trim()) S.alunos.push({id:'a'+Math.random(), turmaId:S.turmaId, nome:n.trim()}); });
-    save(); renderAlunos(); closeModal('m-lista-alunos');
 }
 
 function openModal(id){document.getElementById(id).classList.add('on');}
+
 function closeModal(id){document.getElementById(id).classList.remove('on');}
 
-document.addEventListener('jt_firebase_ready', ()=>{
-  window._jt_listen(data => {
-    _isSyncing = true;
-    S = data;
-    renderTurmaSelect(); renderProvaTree(); renderAlunos();
-    _isSyncing = false;
-    setSyncStatus('ok');
-  });
+document.querySelectorAll('.overlay').forEach(ov=>ov.onclick=e=>{if(e.target===ov)closeModal(ov.id);});
+
+function uid(){return '_'+Math.random().toString(36).slice(2,10)+Date.now().toString(36);}
+
+function clearCorrecaoView(){
+
+  document.getElementById('corr-grid').innerHTML='';
+
+  document.getElementById('corr-header').innerHTML='';
+
+  document.getElementById('result-nota').innerHTML='';
+
+}
+
+ 
+
+// ═══ NAV ══════════════════════════════════════════════════════════════════════
+
+function nav(p){
+
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+
+  document.querySelectorAll('.tb-btn').forEach(x=>x.classList.remove('on'));
+
+  document.getElementById('p-'+p).classList.add('on');
+
+  document.getElementById('n-'+p).classList.add('on');
+
+  if(p==='turmas')renderTurmasPage();
+
+  if(p==='relatorio'){popularRelProvasSel();renderRelatorio();}
+
+  if(p==='organizar')renderOrganizar();
+
+}
+
+ 
+
+// ═══ TURMA DROPDOWN ═══════════════════════════════════════════════════════════
+
+const TC=['#e63946','#2752e8','#1a7a4a','#c97a00','#7b2d8b','#0077aa','#b5451b','#3d6b35'];
+
+const tc=i=>TC[i%TC.length];
+
+ 
+
+function renderTurmaSelect(){
+
+  const menu=document.getElementById('turma-menu');
+
+  const label=document.getElementById('turma-label');
+
+  const trig=document.getElementById('turma-trigger');
+
+  const cur=S.turmas.find(t=>t.id===S.turmaId);
+
+  if(cur){
+
+    const i=S.turmas.indexOf(cur);
+
+    label.textContent=cur.nome+' ('+S.alunos.filter(a=>a.turmaId===cur.id).length+')';
+
+    trig.style.background=tc(i);trig.style.boxShadow='0 2px 8px '+tc(i)+'55';
+
+  } else {
+
+    label.textContent='— Selecionar Turma —';
+
+    trig.style.background='#e63946';trig.style.boxShadow='0 2px 8px rgba(230,57,70,.4)';
+
+  }
+
+  if(!S.turmas.length){menu.innerHTML='<div class="turma-opt-empty">Nenhuma turma cadastrada</div>';return;}
+
+  menu.innerHTML=S.turmas.map((t,i)=>{
+
+    const n=S.alunos.filter(a=>a.turmaId===t.id).length;
+
+    return`<div class="turma-opt ${S.turmaId===t.id?'selected':''}" onclick="selecionarTurmaMenu('${t.id}')">
+
+      <span class="turma-dot" style="background:${tc(i)}"></span>
+
+      <span style="flex:1">${t.nome}</span>
+
+      <span style="font-size:.7rem;color:var(--ink3)">${n} aluno${n!==1?'s':''}</span>
+
+    </div>`;
+
+  }).join('');
+
+}
+
+function toggleTurmaMenu(){
+
+  const m=document.getElementById('turma-menu'),tr=document.getElementById('turma-trigger');
+
+  const open=m.classList.contains('open');
+
+  m.classList.toggle('open',!open);tr.classList.toggle('open',!open);
+
+}
+
+function selecionarTurmaMenu(id){
+
+  S.turmaId=id;S.provaId=null;S.alunoId=null;save();
+
+  document.getElementById('turma-menu').classList.remove('open');
+
+  document.getElementById('turma-trigger').classList.remove('open');
+
+  renderTurmaSelect();renderAlunos();renderProvaTree();clearCorrecaoView();
+
+}
+
+document.addEventListener('click',e=>{
+
+  const dd=document.getElementById('turma-dropdown');
+
+  if(dd&&!dd.contains(e.target)){
+
+    document.getElementById('turma-menu').classList.remove('open');
+
+    document.getElementById('turma-trigger').classList.remove('open');
+
+  }
+
 });
 
-window.onload = () => {
-    const local = localStorage.getItem(LS_KEY);
-    if(local) { S = JSON.parse(local); renderTurmaSelect(); renderProvaTree(); renderAlunos(); }
-};
+ 
+
+// ═══ TURMAS ═══════════════════════════════════════════════════════════════════
+
+function criarTurma(){
+
+  const n=document.getElementById('t-nome').value.trim();
+
+  if(!n)return toast('Informe o nome da turma!');
+
+  S.turmas.push({id:uid(),nome:n});
+
+  save();renderTurmaSelect();renderTurmasPage();closeModal('m-nova-turma');
+
+  document.getElementById('t-nome').value='';toast('Turma criada!','var(--green)');
+
+}
+
+function editarTurma(id){
+
+  const t=S.turmas.find(x=>x.id===id);
+
+  document.getElementById('et-nome').value=t.nome;
+
+  document.getElementById('btn-salvar-et').onclick=()=>{
+
+    const n=document.getElementById('et-nome').value.trim();if(!n)return;
+
+    t.nome=n;save();renderTurmaSelect();renderTurmasPage();closeModal('m-edit-turma');toast('Turma atualizada!');
+
+  };
+
+  openModal('m-edit-turma');
+
+}
+
+function excluirTurma(id){
+
+  if(!confirm('Excluir turma e todos os dados relacionados?'))return;
+
+  S.turmas=S.turmas.filter(t=>t.id!==id);
+
+  S.alunos=S.alunos.filter(a=>a.turmaId!==id);
+
+  S.provas=S.provas.filter(p=>p.turmaId!==id);
+
+  S.correcoes=S.correcoes.filter(c=>c.turmaId!==id);
+
+  if(S.turmaId===id){S.turmaId=null;S.provaId=null;S.alunoId=null;}
+
+  save();renderTurmaSelect();renderTurmasPage();toast('Turma excluída.');
+
+}
+
+function renderTurmasPage(){
+
+  const div=document.getElementById('turmas-list');
+
+  if(!S.turmas.length){div.innerHTML='<div class="empty"><div class="empty-icon">🏫</div><span>Nenhuma turma cadastrada</span></div>';return;}
+
+  div.innerHTML=S.turmas.map(t=>{
+
+    const nA=S.alunos.filter(a=>a.turmaId===t.id).length;
+
+    const nP=S.provas.filter(p=>p.turmaId===t.id).length;
+
+    return`<div class="card" style="display:flex;justify-content:space-between;align-items:center">
+
+      <div><b>${t.nome}</b>
+
+        <div style="color:var(--ink3);font-size:.75rem;margin-top:2px">👥 ${nA} aluno${nA!==1?'s':''} · 📋 ${nP} prova${nP!==1?'s':''}</div>
+
+      </div>
+
+      <div style="display:flex;gap:5px">
+
+        <button class="btn btn-ghost btn-xs" onclick="editarTurma('${t.id}')">✏️ Editar</button>
+
+        <button class="btn btn-red btn-xs" onclick="excluirTurma('${t.id}')">🗑️</button>
+
+      </div>
+
+    </div>`;
+
+  }).join('');
+
+}
+
+ 
+
+// ═══ PROVAS ═══════════════════════════════════════════════════════════════════
+
+let _editandoProvaId=null;
+
+ 
+
+function abrirNovaProva(){
+
+  _editandoProvaId=null; window._tempGab={};
+
+  document.getElementById('prova-modal-titulo').textContent='📋 Nova Prova';
+
+  document.getElementById('btn-salvar-prova').textContent='✅ Criar Prova';
+
+  document.getElementById('prova-nome').value='';
+
+  document.getElementById('prova-nq').value='10';
+
+  document.getElementById('prova-alts').value='4';
+
+  document.getElementById('gabarito-setup').innerHTML='';
+
+  openModal('m-prova');
+
+}
+
+function abrirEditarProva(id){
+
+  const p=S.provas.find(x=>x.id===id);if(!p)return;
+
+  _editandoProvaId=id; window._tempGab={...p.gabarito};
+
+  document.getElementById('prova-modal-titulo').textContent='✏️ Editar Gabarito';
+
+  document.getElementById('btn-salvar-prova').textContent='💾 Salvar Alterações';
+
+  document.getElementById('prova-nome').value=p.nome;
+
+  document.getElementById('prova-nq').value=p.nq;
+
+  document.getElementById('prova-alts').value=p.alts||4;
+
+  gerarSetupGab(true);
+
+  openModal('m-prova');
+
+}
+
+function fecharModalProva(){closeModal('m-prova');_editandoProvaId=null;}
+
+ 
+
+function gerarSetupGab(manter){
+
+  const n=parseInt(document.getElementById('prova-nq').value)||10;
+
+  const alt=parseInt(document.getElementById('prova-alts').value);
+
+  const ops=alt===5?['A','B','C','D','E']:['A','B','C','D'];
+
+  if(!manter)window._tempGab={};
+
+  document.getElementById('gabarito-setup').innerHTML=Array.from({length:n},(_,i)=>{
+
+    const q=i+1,gabQ=(window._tempGab||{})[q]||'';
+
+    return`<div class="q-row ${gabQ?'acerto':''}">
+
+      <span class="q-num" style="background:${gabQ?'var(--green)':'var(--ink)'}">${q}</span>
+
+      <div class="options-wrap">
+
+        ${ops.map(l=>`<div class="bubble ${gabQ===l?'selected':''}" onclick="setSetupGab(${q},'${l}',this)">${l}</div>`).join('')}
+
+      </div>
+
+    </div>`;
+
+  }).join('');
+
+}
+
+function setSetupGab(q,l,el){
+
+  el.parentNode.querySelectorAll('.bubble').forEach(b=>b.classList.remove('selected'));
+
+  el.classList.add('selected');
+
+  if(!window._tempGab)window._tempGab={};
+
+  window._tempGab[q]=l;
+
+  const row=el.closest('.q-row');
+
+  row.classList.add('acerto');
+
+  row.querySelector('.q-num').style.background='var(--green)';
+
+}
+
+function salvarProva(){
+
+  if(!S.turmaId)return toast('Selecione uma turma primeiro!');
+
+  const nome=document.getElementById('prova-nome').value.trim();
+
+  if(!nome)return toast('Informe o nome da prova!');
+
+  const nq=parseInt(document.getElementById('prova-nq').value)||10;
+
+  const alts=parseInt(document.getElementById('prova-alts').value);
+
+  if(_editandoProvaId){
+
+    const p=S.provas.find(x=>x.id===_editandoProvaId);
+
+    if(p){p.nome=nome;p.nq=nq;p.alts=alts;p.gabarito=window._tempGab||{};}
+
+    save();renderProvaTree();fecharModalProva();
+
+    if(S.provaId===_editandoProvaId&&S.alunoId)abrirCorrecao();
+
+    toast('Prova atualizada!','var(--green)');
+
+  } else {
+
+    S.provas.push({id:uid(),turmaId:S.turmaId,nome,nq,alts,gabarito:window._tempGab||{}});
+
+    save();renderProvaTree();fecharModalProva();
+
+    toast('Prova criada!','var(--green)');
+
+  }
+
+  window._tempGab={};
+
+}
+
+function renderProvaTree(){
+
+  const div=document.getElementById('prova-tree');
+
+  const provas=S.provas.filter(p=>p.turmaId===S.turmaId);
+
+  if(!provas.length){div.innerHTML='<div style="color:var(--ink3);font-size:.75rem;padding:6px">Nenhuma prova</div>';return;}
+
+  div.innerHTML=provas.map(p=>`
+
+    <div class="st-row ${S.provaId===p.id?'on':''}" onclick="selecionarProva('${p.id}')">
+
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.78rem">📋 ${p.nome}</span>
+
+      <span style="font-size:.6rem;color:var(--ink3);flex-shrink:0">${p.nq}q</span>
+
+      <span onclick="event.stopPropagation();abrirEditarProva('${p.id}')"
+
+        style="font-size:.65rem;cursor:pointer;padding:2px 5px;border-radius:4px;background:var(--paper2);color:var(--ink2);flex-shrink:0" title="Editar gabarito">✏️</span>
+
+    </div>`).join('');
+
+}
+
+function selecionarProva(id){
+
+  S.provaId=id;save();renderProvaTree();
+
+  if(S.alunoId)abrirCorrecao();
+
+  else{
+
+    document.getElementById('corr-header').innerHTML='<div class="card" style="color:var(--ink3);font-size:.85rem">👆 Selecione um aluno na lista</div>';
+
+    document.getElementById('corr-grid').innerHTML='';
+
+    document.getElementById('result-nota').innerHTML='';
+
+  }
+
+}
+
+ 
+
+// ═══ ALUNOS ═══════════════════════════════════════════════════════════════════
+
+function adicionarUmAluno(){
+
+  if(!S.turmaId)return toast('Selecione uma turma primeiro!');
+
+  const nome=document.getElementById('aluno-nome-single').value.trim();
+
+  if(!nome)return toast('Informe o nome!');
+
+  if(S.alunos.find(a=>a.turmaId===S.turmaId&&a.nome.toLowerCase()===nome.toLowerCase()))return toast('Aluno já cadastrado!');
+
+  S.alunos.push({id:uid(),turmaId:S.turmaId,nome});
+
+  save();renderAlunos();renderTurmaSelect();closeModal('m-add-aluno');
+
+  document.getElementById('aluno-nome-single').value='';toast('Aluno adicionado!','var(--green)');
+
+}
+
+function importarLista(){
+
+  if(!S.turmaId)return toast('Selecione uma turma primeiro!');
+
+  let add=0,ign=0;
+
+  document.getElementById('lista-nomes').value.split('\n').forEach(n=>{
+
+    const nome=n.trim();if(!nome)return;
+
+    if(S.alunos.find(a=>a.turmaId===S.turmaId&&a.nome.toLowerCase()===nome.toLowerCase())){ign++;return;}
+
+    S.alunos.push({id:uid(),turmaId:S.turmaId,nome});add++;
+
+  });
+
+  save();renderAlunos();renderTurmaSelect();closeModal('m-lista-alunos');
+
+  document.getElementById('lista-nomes').value='';
+
+  toast(`${add} adicionado(s), ${ign} ignorado(s).`);
+
+}
+
+function confirmarDeletarAluno(id){
+
+  const a=S.alunos.find(x=>x.id===id);
+
+  document.getElementById('del-aluno-msg').innerText=`Remover "${a.nome}" e todas as correções?`;
+
+  document.getElementById('btn-confirm-del-aluno').onclick=()=>{
+
+    S.alunos=S.alunos.filter(x=>x.id!==id);S.correcoes=S.correcoes.filter(c=>c.alunoId!==id);
+
+    if(S.alunoId===id){S.alunoId=null;clearCorrecaoView();}
+
+    save();renderAlunos();renderTurmaSelect();closeModal('m-del-aluno');toast('Aluno removido.');
+
+  };
+
+  openModal('m-del-aluno');
+
+}
+
+function renderAlunos(){
+
+  const div=document.getElementById('aluno-list');
+
+  const alunos=S.alunos.filter(a=>a.turmaId===S.turmaId).sort((a,b)=>a.nome.localeCompare(b.nome));
+
+  if(!alunos.length){div.innerHTML='<div style="color:var(--ink3);font-size:.75rem;padding:6px">Nenhum aluno</div>';return;}
+
+  div.innerHTML=alunos.map(a=>{
+
+    const corr=S.correcoes.find(c=>c.alunoId===a.id&&c.provaId===S.provaId);
+
+    const ok=corr&&Object.keys(corr.respostas).length>0;
+
+    return`<div class="st-row ${S.alunoId===a.id?'on':''}" onclick="selecionarAluno('${a.id}')">
+
+      <div class="st-av">${a.nome[0].toUpperCase()}</div>
+
+      <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.nome}</span>
+
+      ${ok?'<span style="font-size:.6rem;color:var(--green);flex-shrink:0">✓</span>':''}
+
+      <span onclick="event.stopPropagation();confirmarDeletarAluno('${a.id}')"
+
+        style="color:var(--ink3);cursor:pointer;font-size:.7rem;padding:2px 4px;border-radius:4px;flex-shrink:0">✕</span>
+
+    </div>`;
+
+  }).join('');
+
+}
+
+function selecionarAluno(id){S.alunoId=id;save();renderAlunos();abrirCorrecao();}
+
+ 
+
+// ═══ CORREÇÃO ═════════════════════════════════════════════════════════════════
+
+function abrirCorrecao(){
+
+  if(!S.alunoId||!S.provaId)return;
+
+  const a=S.alunos.find(x=>x.id===S.alunoId);
+
+  const p=S.provas.find(x=>x.id===S.provaId);
+
+  if(!a||!p)return;
+
+  const corr=S.correcoes.find(c=>c.alunoId===S.alunoId&&c.provaId===S.provaId)||{respostas:{}};
+
+  const alts=p.alts===5?['A','B','C','D','E']:['A','B','C','D'];
+
+  const temGab=Object.keys(p.gabarito||{}).length>0;
+
+ 
+
+  document.getElementById('corr-header').innerHTML=`
+
+    <div class="card" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+
+      <div>
+
+        <b style="font-size:.95rem">${a.nome}</b>
+
+        <div style="color:var(--ink3);font-size:.75rem;margin-top:2px">📋 ${p.nome} · ${p.nq} questões</div>
+
+      </div>
+
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+
+        <button class="btn btn-ghost btn-xs" onclick="abrirScanModal('aluno')">📷 Ler Respostas</button>
+
+        <button class="btn btn-green" onclick="calcNota()">🧮 Calcular Nota</button>
+
+      </div>
+
+    </div>`;
+
+ 
+
+  document.getElementById('corr-grid').innerHTML=Array.from({length:p.nq},(_,i)=>{
+
+    const q=i+1,resp=corr.respostas[q]||'',gab=(p.gabarito||{})[q]||'';
+
+    const cls=resp&&gab?(resp===gab?'acerto':'erro'):'';
+
+    return`<div class="q-row ${cls}">
+
+      <span class="q-num">${q}</span>
+
+      <div class="options-wrap">
+
+        ${alts.map(l=>`<div class="bubble ${resp===l?'selected':''}" onclick="salvarResp(${q},'${l}')">${l}</div>`).join('')}
+
+      </div>
+
+      <div class="gab-tip">${gab}</div>
+
+    </div>`;
+
+  }).join('');
+
+ 
+
+  if(Object.keys(corr.respostas).length>0&&temGab)calcNota(true);
+
+  else document.getElementById('result-nota').innerHTML='';
+
+}
+
+ 
+
+function salvarResp(q,v){
+
+  let corr=S.correcoes.find(c=>c.alunoId===S.alunoId&&c.provaId===S.provaId);
+
+  if(!corr){corr={alunoId:S.alunoId,provaId:S.provaId,turmaId:S.turmaId,respostas:{}};S.correcoes.push(corr);}
+
+  if(corr.respostas[q]===v)delete corr.respostas[q];else corr.respostas[q]=v;
+
+  save();abrirCorrecao();
+
+}
+
+ 
+
+function calcNota(silencioso){
+
+  const p=S.provas.find(x=>x.id===S.provaId);
+
+  const corr=S.correcoes.find(c=>c.alunoId===S.alunoId&&c.provaId===S.provaId);
+
+  if(!p||!corr)return;
+
+  const gab=p.gabarito||{};
+
+  let ac=0,er=0,br=0;
+
+  for(let q=1;q<=p.nq;q++){
+
+    if(!gab[q])continue;
+
+    if(!corr.respostas[q]){br++;continue;}
+
+    if(gab[q]===corr.respostas[q])ac++;else er++;
+
+  }
+
+  const total=Object.keys(gab).length;
+
+  const nota=total>0?(ac/p.nq)*10:0;
+
+  const cor=nota>=6?'var(--green)':nota>=4?'#c97a00':'var(--red)';
+
+  document.getElementById('result-nota').innerHTML=`
+
+    <div style="background:${cor};color:#fff;border-radius:var(--r);padding:20px;text-align:center">
+
+      <div style="font-size:2.2rem;font-weight:800;font-family:'DM Mono',monospace">${nota.toFixed(1)}</div>
+
+      <div style="font-size:.75rem;color:rgba(255,255,255,.55);margin-top:4px">Nota Final</div>
+
+      <div style="margin-top:10px;font-size:.72rem;display:flex;gap:14px;justify-content:center;color:rgba(255,255,255,.7)">
+
+        <span>✅ ${ac} acertos</span><span>❌ ${er} erros</span><span>⬜ ${br} em branco</span>
+
+      </div>
+
+    </div>`;
+
+  if(!silencioso)toast(`Nota: ${nota.toFixed(1)}`);
+
+}
+
+ 
+
+// ═══ RELATÓRIO ════════════════════════════════════════════════════════════════
+
+function popularRelProvasSel(){
+
+  const sel=document.getElementById('rel-prova-sel');
+
+  const provas=S.provas.filter(p=>p.turmaId===S.turmaId);
+
+  sel.innerHTML='<option value="">— Selecionar Prova —</option>';
+
+  provas.forEach(p=>{sel.innerHTML+=`<option value="${p.id}">${p.nome}</option>`;});
+
+}
+
+function renderRelatorio(){
+
+  const provaId=document.getElementById('rel-prova-sel').value;
+
+  const div=document.getElementById('rel-content');
+
+  if(!provaId){div.innerHTML='<div class="empty"><div class="empty-icon">📊</div><span>Selecione uma prova</span></div>';return;}
+
+  const p=S.provas.find(x=>x.id===provaId);
+
+  const alunos=S.alunos.filter(a=>a.turmaId===S.turmaId).sort((a,b)=>a.nome.localeCompare(b.nome));
+
+  const gab=p.gabarito||{};const total=Object.keys(gab).length;
+
+ 
+
+  const rows=alunos.map(a=>{
+
+    const corr=S.correcoes.find(c=>c.alunoId===a.id&&c.provaId===provaId);
+
+    const resp=corr?corr.respostas:{};
+
+    const acertos=total>0?Object.keys(gab).filter(q=>gab[q]===resp[q]).length:0;
+
+    const nota=total>0?((acertos/p.nq)*10).toFixed(1):'-';
+
+    const pendente=!corr||Object.keys(resp).length===0;
+
+    const status=pendente?'Pendente':nota>=6?'Aprovado':'Reprovado';
+
+    const badge=status==='Aprovado'?'badge-green':status==='Reprovado'?'badge-red':'badge-gray';
+
+    return{nome:a.nome,acertos,nota,status,badge,pendente};
+
+  });
+
+ 
+
+  const comNota=rows.filter(r=>!r.pendente&&r.nota!=='-');
+
+  const media=comNota.length?comNota.reduce((s,r)=>s+parseFloat(r.nota),0)/comNota.length:0;
+
+  const aprov=rows.filter(r=>r.status==='Aprovado').length;
+
+  const reprov=rows.filter(r=>r.status==='Reprovado').length;
+
+ 
+
+  div.innerHTML=`
+
+    <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+
+      <div class="card" style="flex:1;min-width:110px;text-align:center">
+
+        <div style="font-size:1.4rem;font-weight:800;font-family:'DM Mono',monospace">${media.toFixed(1)}</div>
+
+        <div style="color:var(--ink3);font-size:.7rem">Média</div>
+
+      </div>
+
+      <div class="card" style="flex:1;min-width:110px;text-align:center">
+
+        <div style="font-size:1.4rem;font-weight:800;font-family:'DM Mono',monospace;color:var(--green)">${aprov}</div>
+
+        <div style="color:var(--ink3);font-size:.7rem">Aprovados</div>
+
+      </div>
+
+      <div class="card" style="flex:1;min-width:110px;text-align:center">
+
+        <div style="font-size:1.4rem;font-weight:800;font-family:'DM Mono',monospace;color:var(--red)">${reprov}</div>
+
+        <div style="color:var(--ink3);font-size:.7rem">Reprovados</div>
+
+      </div>
+
+    </div>
+
+    <div class="card" style="padding:0;overflow:hidden">
+
+      <table class="rel-table">
+
+        <thead><tr><th>#</th><th>Nome</th><th>Acertos</th><th>Nota</th><th>Status</th></tr></thead>
+
+        <tbody>${rows.map((r,i)=>`<tr>
+
+          <td style="color:var(--ink3)">${i+1}</td><td><b>${r.nome}</b></td>
+
+          <td>${!r.pendente?`${r.acertos}/${p.nq}`:'—'}</td>
+
+          <td><b>${r.nota}</b></td>
+
+          <td><span class="badge ${r.badge}">${r.status}</span></td>
+
+        </tr>`).join('')}</tbody>
+
+      </table>
+
+    </div>`;
+
+}
+
+ 
+
+// ═══ EXPORTAR CSV — MELHORADO (todas as provas + encoding correto) ═════════════
+
+function exportarCSV(){
+
+  if(!S.turmaId)return toast('Selecione uma turma!');
+
+  const provas=S.provas.filter(p=>p.turmaId===S.turmaId);
+
+  if(!provas.length)return toast('Nenhuma prova nesta turma!');
+
+  const alunos=S.alunos.filter(a=>a.turmaId===S.turmaId).sort((a,b)=>a.nome.localeCompare(b.nome));
+
+  const turma=S.turmas.find(t=>t.id===S.turmaId);
+
+ 
+
+  // BOM UTF-8 para Excel abrir sem problemas de acentuação
+
+  let csv='\uFEFF';
+
+ 
+
+  // Cabeçalho: Nome | Prova1 Acertos | Prova1 Nota | Prova1 Status | Prova2...
+
+  const cols=['Nome'];
+
+  provas.forEach(p=>{cols.push(`${p.nome} - Acertos`,`${p.nome} - Nota`,`${p.nome} - Status`);});
+
+  csv+=cols.map(c=>`"${c.replace(/"/g,'""')}"`).join(';')+'\n';
+
+ 
+
+  alunos.forEach(a=>{
+
+    const row=[`"${a.nome.replace(/"/g,'""')}"`];
+
+    provas.forEach(p=>{
+
+      const gab=p.gabarito||{};const total=Object.keys(gab).length;
+
+      const corr=S.correcoes.find(c=>c.alunoId===a.id&&c.provaId===p.id);
+
+      const resp=corr?corr.respostas:{};
+
+      const acertos=total>0?Object.keys(gab).filter(q=>gab[q]===resp[q]).length:0;
+
+      const nota=total>0?((acertos/p.nq)*10).toFixed(1).replace('.',','):'-';
+
+      const pendente=!corr||Object.keys(resp).length===0;
+
+      const status=pendente?'Pendente':parseFloat(nota.replace(',','.')  )>=6?'Aprovado':'Reprovado';
+
+      row.push(pendente?'-':`${acertos}/${p.nq}`, nota, status);
+
+    });
+
+    csv+=row.join(';')+'\n';
+
+  });
+
+ 
+
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+
+  const url=URL.createObjectURL(blob);
+
+  const a=document.createElement('a');
+
+  a.href=url;a.download=`${turma?turma.nome.replace(/[^a-z0-9]/gi,'_'):'turma'}_notas.csv`;
+
+  a.click();URL.revokeObjectURL(url);
+
+  toast('CSV exportado!','var(--green)');
+
+}
+
+ 
+
+// ═══ ORGANIZAR ════════════════════════════════════════════════════════════════
+
+function renderOrganizar(){
+
+  const provas=S.provas.filter(x=>x.turmaId===S.turmaId);
+
+  document.getElementById('org-content').innerHTML=`
+
+    <h4 style="font-size:.8rem;font-weight:800;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">Provas da Turma</h4>
+
+    ${provas.length?provas.map(x=>`
+
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+
+        <div><b>${x.nome}</b>
+
+          <div style="color:var(--ink3);font-size:.72rem">${x.nq} questões · ${Object.keys(x.gabarito||{}).length} com gabarito</div>
+
+        </div>
+
+        <div style="display:flex;gap:6px">
+
+          <button class="btn btn-ghost btn-xs" onclick="abrirEditarProva('${x.id}')">✏️ Editar Gabarito</button>
+
+          <button class="btn btn-red btn-xs" onclick="excluirProva('${x.id}')">🗑️</button>
+
+        </div>
+
+      </div>`).join(''):'<div class="empty"><div class="empty-icon">📋</div><span>Nenhuma prova</span></div>'}
+
+    <hr style="border:none;border-top:1px solid var(--line);margin:20px 0">
+
+    <h4 style="font-size:.8rem;font-weight:800;text-transform:uppercase;color:var(--ink3);margin-bottom:10px">Zona de Perigo</h4>
+
+    <div class="card" style="border-color:var(--red-bg)">
+
+      <p style="font-size:.8rem;color:var(--ink2);margin-bottom:10px">Limpar todas as correções da turma (mantém alunos e provas).</p>
+
+      <button class="btn btn-red btn-xs" onclick="limparCorrecoes()">🗑️ Limpar Correções</button>
+
+    </div>`;
+
+}
+
+function excluirProva(id){
+
+  if(!confirm('Excluir prova e todas as correções relacionadas?'))return;
+
+  S.provas=S.provas.filter(x=>x.id!==id);S.correcoes=S.correcoes.filter(c=>c.provaId!==id);
+
+  if(S.provaId===id){S.provaId=null;clearCorrecaoView();}
+
+  save();renderOrganizar();renderProvaTree();toast('Prova excluída.');
+
+}
+
+function limparCorrecoes(){
+
+  if(!confirm('Limpar todas as correções da turma atual?'))return;
+
+  S.correcoes=S.correcoes.filter(c=>c.turmaId!==S.turmaId);
+
+  save();renderOrganizar();renderAlunos();clearCorrecaoView();toast('Correções limpas.');
+
+}
+
+ 
+
+// ═══ SCAN IA — Gabarito da Prova + Respostas do Aluno ═════════════════════════
+
+let _scanCtx=null,_scanBase64=null,_scanMediaType=null,_scanResultado=null;
+
+ 
+
+function abrirScanModal(ctx){
+
+  _scanCtx=ctx;_scanBase64=null;_scanResultado=null;
+
+  document.getElementById('scan-preview-img').style.display='none';
+
+  document.getElementById('scan-drop-label').style.display='block';
+
+  document.getElementById('scan-status').innerText='';
+
+  document.getElementById('scan-results').innerHTML='';
+
+  document.getElementById('btn-aplicar-scan').style.display='none';
+
+  document.getElementById('scan-file-input').value='';
+
+  if(ctx==='gabarito'){
+
+    document.getElementById('scan-titulo').textContent='📷 Ler Gabarito por Foto';
+
+    document.getElementById('scan-desc').textContent='Foto do GABARITO OFICIAL. A IA identifica a alternativa correta de cada questão.';
+
+  } else {
+
+    const a=S.alunos.find(x=>x.id===S.alunoId);
+
+    document.getElementById('scan-titulo').textContent='📷 Ler Respostas do Aluno';
+
+    document.getElementById('scan-desc').textContent=`Foto do cartão de respostas de ${a?a.nome:'aluno'}. A IA identifica as respostas marcadas.`;
+
+  }
+
+  openModal('m-scan');
+
+}
+
+function handleScanDrop(e){
+
+  e.preventDefault();document.getElementById('scan-drop').classList.remove('drag');
+
+  const f=e.dataTransfer.files[0];if(f&&f.type.startsWith('image/'))handleScanFile(f);
+
+}
+
+function handleScanFile(file){
+
+  if(!file)return;
+
+  const r=new FileReader();
+
+  r.onload=e=>{
+
+    const url=e.target.result;_scanBase64=url.split(',')[1];_scanMediaType=file.type||'image/jpeg';
+
+    const img=document.getElementById('scan-preview-img');
+
+    img.src=url;img.style.display='block';
+
+    document.getElementById('scan-drop-label').style.display='none';
+
+    processarScanIA();
+
+  };
+
+  r.readAsDataURL(file);
+
+}
+
+// Colar com Ctrl+V
+
+document.addEventListener('paste',e=>{
+
+  const m=document.getElementById('m-scan');if(!m.classList.contains('on'))return;
+
+  const items=e.clipboardData?.items;if(!items)return;
+
+  for(const item of items){if(item.type.startsWith('image/')){handleScanFile(item.getAsFile());break;}}
+
+});
+
+ 
+
+async function processarScanIA(){
+
+  const statusEl=document.getElementById('scan-status');
+
+  const resultsEl=document.getElementById('scan-results');
+
+  const btnAplicar=document.getElementById('btn-aplicar-scan');
+
+  statusEl.innerHTML='<span style="color:var(--blue)">⏳ Analisando imagem com IA…</span>';
+
+  resultsEl.innerHTML='';btnAplicar.style.display='none';
+
+ 
+
+  const prompt=`Você é um leitor de gabaritos escolares. Analise a imagem e identifique as respostas marcadas/preenchidas/circuladas/assinaladas.
+
+O gabarito tem linhas numeradas (01, 02… ou 1, 2…) e colunas com alternativas (A, B, C, D ou A, B, C, D, E).
+
+Responda APENAS com JSON puro, sem markdown, sem texto extra:
+
+{"1":"A","2":"C","3":"B","4":"D",...}
+
+Use inteiros como chaves. Omita questões em branco.`;
+
+ 
+
+  try{
+
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+
+      method:'POST',headers:{'Content-Type':'application/json'},
+
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,
+
+        messages:[{role:'user',content:[
+
+          {type:'image',source:{type:'base64',media_type:_scanMediaType,data:_scanBase64}},
+
+          {type:'text',text:prompt}
+
+        ]}]})
+
+    });
+
+    const data=await resp.json();
+
+    if(!resp.ok)throw new Error(data.error?.message||'Erro na API');
+
+    const text=data.content.find(b=>b.type==='text')?.text||'';
+
+    const clean=text.replace(/```[a-z]*\n?/gi,'').replace(/```/g,'').trim();
+
+    _scanResultado=JSON.parse(clean);
+
+    const keys=Object.keys(_scanResultado).sort((a,b)=>parseInt(a)-parseInt(b));
+
+    resultsEl.innerHTML=
+
+      '<div style="font-size:.7rem;font-weight:800;text-transform:uppercase;color:var(--ink3);margin-bottom:6px">Respostas identificadas:</div>'
+
+      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:4px">'
+
+      +keys.map(q=>`<div class="scan-result-row"><span class="q-num">${q}</span><b>${_scanResultado[q]}</b></div>`).join('')+'</div>';
+
+    statusEl.innerHTML=`<span style="color:var(--green)">✅ ${keys.length} questão(ões) identificada(s)</span>`;
+
+    btnAplicar.style.display='inline-flex';
+
+  }catch(err){
+
+    statusEl.innerHTML=`<span style="color:var(--red)">❌ Erro: ${err.message}</span>`;
+
+    console.error('Scan error:',err);
+
+  }
+
+}
+
+ 
+
+function aplicarScan(){
+
+  if(!_scanResultado)return;
+
+  if(_scanCtx==='gabarito'){
+
+    if(!window._tempGab)window._tempGab={};
+
+    Object.assign(window._tempGab,_scanResultado);
+
+    const maxQ=Math.max(...Object.keys(_scanResultado).map(Number));
+
+    const nqEl=document.getElementById('prova-nq');
+
+    if(nqEl&&parseInt(nqEl.value)<maxQ)nqEl.value=maxQ;
+
+    gerarSetupGab(true);closeModal('m-scan');
+
+    toast(`Gabarito: ${Object.keys(_scanResultado).length} questões carregadas`,'var(--green)');
+
+  } else {
+
+    if(!S.alunoId||!S.provaId)return toast('Selecione aluno e prova!');
+
+    let corr=S.correcoes.find(c=>c.alunoId===S.alunoId&&c.provaId===S.provaId);
+
+    if(!corr){corr={alunoId:S.alunoId,provaId:S.provaId,turmaId:S.turmaId,respostas:{}};S.correcoes.push(corr);}
+
+    Object.assign(corr.respostas,_scanResultado);
+
+    save();closeModal('m-scan');abrirCorrecao();
+
+    toast(`Respostas: ${Object.keys(_scanResultado).length} questões carregadas`,'var(--green)');
+
+  }
+
+}
+
+ 
+
+// ═══ FIREBASE LISTENER — sincronização em tempo real entre aparelhos ══════════
+
+let _fbListening=false;
+
+function _aplicarDadosFB(d){
+
+  if(!d||typeof d!=='object'||d.turmas===undefined)return;
+
+  S=d;
+
+  renderTurmaSelect();renderAlunos();renderProvaTree();
+
+  const p=document.querySelector('.page.on');
+
+  if(p?.id==='p-turmas')renderTurmasPage();
+
+  if(p?.id==='p-relatorio'){popularRelProvasSel();renderRelatorio();}
+
+  if(p?.id==='p-organizar')renderOrganizar();
+
+  setSyncStatus('ok');
+
+}
+
+ 
+
+// ═══ INIT ═════════════════════════════════════════════════════════════════════
+
+renderTurmaSelect();renderProvaTree();renderAlunos();
+
+ 
+
+document.addEventListener('jt_firebase_ready',()=>{
+
+  // Carga inicial
+
+  window._jt_load().then(d=>{
+
+    if(d&&typeof d==='object'&&d.turmas!==undefined){
+
+      S=d;renderTurmaSelect();renderAlunos();renderProvaTree();setSyncStatus('ok');
+
+    }
+
+  }).catch(()=>setSyncStatus('err'));
+
+ 
+
+  // Listener em tempo real para sincronizar com outros aparelhos
+
+  if(!_fbListening){
+
+    _fbListening=true;
+
+    window._jt_listen(d=>{
+
+      // Só aplica se o dado for diferente do que temos (evita loop)
+
+      const localStr=JSON.stringify(S);
+
+      const remoteStr=JSON.stringify(d);
+
+      if(localStr!==remoteStr)_aplicarDadosFB(d);
+
+    });
+
+  }
+
+});
+
 </script>
+
 </body>
+
 </html>
