@@ -63,7 +63,37 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .tb-btn { background: transparent; border: none; color: rgba(255,255,255,.55); padding: 6px 12px; border-radius: 7px; cursor: pointer; font-family: inherit; font-size: .8rem; font-weight: 600; transition: .15s; }
 .tb-btn:hover { background: rgba(255,255,255,.1); color: #fff; }
 .tb-btn.on { background: #e63946; color: #fff; }
-.tb-turma { margin-left: auto; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); color: #fff; padding: 5px 12px; border-radius: 7px; font-size: .8rem; min-width: 220px; font-family: inherit; cursor: pointer; }
+/* ── CUSTOM TURMA DROPDOWN ── */
+.turma-dropdown { margin-left: auto; position: relative; min-width: 220px; }
+.turma-trigger {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  background: #e63946; border: none; color: #fff;
+  padding: 7px 14px; border-radius: 8px; font-size: .82rem; font-weight: 700;
+  font-family: inherit; cursor: pointer; width: 100%; transition: .15s;
+  box-shadow: 0 2px 8px rgba(230,57,70,.4);
+}
+.turma-trigger:hover { background: #cc2f3b; }
+.turma-trigger .caret { font-size: .65rem; opacity: .8; transition: .2s; }
+.turma-trigger.open .caret { transform: rotate(180deg); }
+.turma-menu {
+  display: none; position: absolute; top: calc(100% + 6px); right: 0; min-width: 100%;
+  background: #fff; border-radius: 10px; border: 1px solid var(--line);
+  box-shadow: 0 8px 32px rgba(0,0,0,.18); z-index: 999; overflow: hidden;
+  max-height: 320px; overflow-y: auto;
+}
+.turma-menu.open { display: block; }
+.turma-opt {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  cursor: pointer; font-size: .82rem; color: var(--ink); transition: .12s;
+  border-bottom: 1px solid var(--line);
+}
+.turma-opt:last-child { border-bottom: none; }
+.turma-opt:hover { background: var(--blue-bg); }
+.turma-opt.selected { background: var(--blue-bg); color: var(--blue); font-weight: 700; }
+.turma-opt .turma-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.turma-opt-empty { padding: 12px 14px; color: var(--ink3); font-size: .8rem; font-style: italic; }
  
 /* ── LAYOUT ── */
 .body { display: flex; flex: 1; overflow: hidden; }
@@ -135,6 +165,18 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 9px 18px; border-radius: 20px; font-size: .8rem; z-index: 1000; opacity: 0; pointer-events: none; transition: .3s; white-space: nowrap; }
 .toast.show { opacity: 1; }
  
+/* ── SCAN GABARITO ── */
+.scan-drop-zone {
+  border: 2px dashed var(--line); border-radius: 10px; padding: 24px 16px;
+  text-align: center; cursor: pointer; transition: .15s; background: var(--paper);
+  color: var(--ink3); font-size: .82rem;
+}
+.scan-drop-zone:hover, .scan-drop-zone.drag { border-color: var(--blue); background: var(--blue-bg); color: var(--blue); }
+.scan-drop-zone input[type=file] { display: none; }
+.scan-preview { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 10px; display: block; margin-left: auto; margin-right: auto; }
+.scan-result-row { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 6px; background: var(--paper2); margin-bottom: 4px; font-size: .8rem; }
+.scan-result-row .q-num { background: var(--blue); }
+ 
 /* ── EMPTY STATE ── */
 .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; color: var(--ink3); font-size: .85rem; gap: 8px; }
 .empty-icon { font-size: 2.2rem; }
@@ -157,7 +199,13 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
     <button class="tb-btn" onclick="nav('relatorio')" id="n-relatorio">📊 Relatório</button>
     <button class="tb-btn" onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
   </div>
-  <select class="tb-turma" id="turma-sel" onchange="trocarTurma()"></select>
+  <div class="turma-dropdown" id="turma-dropdown">
+    <button class="turma-trigger" id="turma-trigger" onclick="toggleTurmaMenu()">
+      <span id="turma-label">— Selecionar Turma —</span>
+      <span class="caret">▼</span>
+    </button>
+    <div class="turma-menu" id="turma-menu"></div>
+  </div>
 </div>
  
 <!-- ═══════════════ BODY ═══════════════ -->
@@ -272,6 +320,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
     </div>
     <div style="display:flex; gap:8px; margin-bottom:10px">
       <button class="btn btn-ghost" style="flex:1" onclick="gerarSetupGab()">🔧 Definir Gabarito</button>
+      <button class="btn btn-ghost" style="flex:1" onclick="abrirScanGabarito()">📷 Ler por Foto</button>
     </div>
     <div id="gabarito-setup" style="max-height:220px; overflow-y:auto; margin-bottom:10px; display:grid; gap:5px;"></div>
     <div style="display:flex; gap:8px; justify-content:flex-end">
@@ -314,6 +363,31 @@ body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(
     <div style="display:flex; gap:8px; justify-content:flex-end">
       <button class="btn btn-ghost" onclick="closeModal('m-del-aluno')">Cancelar</button>
       <button class="btn btn-red" id="btn-confirm-del-aluno">Remover</button>
+    </div>
+  </div>
+</div>
+ 
+<!-- Scan Gabarito por Foto -->
+<div class="overlay" id="m-scan-gabarito">
+  <div class="modal" style="max-width:520px">
+    <h3>📷 Ler Gabarito por Foto</h3>
+    <p style="font-size:.75rem; color:var(--ink3); margin-bottom:12px">
+      Cole ou selecione uma foto do gabarito preenchido (padrão: nº da questão + bolhas A B C D marcadas). A IA irá identificar as respostas automaticamente.
+    </p>
+    <div class="scan-drop-zone" id="scan-drop" onclick="document.getElementById('scan-file-input').click()" ondragover="event.preventDefault(); this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleScanDrop(event)">
+      <div id="scan-drop-label">
+        <div style="font-size:1.8rem; margin-bottom:6px">📋</div>
+        <div><b>Clique ou arraste a foto</b></div>
+        <div style="font-size:.72rem; margin-top:4px; opacity:.7">JPG, PNG, WEBP — máx. 10MB</div>
+      </div>
+      <img id="scan-preview-img" class="scan-preview" style="display:none">
+      <input type="file" id="scan-file-input" accept="image/*" onchange="handleScanFile(this.files[0])">
+    </div>
+    <div id="scan-status" style="margin-top:10px; font-size:.8rem; color:var(--ink2); min-height:20px"></div>
+    <div id="scan-results" style="margin-top:10px; max-height:220px; overflow-y:auto"></div>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:12px">
+      <button class="btn btn-ghost" onclick="fecharScanGabarito()">Cancelar</button>
+      <button class="btn btn-blue" id="btn-aplicar-scan" style="display:none" onclick="aplicarScanGabarito()">✅ Aplicar Gabarito</button>
     </div>
   </div>
 </div>
@@ -398,14 +472,71 @@ function excluirTurma(id) {
   toast('Turma excluída.');
 }
  
+// Paleta de cores para turmas
+const TURMA_COLORS = ['#e63946','#2752e8','#1a7a4a','#c97a00','#7b2d8b','#0077aa','#b5451b','#3d6b35'];
+function turmaColor(idx) { return TURMA_COLORS[idx % TURMA_COLORS.length]; }
+ 
 function renderTurmaSelect() {
-  const sel = document.getElementById('turma-sel');
-  sel.innerHTML = '<option value="">— Selecionar Turma —</option>';
-  S.turmas.forEach(t => {
+  const menu    = document.getElementById('turma-menu');
+  const label   = document.getElementById('turma-label');
+  const trigger = document.getElementById('turma-trigger');
+  const turmaAtual = S.turmas.find(t => t.id === S.turmaId);
+ 
+  // Atualizar label
+  if (turmaAtual) {
+    const idx = S.turmas.indexOf(turmaAtual);
+    label.textContent = turmaAtual.nome + ' (' + S.alunos.filter(a=>a.turmaId===turmaAtual.id).length + ')';
+    trigger.style.background = turmaColor(idx);
+    trigger.style.boxShadow  = `0 2px 8px ${turmaColor(idx)}55`;
+  } else {
+    label.textContent = '— Selecionar Turma —';
+    trigger.style.background = '#e63946';
+    trigger.style.boxShadow  = '0 2px 8px rgba(230,57,70,.4)';
+  }
+ 
+  // Montar menu
+  if (!S.turmas.length) {
+    menu.innerHTML = '<div class="turma-opt-empty">Nenhuma turma cadastrada</div>';
+    return;
+  }
+  menu.innerHTML = S.turmas.map((t, i) => {
     const n = S.alunos.filter(a => a.turmaId === t.id).length;
-    sel.innerHTML += `<option value="${t.id}" ${S.turmaId === t.id ? 'selected' : ''}>${t.nome} (${n})</option>`;
-  });
+    return `<div class="turma-opt ${S.turmaId===t.id?'selected':''}" onclick="selecionarTurmaMenu('${t.id}')">
+      <span class="turma-dot" style="background:${turmaColor(i)}"></span>
+      <span style="flex:1">${t.nome}</span>
+      <span style="font-size:.7rem; color:var(--ink3)">${n} aluno${n!==1?'s':''}</span>
+    </div>`;
+  }).join('');
 }
+ 
+function toggleTurmaMenu() {
+  const menu    = document.getElementById('turma-menu');
+  const trigger = document.getElementById('turma-trigger');
+  const isOpen  = menu.classList.contains('open');
+  menu.classList.toggle('open', !isOpen);
+  trigger.classList.toggle('open', !isOpen);
+}
+ 
+function selecionarTurmaMenu(id) {
+  S.turmaId = id; S.provaId = null; S.alunoId = null;
+  save();
+  document.getElementById('turma-menu').classList.remove('open');
+  document.getElementById('turma-trigger').classList.remove('open');
+  renderTurmaSelect();
+  renderAlunos(); renderProvaTree();
+  document.getElementById('corr-grid').innerHTML = '';
+  document.getElementById('corr-header').innerHTML = '';
+  document.getElementById('result-nota').innerHTML = '';
+}
+ 
+// Fechar menu ao clicar fora
+document.addEventListener('click', e => {
+  const dd = document.getElementById('turma-dropdown');
+  if (dd && !dd.contains(e.target)) {
+    document.getElementById('turma-menu').classList.remove('open');
+    document.getElementById('turma-trigger').classList.remove('open');
+  }
+});
  
 function renderTurmasPage() {
   const div = document.getElementById('turmas-list');
@@ -427,13 +558,7 @@ function renderTurmasPage() {
 }
  
 function trocarTurma() {
-  S.turmaId = document.getElementById('turma-sel').value || null;
-  S.provaId = null; S.alunoId = null;
-  save();
-  renderAlunos(); renderProvaTree();
-  document.getElementById('corr-grid').innerHTML = '';
-  document.getElementById('corr-header').innerHTML = '';
-  document.getElementById('result-nota').innerHTML = '';
+  // Mantido por compatibilidade — lógica agora em selecionarTurmaMenu
 }
  
 // ─── PROVAS ───────────────────────────────────────────────────────────────────
@@ -760,6 +885,133 @@ function limparCorrecoes() {
   document.getElementById('corr-header').innerHTML = '';
   document.getElementById('result-nota').innerHTML = '';
   toast('Correções limpas.');
+}
+ 
+// ─── SCAN GABARITO POR FOTO (Claude Vision) ──────────────────────────────────
+let _scanBase64 = null;
+let _scanResultado = null;
+ 
+function abrirScanGabarito() {
+  _scanBase64 = null; _scanResultado = null;
+  document.getElementById('scan-preview-img').style.display = 'none';
+  document.getElementById('scan-drop-label').style.display = 'block';
+  document.getElementById('scan-status').innerText = '';
+  document.getElementById('scan-results').innerHTML = '';
+  document.getElementById('btn-aplicar-scan').style.display = 'none';
+  document.getElementById('scan-file-input').value = '';
+  openModal('m-scan-gabarito');
+}
+ 
+function fecharScanGabarito() {
+  closeModal('m-scan-gabarito');
+}
+ 
+function handleScanDrop(e) {
+  e.preventDefault();
+  document.getElementById('scan-drop').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) handleScanFile(file);
+}
+ 
+function handleScanFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const dataUrl = e.target.result;
+    _scanBase64   = dataUrl.split(',')[1];
+    const mtype   = file.type || 'image/jpeg';
+    // Mostrar preview
+    const img = document.getElementById('scan-preview-img');
+    img.src = dataUrl; img.style.display = 'block';
+    document.getElementById('scan-drop-label').style.display = 'none';
+    processarScanIA(mtype);
+  };
+  reader.readAsDataURL(file);
+}
+ 
+async function processarScanIA(mediaType) {
+  const statusEl  = document.getElementById('scan-status');
+  const resultsEl = document.getElementById('scan-results');
+  const btnAplicar = document.getElementById('btn-aplicar-scan');
+  statusEl.innerHTML = '<span style="color:var(--blue)">⏳ Analisando imagem com IA...</span>';
+  resultsEl.innerHTML = '';
+  btnAplicar.style.display = 'none';
+ 
+  const prompt = `Você é um leitor de gabaritos escolares. Analise a imagem e identifique as respostas marcadas.
+O gabarito tem linhas numeradas (01, 02, 03... ou 1, 2, 3...) e colunas com alternativas (A, B, C, D ou A, B, C, D, E).
+A alternativa marcada/preenchida/circulada em cada questão é a resposta do aluno.
+ 
+Responda APENAS com um JSON puro, sem markdown, sem explicações, no formato:
+{"1":"A","2":"C","3":"B","4":"D",...}
+ 
+Use números inteiros como chaves (sem zeros à esquerda). Se uma questão estiver em branco, omita-a.`;
+ 
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data: _scanBase64 } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      })
+    });
+ 
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.error?.message || 'Erro na API');
+ 
+    const text = data.content.find(b => b.type === 'text')?.text || '';
+    // Limpar possível markdown
+    const clean = text.replace(/```[a-z]*\n?/gi,'').replace(/```/g,'').trim();
+    const respostas = JSON.parse(clean);
+ 
+    _scanResultado = respostas;
+    const keys = Object.keys(respostas).sort((a,b) => parseInt(a)-parseInt(b));
+    resultsEl.innerHTML = '<div style="font-size:.7rem; font-weight:800; text-transform:uppercase; color:var(--ink3); margin-bottom:6px;">Respostas identificadas:</div>'
+      + '<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:4px">'
+      + keys.map(q => `<div class="scan-result-row"><span class="q-num">${q}</span><b>${respostas[q]}</b></div>`).join('')
+      + '</div>';
+    statusEl.innerHTML = `<span style="color:var(--green)">✅ ${keys.length} questão(ões) identificada(s)</span>`;
+    btnAplicar.style.display = 'inline-flex';
+  } catch(err) {
+    statusEl.innerHTML = `<span style="color:var(--red)">❌ Erro: ${err.message}</span>`;
+    console.error('Scan error:', err);
+  }
+}
+ 
+function aplicarScanGabarito() {
+  if (!_scanResultado) return;
+  // Preencher no _tempGab para a prova em criação
+  if (!window._tempGab) window._tempGab = {};
+  Object.assign(window._tempGab, _scanResultado);
+ 
+  // Atualizar nq se necessário
+  const maxQ = Math.max(...Object.keys(_scanResultado).map(Number));
+  const nqInput = document.getElementById('prova-nq');
+  if (nqInput && parseInt(nqInput.value) < maxQ) nqInput.value = maxQ;
+ 
+  // Regenerar visualização do gabarito setup
+  const alt = parseInt(document.getElementById('prova-alts').value) || 4;
+  const ops = alt === 5 ? ['A','B','C','D','E'] : ['A','B','C','D'];
+  const nq  = parseInt(document.getElementById('prova-nq').value) || maxQ;
+  document.getElementById('gabarito-setup').innerHTML = Array.from({length: nq}, (_, i) => {
+    const q = i+1; const gabQ = window._tempGab[q] || '';
+    return `<div class="q-row ${gabQ?'acerto':''}">
+      <span class="q-num" style="${gabQ?'background:var(--green)':''}">${q}</span>
+      <div class="options-wrap">
+        ${ops.map(l => `<div class="bubble ${gabQ===l?'selected':''}" onclick="setSetupGab(${q},'${l}',this)">${l}</div>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+ 
+  fecharScanGabarito();
+  toast(`Gabarito carregado: ${Object.keys(_scanResultado).length} questões`, 'var(--green)');
 }
  
 // ─── INIT ─────────────────────────────────────────────────────────────────────
