@@ -31,7 +31,12 @@ window._jt_load   = async () => { const s = await get(ref(db,NAMESPACE)); return
 window._jt_listen = (cb) => { onValue(ref(db,NAMESPACE), s=>{ if(s.exists()) cb(s.val()); }); };
 window._JT_LS_KEY = LS_KEY;
 window._jt_ready  = true;
-document.dispatchEvent(new Event('jt_firebase_ready'));
+// Dispara imediatamente; se DOM ainda não carregou, usa DOMContentLoaded
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded',()=>document.dispatchEvent(new Event('jt_firebase_ready')));
+} else {
+  document.dispatchEvent(new Event('jt_firebase_ready'));
+}
 </script>
 <style>
 :root {
@@ -186,6 +191,34 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
        padding:60px 20px;color:var(--ink3);font-size:.85rem;gap:8px;}
 .empty-icon{font-size:2.2rem;}
+ 
+/* ── PANORAMA */
+.pan-tabs{display:flex;gap:6px;margin-bottom:18px;border-bottom:2px solid var(--line);padding-bottom:0;}
+.pan-tab{background:none;border:none;padding:8px 16px;font-family:inherit;font-size:.82rem;
+         font-weight:700;color:var(--ink3);cursor:pointer;border-bottom:3px solid transparent;
+         margin-bottom:-2px;transition:.15s;border-radius:6px 6px 0 0;}
+.pan-tab:hover{color:var(--ink);background:var(--paper2);}
+.pan-tab.on{color:var(--blue);border-bottom-color:var(--blue);}
+.pan-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;}
+.pan-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);
+          box-shadow:var(--sh);overflow:hidden;}
+.pan-card-head{padding:12px 14px;display:flex;justify-content:space-between;align-items:center;
+               border-bottom:1px solid var(--line);}
+.pan-card-turma{font-weight:800;font-size:.88rem;}
+.pan-card-meta{font-size:.7rem;color:var(--ink3);}
+.pan-provas{padding:10px 14px;display:flex;flex-direction:column;gap:6px;}
+.pan-prova-row{display:flex;align-items:center;gap:8px;font-size:.78rem;padding:5px 8px;
+               border-radius:6px;background:var(--paper);}
+.pan-prova-nome{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pan-pill{padding:2px 8px;border-radius:20px;font-size:.62rem;font-weight:700;flex-shrink:0;}
+.pan-pill-green{background:var(--green-bg);color:var(--green);}
+.pan-pill-yellow{background:#fff3cd;color:#856404;}
+.pan-pill-gray{background:var(--paper3);color:var(--ink3);}
+.pan-pill-red{background:var(--red-bg);color:var(--red);}
+.pan-stats{display:flex;gap:4px;flex-shrink:0;}
+.pan-bar-wrap{width:60px;height:6px;background:var(--paper3);border-radius:3px;flex-shrink:0;}
+.pan-bar-fill{height:6px;border-radius:3px;background:var(--green);transition:.3s;}
+.pan-sem-provas{padding:10px 14px;font-size:.75rem;color:var(--ink3);font-style:italic;}
 </style>
 </head>
 <body>
@@ -200,6 +233,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);
   <div class="tb-nav">
     <button class="tb-btn on" onclick="nav('correcao')"  id="n-correcao">📋 Correção</button>
     <button class="tb-btn"    onclick="nav('turmas')"    id="n-turmas">🏫 Turmas</button>
+    <button class="tb-btn"    onclick="nav('panorama')"  id="n-panorama">🗺️ Panorama</button>
     <button class="tb-btn"    onclick="nav('relatorio')" id="n-relatorio">📊 Relatório</button>
     <button class="tb-btn"    onclick="nav('organizar')" id="n-organizar">📂 Organizar</button>
   </div>
@@ -257,6 +291,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);
       <div id="turmas-list"></div>
     </div>
  
+    <div id="p-panorama" class="page">
+      <div id="pan-content"></div>
+    </div>
+ 
     <div id="p-relatorio" class="page">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <h2 style="font-size:1.1rem">📊 Relatório de Notas</h2>
@@ -302,6 +340,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--paper);color:var(--ink);
 <div class="overlay" id="m-prova"><div class="modal modal-wide">
   <h3 id="prova-modal-titulo">📋 Nova Prova</h3>
   <input type="text" id="prova-nome" placeholder="Nome da Prova (ex: Inglês 1º BIM)">
+  <div style="display:flex;gap:8px;margin-bottom:10px">
+    <div style="flex:2">
+      <label style="font-size:.7rem;color:var(--ink3);font-weight:700;display:block;margin-bottom:4px">DISCIPLINA</label>
+      <input type="text" id="prova-disciplina" placeholder="ex: Inglês, Matemática..." style="margin-bottom:0">
+    </div>
+    <div style="flex:1">
+      <label style="font-size:.7rem;color:var(--ink3);font-weight:700;display:block;margin-bottom:4px">BIMESTRE</label>
+      <select id="prova-bim" style="margin-bottom:0;padding:9px 12px;border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:.85rem;width:100%">
+        <option value="1">1º BIM</option>
+        <option value="2">2º BIM</option>
+        <option value="3">3º BIM</option>
+        <option value="4">4º BIM</option>
+      </select>
+    </div>
+  </div>
   <div style="display:flex;gap:8px;margin-bottom:10px">
     <div style="flex:1">
       <label style="font-size:.7rem;color:var(--ink3);font-weight:700;display:block;margin-bottom:4px">Nº DE QUESTÕES</label>
@@ -440,6 +493,7 @@ function nav(p){
   document.getElementById('p-'+p).classList.add('on');
   document.getElementById('n-'+p).classList.add('on');
   if(p==='turmas')renderTurmasPage();
+  if(p==='panorama')renderPanorama();
   if(p==='relatorio'){popularRelProvasSel();renderRelatorio();}
   if(p==='organizar')renderOrganizar();
 }
@@ -545,6 +599,8 @@ function abrirNovaProva(){
   document.getElementById('prova-nq').value='10';
   document.getElementById('prova-valor').value='10';
   document.getElementById('prova-alts').value='4';
+  document.getElementById('prova-disciplina').value='';
+  document.getElementById('prova-bim').value='1';
   document.getElementById('gabarito-setup').innerHTML='';
   openModal('m-prova');
 }
@@ -557,6 +613,8 @@ function abrirEditarProva(id){
   document.getElementById('prova-nq').value=p.nq;
   document.getElementById('prova-valor').value=p.valor||10;
   document.getElementById('prova-alts').value=p.alts||4;
+  document.getElementById('prova-disciplina').value=p.disciplina||'';
+  document.getElementById('prova-bim').value=p.bim||1;
   gerarSetupGab(true);
   openModal('m-prova');
 }
@@ -593,14 +651,16 @@ function salvarProva(){
   const nq=parseInt(document.getElementById('prova-nq').value)||10;
   const valor=parseFloat(document.getElementById('prova-valor').value)||10;
   const alts=parseInt(document.getElementById('prova-alts').value);
+  const disciplina=document.getElementById('prova-disciplina').value.trim();
+  const bim=parseInt(document.getElementById('prova-bim').value)||1;
   if(_editandoProvaId){
     const p=S.provas.find(x=>x.id===_editandoProvaId);
-    if(p){p.nome=nome;p.nq=nq;p.valor=valor;p.alts=alts;p.gabarito=window._tempGab||{};}
+    if(p){p.nome=nome;p.nq=nq;p.valor=valor;p.alts=alts;p.disciplina=disciplina;p.bim=bim;p.gabarito=window._tempGab||{};}
     save();renderProvaTree();fecharModalProva();
     if(S.provaId===_editandoProvaId&&S.alunoId)abrirCorrecao();
     toast('Prova atualizada!','var(--green)');
   } else {
-    S.provas.push({id:uid(),turmaId:S.turmaId,nome,nq,valor,alts,gabarito:window._tempGab||{}});
+    S.provas.push({id:uid(),turmaId:S.turmaId,nome,nq,valor,alts,disciplina,bim,gabarito:window._tempGab||{}});
     save();renderProvaTree();fecharModalProva();
     toast('Prova criada!','var(--green)');
   }
@@ -995,33 +1055,168 @@ function _aplicarDadosFB(d){
   renderTurmaSelect();renderAlunos();renderProvaTree();
   const p=document.querySelector('.page.on');
   if(p?.id==='p-turmas')renderTurmasPage();
+  if(p?.id==='p-panorama')renderPanorama();
   if(p?.id==='p-relatorio'){popularRelProvasSel();renderRelatorio();}
   if(p?.id==='p-organizar')renderOrganizar();
   setSyncStatus('ok');
 }
  
+// ═══ PANORAMA GERAL DA ESCOLA ════════════════════════════════════════════════
+let _panBim=1;
+ 
+function renderPanorama(){
+  const div=document.getElementById('pan-content');
+  div.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
+      <h2 style="font-size:1.1rem">🗺️ Panorama Geral da Escola</h2>
+      <div style="font-size:.72rem;color:var(--ink3)">Todas as turmas · Clique em um bimestre</div>
+    </div>
+    <div class="pan-tabs">
+      ${[1,2,3,4].map(b=>`<button class="pan-tab ${_panBim===b?'on':''}" onclick="_panBim=${b};renderPanorama()">${b}º Bimestre</button>`).join('')}
+    </div>
+    <div id="pan-bim-content"></div>`;
+  renderPanBim();
+}
+ 
+function renderPanBim(){
+  const div=document.getElementById('pan-bim-content');
+  if(!S.turmas.length){
+    div.innerHTML='<div class="empty"><div class="empty-icon">🏫</div><span>Nenhuma turma cadastrada</span></div>';
+    return;
+  }
+ 
+  // Estatísticas globais do bimestre
+  const todasProvasBim=S.provas.filter(p=>parseInt(p.bim||1)===_panBim);
+  let totalCorr=0,totalAlunos=0,totalProvas=todasProvasBim.length;
+  S.turmas.forEach(t=>{
+    const nA=S.alunos.filter(a=>a.turmaId===t.id).length;
+    const provasTurma=todasProvasBim.filter(p=>p.turmaId===t.id);
+    provasTurma.forEach(p=>{
+      const corrFeitas=S.correcoes.filter(c=>c.provaId===p.id&&Object.keys(c.respostas||{}).length>0).length;
+      totalCorr+=corrFeitas;totalAlunos+=nA;
+    });
+  });
+  const pctGlobal=totalAlunos>0?Math.round((totalCorr/totalAlunos)*100):0;
+ 
+  div.innerHTML=`
+    <!-- Resumo global do bimestre -->
+    <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+      <div class="card" style="flex:1;min-width:120px;text-align:center;padding:12px">
+        <div style="font-size:1.5rem;font-weight:800;font-family:'DM Mono',monospace">${S.turmas.length}</div>
+        <div style="font-size:.68rem;color:var(--ink3);margin-top:2px">Turmas</div>
+      </div>
+      <div class="card" style="flex:1;min-width:120px;text-align:center;padding:12px">
+        <div style="font-size:1.5rem;font-weight:800;font-family:'DM Mono',monospace;color:var(--blue)">${totalProvas}</div>
+        <div style="font-size:.68rem;color:var(--ink3);margin-top:2px">Provas no ${_panBim}º BIM</div>
+      </div>
+      <div class="card" style="flex:1;min-width:120px;text-align:center;padding:12px">
+        <div style="font-size:1.5rem;font-weight:800;font-family:'DM Mono',monospace;color:${pctGlobal>=80?'var(--green)':pctGlobal>=40?'#c97a00':'var(--red)'}">${pctGlobal}%</div>
+        <div style="font-size:.68rem;color:var(--ink3);margin-top:2px">Correções concluídas</div>
+      </div>
+    </div>
+    <!-- Cards por turma -->
+    <div class="pan-grid">
+      ${S.turmas.map((t,ti)=>{
+        const alunos=S.alunos.filter(a=>a.turmaId===t.id);
+        const nA=alunos.length;
+        const provasTurma=S.provas.filter(p=>p.turmaId===t.id&&parseInt(p.bim||1)===_panBim);
+        const cor=TC[ti%TC.length];
+ 
+        if(!provasTurma.length){
+          return`<div class="pan-card">
+            <div class="pan-card-head" style="border-left:4px solid ${cor}">
+              <div>
+                <div class="pan-card-turma">${t.nome}</div>
+                <div class="pan-card-meta">👥 ${nA} aluno${nA!==1?'s':''}</div>
+              </div>
+              <span class="pan-pill pan-pill-gray">Sem provas</span>
+            </div>
+            <div class="pan-sem-provas">Nenhuma prova cadastrada para este bimestre</div>
+          </div>`;
+        }
+ 
+        const provasRows=provasTurma.map(p=>{
+          const corrFeitas=S.correcoes.filter(c=>c.provaId===p.id&&Object.keys(c.respostas||{}).length>0).length;
+          const pct=nA>0?Math.round((corrFeitas/nA)*100):0;
+          const status=pct===100?'Concluída':pct>0?'Em andamento':'Pendente';
+          const pillCls=pct===100?'pan-pill-green':pct>0?'pan-pill-yellow':'pan-pill-gray';
+          const mediaArr=[];
+          if(Object.keys(p.gabarito||{}).length>0){
+            alunos.forEach(a=>{
+              const corr=S.correcoes.find(c=>c.alunoId===a.id&&c.provaId===p.id);
+              if(!corr||Object.keys(corr.respostas||{}).length===0)return;
+              const gab=p.gabarito;const vp=p.valor||10;
+              const ac=Object.keys(gab).filter(q=>gab[q]===corr.respostas[q]).length;
+              mediaArr.push((ac/p.nq)*vp);
+            });
+          }
+          const media=mediaArr.length?mediaArr.reduce((a,b)=>a+b,0)/mediaArr.length:null;
+          return`<div class="pan-prova-row">
+            <div class="pan-prova-nome" title="${p.nome}">${p.disciplina||p.nome}</div>
+            <div class="pan-bar-wrap" title="${pct}% corrigido">
+              <div class="pan-bar-fill" style="width:${pct}%;background:${pct===100?'var(--green)':pct>0?'#c97a00':'var(--paper3)'}"></div>
+            </div>
+            <span style="font-size:.65rem;color:var(--ink3);flex-shrink:0;width:32px;text-align:right">${corrFeitas}/${nA}</span>
+            <span class="pan-pill ${pillCls}">${status}</span>
+            ${media!==null?`<span style="font-size:.65rem;font-weight:700;color:${media>=(p.valor||10)*0.7?'var(--green)':'var(--red)'};flex-shrink:0">⌀${media.toFixed(1)}</span>`:''}
+          </div>`;
+        }).join('');
+ 
+        const concluidas=provasTurma.filter(p=>{
+          const n=S.alunos.filter(a=>a.turmaId===t.id).length;
+          const c=S.correcoes.filter(x=>x.provaId===p.id&&Object.keys(x.respostas||{}).length>0).length;
+          return n>0&&c>=n;
+        }).length;
+ 
+        return`<div class="pan-card">
+          <div class="pan-card-head" style="border-left:4px solid ${cor}">
+            <div>
+              <div class="pan-card-turma">${t.nome}</div>
+              <div class="pan-card-meta">👥 ${nA} aluno${nA!==1?'s':''} · 📋 ${provasTurma.length} prova${provasTurma.length!==1?'s':''}</div>
+            </div>
+            <span class="pan-pill ${concluidas===provasTurma.length?'pan-pill-green':concluidas>0?'pan-pill-yellow':'pan-pill-gray'}">${concluidas}/${provasTurma.length} concluída${concluidas!==1?'s':''}</span>
+          </div>
+          <div class="pan-provas">${provasRows}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+ 
 // ═══ INIT ═════════════════════════════════════════════════════════════════════
 renderTurmaSelect();renderProvaTree();renderAlunos();
  
-document.addEventListener('jt_firebase_ready',()=>{
-  // Carga inicial
+function _iniciarFirebase(){
+  // Carga inicial do Firebase (prioridade sobre localStorage)
   window._jt_load().then(d=>{
     if(d&&typeof d==='object'&&d.turmas!==undefined){
-      S=d;renderTurmaSelect();renderAlunos();renderProvaTree();setSyncStatus('ok');
-    }
-  }).catch(()=>setSyncStatus('err'));
+      S=d;
+      localStorage.setItem(LS_KEY, JSON.stringify(S)); // sincroniza localStorage
+      renderTurmaSelect();renderAlunos();renderProvaTree();setSyncStatus('ok');
+      const pag=document.querySelector('.page.on');
+      if(pag?.id==='p-panorama')renderPanorama();
+    } else { setSyncStatus('ok'); }
+  }).catch(e=>{
+    console.warn('Firebase load error:',e);setSyncStatus('err');
+    // Tentar de novo em 5s
+    setTimeout(()=>{if(window._jt_load)window._jt_load().then(d=>{if(d&&d.turmas){S=d;renderTurmaSelect();renderAlunos();renderProvaTree();setSyncStatus('ok');}}).catch(()=>{});},5000);
+  });
  
   // Listener em tempo real para sincronizar com outros aparelhos
   if(!_fbListening){
     _fbListening=true;
     window._jt_listen(d=>{
-      // Só aplica se o dado for diferente do que temos (evita loop)
-      const localStr=JSON.stringify(S);
-      const remoteStr=JSON.stringify(d);
-      if(localStr!==remoteStr)_aplicarDadosFB(d);
+      if(!d||typeof d!=='object'||d.turmas===undefined)return;
+      // Aplicar sempre — o Firebase é a fonte da verdade
+      _aplicarDadosFB(d);
+      // Atualizar localStorage com dado recebido
+      localStorage.setItem(LS_KEY, JSON.stringify(d));
     });
   }
-});
+}
+ 
+document.addEventListener('jt_firebase_ready', _iniciarFirebase);
+// Fallback: se o evento já disparou antes do listener ser registrado
+if(window._jt_ready) setTimeout(_iniciarFirebase, 100);
 </script>
 </body>
 </html>
