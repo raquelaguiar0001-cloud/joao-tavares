@@ -233,7 +233,6 @@
     function fecharTodos() { document.querySelectorAll('.config-overlay').forEach(p => p.style.display = 'none'); }
     function abrirPainel(id) { fecharTodos(); document.getElementById(id).style.display = 'block'; }
 
-    // Função auxiliar para pegar os dois primeiros nomes
     function getDoisNomes(nomeCompleto) {
         if (!nomeCompleto) return "";
         let partes = nomeCompleto.split(' ').filter(p => p.length > 0);
@@ -245,7 +244,11 @@
         let kA = `${mIdx}_${bim}_ativ`, totA = (t.totA && t.totA[mIdx]) || 10;
         if (!aluno.sc) aluno.sc = {};
         let nVistos = ((aluno.sc[kA] || []).length / totA) * 10;
-        let nExtra = 0, crits = (t.crits && t.crits[mIdx]) || [];
+        let nExtra = 0;
+        
+        // MODIFICADO: Busca critérios específicos do bimestre
+        let crits = (t.crits && t.crits[mIdx] && t.crits[mIdx][bim]) || [];
+        
         crits.forEach(c => nExtra += parseFloat(aluno.sc[`${mIdx}_${bim}_${c.n}`] || 0));
         let res = (nVistos + nExtra) / (crits.length + 1);
         return isNaN(res) ? 0 : res;
@@ -270,7 +273,13 @@
             </div>`).join('');
 
         document.getElementById('stu-list-del').innerHTML = (t.st || []).map((s,i)=>`<div class="delete-item"><span>${s.n}</span><button class="btn-x" onclick="delS(${i})">✖</button></div>`).join('');
-        document.getElementById('crit-list-del').innerHTML = (t.crits && t.crits[t.mi] || []).map((c,i)=>`<div class="delete-item"><span>${c.n}</span><button class="btn-x" onclick="delC(${i})">✖</button></div>`).join('');
+        
+        // MODIFICADO: Listagem de exclusão de critérios por bimestre
+        document.getElementById('crit-list-del').innerHTML = (t.crits && t.crits[t.mi] && t.crits[t.mi][dados.bim] || []).map((c,i)=>`
+            <div class="delete-item">
+                <span>${c.n}</span>
+                <button class="btn-x" onclick="delC(${i})">✖</button>
+            </div>`).join('');
 
         document.getElementById('txt-turma').innerText = t.n;
         document.getElementById('txt-materia').innerText = (t.mats && t.mats[t.mi]) || "---";
@@ -289,7 +298,8 @@
                 chs += `<div class="check-box-std ${(s.sc[kA]||[]).includes(i)?'active':''}" onclick="tglV(${si},'${kA}',${i})">${i+1}</div>`;
             }
 
-            let critsMat = (t.crits && t.crits[t.mi]) || [];
+            // MODIFICADO: Inputs de critérios específicos do bimestre
+            let critsMat = (t.crits && t.crits[t.mi] && t.crits[t.mi][dados.bim]) || [];
             let inputsCrit = critsMat.map((c, ci) => {
                 const inputId = `in_${si}_${ci}`;
                 return `
@@ -304,7 +314,6 @@
                 </div>`;
             }).join('');
 
-            // AQUI: Exibindo dois nomes na lista
             return `
             <div class="student-card">
                 <div class="stu-main-info">
@@ -325,10 +334,7 @@
         (t.st || []).forEach((s, i) => {
             let n = getNota(s, dados.bim, t.mi);
             let corDinamica = n < 7 ? '#ff4757' : '#2ecc71';
-            
-            // AQUI: Exibindo dois nomes na pista
             let nomeExibicao = getDoisNomes(s.n);
-
             let lane = document.createElement('div'); lane.className = 'lane';
             lane.innerHTML = `<div class="runner" style="left:${n*9.2}%">
                 <span style="font-size:26px;">${emojis[i%emojis.length]}</span>
@@ -344,10 +350,60 @@
     function upN(si, k, v) { if(!dados.turmas[dados.ti].st[si].sc) dados.turmas[dados.ti].st[si].sc={}; dados.turmas[dados.ti].st[si].sc[k] = parseFloat(v); salvar(); }
     function setVistos(v) { if(!dados.turmas[dados.ti].totA) dados.turmas[dados.ti].totA=[]; dados.turmas[dados.ti].totA[dados.turmas[dados.ti].mi] = parseInt(v); salvar(); }
     
-    function addT() { let v=document.getElementById('in-cl').value; if(v){ if(!dados.turmas) dados.turmas=[]; dados.turmas.push({n:v, mats:['Inglês'], mi:0, totA:[10], crits:[[{n:'C'}]], st:[]}); salvar(); document.getElementById('in-cl').value=''; } }
-    function addM() { let v=document.getElementById('in-mat').value; if(v){ const t=dados.turmas[dados.ti]; if(!t.mats) t.mats=[]; t.mats.push(v); if(!t.totA) t.totA=[]; t.totA.push(10); if(!t.crits) t.crits=[]; t.crits.push([{n:'C'}]); t.mi=t.mats.length-1; salvar(); document.getElementById('in-mat').value=''; } }
+    // MODIFICADO: Adicionar Turma com estrutura de critérios por bimestre
+    function addT() { 
+        let v=document.getElementById('in-cl').value; 
+        if(v){ 
+            if(!dados.turmas) dados.turmas=[]; 
+            dados.turmas.push({
+                n:v, 
+                mats:['Inglês'], 
+                mi:0, 
+                totA:[10], 
+                crits:[{ 1: [{n:'C'}], 2: [{n:'C'}], 3: [{n:'C'}], 4: [{n:'C'}] }], 
+                st:[]
+            }); 
+            salvar(); 
+            document.getElementById('in-cl').value=''; 
+        } 
+    }
+
+    function addM() { 
+        let v=document.getElementById('in-mat').value; 
+        if(v){ 
+            const t=dados.turmas[dados.ti]; 
+            if(!t.mats) t.mats=[]; t.mats.push(v); 
+            if(!t.totA) t.totA=[]; t.totA.push(10); 
+            if(!t.crits) t.crits=[]; 
+            t.crits.push({ 1: [{n:'C'}], 2: [{n:'C'}], 3: [{n:'C'}], 4: [{n:'C'}] }); 
+            t.mi=t.mats.length-1; 
+            salvar(); 
+            document.getElementById('in-mat').value=''; 
+        } 
+    }
     
-    function addC() { let v = document.getElementById('in-cr').value; if(v) { const t = dados.turmas[dados.ti]; if(!t.crits) t.crits = []; if(!t.crits[t.mi]) t.crits[t.mi] = []; t.crits[t.mi].push({n: v}); salvar(); document.getElementById('in-cr').value = ''; } }
+    // MODIFICADO: Função Adicionar Critério Exclusivo
+    function addC() { 
+        let v = document.getElementById('in-cr').value; 
+        if(v) { 
+            const t = dados.turmas[dados.ti]; 
+            if(!t.crits) t.crits = []; 
+            if(!t.crits[t.mi]) t.crits[t.mi] = {}; 
+            if(!t.crits[t.mi][dados.bim]) t.crits[t.mi][dados.bim] = []; 
+            
+            t.crits[t.mi][dados.bim].push({n: v}); 
+            salvar(); 
+            document.getElementById('in-cr').value = ''; 
+        } 
+    }
+
+    // MODIFICADO: Função Deletar Critério Exclusivo
+    function delC(i) { 
+        if(confirm('Remover critério deste bimestre?')){ 
+            dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi][dados.bim].splice(i, 1); 
+            salvar(); 
+        } 
+    }
 
     function addStus() { 
         let n=document.getElementById('in-nm').value.split('\n'); 
@@ -359,7 +415,6 @@
     function delT(i) { if(confirm('Excluir turma?')){ dados.turmas.splice(i, 1); dados.ti = 0; salvar(); } }
     function delM(i) { if(confirm('Excluir matéria?')){ dados.turmas[dados.ti].mats.splice(i, 1); dados.turmas[dados.ti].mi = 0; salvar(); } }
     function delS(i) { if(confirm('Remover aluno?')){ dados.turmas[dados.ti].st.splice(i, 1); salvar(); } }
-    function delC(i) { if(confirm('Remover critério?')){ dados.turmas[dados.ti].crits[dados.turmas[dados.ti].mi].splice(i, 1); salvar(); } }
 
     function exportarExcelCompleto() {
         const t = dados.turmas[dados.ti]; if(!t) return;
