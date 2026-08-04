@@ -61,32 +61,40 @@
     }
     .btn-toggle:hover { background: rgba(251, 191, 36, 0.2); }
 
-    .form-group {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px; margin-top: 15px; margin-bottom: 15px;
+    .form-group-top {
+      display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-top: 15px; margin-bottom: 12px;
     }
+    @media(max-width: 600px){ .form-group-top { grid-template-columns: 1fr; } }
 
     .form-content {
       overflow: hidden;
       transition: max-height 0.3s ease, opacity 0.3s ease;
-      max-height: 500px; opacity: 1;
+      max-height: 600px; opacity: 1;
     }
 
     .form-content.collapsed {
       max-height: 0; opacity: 0; margin: 0; padding: 0; pointer-events: none;
     }
 
-    input, select {
+    input, select, textarea {
       width: 100%; padding: 10px 14px; background: rgba(0, 0, 0, 0.3);
       border: 1px solid var(--border); border-radius: 8px; color: var(--text);
-      font-size: 0.9rem; outline: none;
+      font-size: 0.9rem; outline: none; font-family: inherit;
     }
-    input:focus, select:focus { border-color: var(--accent); }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+
+    textarea {
+      resize: vertical; min-height: 110px; margin-bottom: 12px;
+    }
+
+    .hint-text {
+      font-size: 0.78rem; color: var(--text-dim); margin-bottom: 8px; display: block;
+    }
 
     button.btn-salvar {
       background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1a0a00;
       font-weight: 800; border: none; padding: 10px 20px; border-radius: 8px;
-      cursor: pointer; transition: 0.2s;
+      cursor: pointer; transition: 0.2s; width: 100%;
     }
     button.btn-salvar:hover { transform: translateY(-2px); opacity: 0.9; }
 
@@ -137,25 +145,33 @@
     <h1>📝 Módulo de Provas Externas</h1>
   </header>
 
-  <!-- FORMULÁRIO COM RECURSO DE MAXIMIZAR/MINIMIZAR -->
+  <!-- FORMULÁRIO COM SELEÇÃO FIXA DE PROVA E ENTRADA EM LOTE -->
   <div class="card">
     <div class="card-header" onclick="toggleForm()">
-      <h3 style="font-size: 1.1rem; color: var(--accent);">➕ Adicionar Resultado</h3>
+      <h3 style="font-size: 1.1rem; color: var(--accent);">➕ Adicionar Resultados em Lote</h3>
       <button type="button" class="btn-toggle" id="btnToggleForm">➖ Minimizar Painel</button>
     </div>
 
     <div class="form-content" id="formContent">
       <form id="formProva">
-        <div class="form-group">
-          <input type="text" id="aluno" placeholder="Nome Completo do Aluno" required>
-          <input type="text" id="prova" placeholder="Nome da Prova (ex: Caed Ciclo I, Caed Ciclo II)" required>
-          <select id="tipoPontuacao">
-            <option value="nota">Nota (ex: 8.5 ou 85)</option>
-            <option value="porcentagem">Porcentagem (%) (ex: 85%)</option>
-          </select>
-          <input type="number" id="nota" placeholder="Valor (ex: 8.5 ou 85)" step="0.1" required>
+        <div class="form-group-top">
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; display: block;">Nome da Avaliação / Prova:</label>
+            <input type="text" id="prova" placeholder="Ex: Caed Ciclo I, Simulados, etc." required>
+          </div>
+          <div>
+            <label style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 4px; display: block;">Formato da Pontuação:</label>
+            <select id="tipoPontuacao">
+              <option value="nota">Nota (ex: 8.5 ou 85)</option>
+              <option value="porcentagem">Porcentagem (%) (ex: 85%)</option>
+            </select>
+          </div>
         </div>
-        <button type="submit" class="btn-salvar">+ Salvar Registro</button>
+
+        <span class="hint-text">💡 Cole ou digite um aluno por linha no formato: <strong>Nome do Aluno, Nota</strong></span>
+        <textarea id="listaAlunos" placeholder="Exemplo:&#10;Arthur Pereira, 8.5&#10;Beatriz Lima, 90&#10;Carlos Eduardo, 7.5" required></textarea>
+
+        <button type="submit" class="btn-salvar">+ Salvar Todos os Registros</button>
       </form>
     </div>
   </div>
@@ -254,17 +270,35 @@
     localStorage.setItem('labAtivo_provas', JSON.stringify(dadosProvas));
   }
 
-  // Adicionar Dado
+  // Adicionar Dados em Lote
   document.getElementById('formProva').addEventListener('submit', (e) => {
     e.preventDefault();
-    const aluno = document.getElementById('aluno').value.trim();
     const prova = document.getElementById('prova').value.trim();
     const tipo = document.getElementById('tipoPontuacao').value;
-    const nota = parseFloat(document.getElementById('nota').value);
+    const textoArea = document.getElementById('listaAlunos').value.trim();
 
-    dadosProvas.push({ aluno, prova, nota, tipo });
-    document.getElementById('formProva').reset();
-    atualizarTudo();
+    const linhas = textoArea.split('\n');
+    let adicionados = 0;
+
+    linhas.forEach(linha => {
+      const partes = linha.split(',');
+      if (partes.length >= 2) {
+        const aluno = partes[0].trim();
+        const nota = parseFloat(partes[1].trim());
+
+        if (aluno !== '' && !isNaN(nota)) {
+          dadosProvas.push({ aluno, prova, nota, tipo });
+          adicionados++;
+        }
+      }
+    });
+
+    if (adicionados > 0) {
+      document.getElementById('listaAlunos').value = '';
+      atualizarTudo();
+    } else {
+      alert("Nenhum registro válido encontrado. Verifique o formato: Nome do Aluno, Nota");
+    }
   });
 
   // Excluir Registro
