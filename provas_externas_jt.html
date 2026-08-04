@@ -125,6 +125,14 @@
     }
     td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 
+    .action-btns { display: flex; gap: 6px; }
+
+    .btn-editar {
+      background: transparent; color: var(--info); padding: 4px 10px;
+      font-size: 0.75rem; border: 1px solid var(--info); border-radius: 6px; cursor: pointer;
+    }
+    .btn-editar:hover { background: rgba(34, 211, 238, 0.1); }
+
     .btn-excluir {
       background: transparent; color: var(--danger); padding: 4px 10px;
       font-size: 0.75rem; border: 1px solid var(--danger); border-radius: 6px; cursor: pointer;
@@ -134,6 +142,25 @@
     .badge-prova {
       display: inline-block; padding: 3px 8px; border-radius: 12px;
       font-size: 0.75rem; font-weight: bold; color: #000;
+    }
+
+    /* MODAL DE EDIÇÃO */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
+      display: flex; align-items: center; justify-content: center; z-index: 100;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-box {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: 16px; padding: 24px; max-width: 450px; width: 90%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    }
+    .modal-title { font-size: 1.1rem; color: var(--accent); margin-bottom: 15px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px; }
+    .btn-cancelar {
+      background: transparent; color: var(--text-dim); border: 1px solid var(--border);
+      padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold;
     }
   </style>
 </head>
@@ -231,6 +258,39 @@
   </div>
 </div>
 
+<!-- MODAL DE EDIÇÃO -->
+<div class="modal-overlay" id="modalEdicao">
+  <div class="modal-box">
+    <h3 class="modal-title">✏️ Editar Registro</h3>
+    <form id="formEdit">
+      <input type="hidden" id="editIndex">
+      <div style="margin-bottom: 12px;">
+        <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 4px;">Nome do Aluno:</label>
+        <input type="text" id="editAluno" required>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 4px;">Prova / Avaliação:</label>
+        <input type="text" id="editProva" required>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 4px;">Formato:</label>
+        <select id="editTipo">
+          <option value="nota">Nota</option>
+          <option value="porcentagem">Porcentagem (%)</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 12px;">
+        <label style="font-size: 0.8rem; color: var(--text-dim); display: block; margin-bottom: 4px;">Nota / Pontuação:</label>
+        <input type="number" id="editNota" step="0.1" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+        <button type="submit" class="btn-salvar" style="width: auto;">Salvar Alterações</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
   let dadosProvas = JSON.parse(localStorage.getItem('labAtivo_provas')) || [];
   let meuGrafico = null;
@@ -301,6 +361,38 @@
     }
   });
 
+  // Abrir Modal de Edição
+  function abrirEdicao(index) {
+    const item = dadosProvas[index];
+    document.getElementById('editIndex').value = index;
+    document.getElementById('editAluno').value = item.aluno;
+    document.getElementById('editProva').value = item.prova;
+    document.getElementById('editTipo').value = item.tipo || 'nota';
+    document.getElementById('editNota').value = item.nota;
+
+    document.getElementById('modalEdicao').classList.add('active');
+  }
+
+  function fecharModal() {
+    document.getElementById('modalEdicao').classList.remove('active');
+  }
+
+  // Salvar Edição
+  document.getElementById('formEdit').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const index = parseInt(document.getElementById('editIndex').value);
+    
+    dadosProvas[index] = {
+      aluno: document.getElementById('editAluno').value.trim(),
+      prova: document.getElementById('editProva').value.trim(),
+      tipo: document.getElementById('editTipo').value,
+      nota: parseFloat(document.getElementById('editNota').value)
+    };
+
+    fecharModal();
+    atualizarTudo();
+  });
+
   // Excluir Registro
   function excluirRegistro(index) {
     if(confirm("Tem certeza que deseja excluir esta nota?")) {
@@ -322,7 +414,12 @@
         <td><strong>${item.aluno}</strong></td>
         <td><span class="badge-prova" style="background:${cor}">${item.prova}</span></td>
         <td><strong style="color: var(--success)">${item.nota}${suf}</strong></td>
-        <td><button class="btn-excluir" onclick="excluirRegistro(${index})">Excluir</button></td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-editar" onclick="abrirEdicao(${index})">Editar</button>
+            <button class="btn-excluir" onclick="excluirRegistro(${index})">Excluir</button>
+          </div>
+        </td>
       `;
       tbody.appendChild(tr);
     });
