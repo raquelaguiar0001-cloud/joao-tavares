@@ -98,7 +98,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
 .l-footer{position:absolute;bottom:16px;font-size:.62rem;color:rgba(255,255,255,.15);letter-spacing:3px;text-transform:uppercase}
 
 /* ── HOME ── */
-#s-home{background:linear-gradient(145deg,#0d0618 0%,#130a24 40%,#0a1220 100%);justify-content:flex-start;padding:0}
+#s-home{background:linear-gradient(145deg,#0d0618 0%,#130a24 40%,#0a1220 100%);justify-flex-start;padding:0}
 
 .h-topbar{
   width:100%;height:54px;display:flex;align-items:center;
@@ -150,8 +150,9 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
 .h-hint{font-size:.78rem;color:rgba(255,255,255,.4);font-weight:600;letter-spacing:.3px;position:relative;z-index:1}
 
 /* CARDS */
-.h-mods{width:100%;max-width:840px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 20px 24px;flex-shrink:0}
-@media(max-width:620px){.h-mods{grid-template-columns:1fr;max-width:320px}}
+.h-mods{width:100%;max-width:1080px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:0 20px 24px;flex-shrink:0}
+@media(max-width:860px){.h-mods{grid-template-columns:repeat(2,1fr);max-width:600px}}
+@media(max-width:500px){.h-mods{grid-template-columns:1fr;max-width:320px}}
 
 .mc{
   position:relative;overflow:hidden;border-radius:20px;cursor:pointer;
@@ -166,6 +167,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
 .mc-1{border-color:rgba(251,191,36,.2)}.mc-1:hover{box-shadow:0 20px 50px rgba(251,191,36,.18);border-color:rgba(251,191,36,.5)}
 .mc-2{border-color:rgba(34,211,238,.2)}.mc-2:hover{box-shadow:0 20px 50px rgba(34,211,238,.18);border-color:rgba(34,211,238,.5)}
 .mc-3{border-color:rgba(167,139,250,.2)}.mc-3:hover{box-shadow:0 20px 50px rgba(167,139,250,.18);border-color:rgba(167,139,250,.5)}
+.mc-4{border-color:rgba(52,211,153,.2)}.mc-4:hover{box-shadow:0 20px 50px rgba(52,211,153,.18);border-color:rgba(52,211,153,.5)}
 
 .mc-shine{
   position:absolute;top:-60px;left:50%;transform:translateX(-50%);
@@ -175,6 +177,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
 .mc-1 .mc-shine{background:radial-gradient(circle,rgba(251,191,36,.2),transparent 70%)}
 .mc-2 .mc-shine{background:radial-gradient(circle,rgba(34,211,238,.2),transparent 70%)}
 .mc-3 .mc-shine{background:radial-gradient(circle,rgba(167,139,250,.2),transparent 70%)}
+.mc-4 .mc-shine{background:radial-gradient(circle,rgba(52,211,153,.2),transparent 70%)}
 .mc:hover .mc-shine{opacity:1}
 
 .mc-tag{
@@ -185,6 +188,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
 .mc-1 .mc-tag{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3)}
 .mc-2 .mc-tag{background:rgba(34,211,238,.12);color:#22d3ee;border:1px solid rgba(34,211,238,.25)}
 .mc-3 .mc-tag{background:rgba(167,139,250,.12);color:#a78bfa;border:1px solid rgba(167,139,250,.25)}
+.mc-4 .mc-tag{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.25)}
 
 .mc-ico{font-size:2.5rem;display:block;margin-bottom:10px;position:relative;z-index:1;transition:transform .3s}
 .mc:hover .mc-ico{transform:scale(1.2) rotate(-8deg)}
@@ -195,7 +199,7 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
   font-size:.72rem;font-weight:800;position:relative;z-index:1;
   transition:all .22s;opacity:.4
 }
-.mc-1 .mc-cta{color:#fbbf24}.mc-2 .mc-cta{color:#22d3ee}.mc-3 .mc-cta{color:#a78bfa}
+.mc-1 .mc-cta{color:#fbbf24}.mc-2 .mc-cta{color:#22d3ee}.mc-3 .mc-cta{color:#a78bfa}.mc-4 .mc-cta{color:#34d399}
 .mc:hover .mc-cta{opacity:1;transform:translateX(4px)}
 
 /* MODULE */
@@ -302,6 +306,14 @@ html,body{height:100%;overflow:hidden;font-family:'Nunito',sans-serif}
       <div class="mc-desc">Planejamento semanal de aulas, conteúdos e histórico de atividades</div>
       <div class="mc-cta">Abrir →</div>
     </div>
+    <div class="mc mc-4" onclick="abrirMod('provas')">
+      <div class="mc-shine"></div>
+      <span class="mc-tag">Externas</span>
+      <span class="mc-ico">📝</span>
+      <div class="mc-name">Provas Externas</div>
+      <div class="mc-desc">Histórico, gráficos e acompanhamento de desempenho no CAED e simulados</div>
+      <div class="mc-cta">Abrir →</div>
+    </div>
   </div>
 </div>
 
@@ -351,7 +363,12 @@ draw();
 })();
 
 // ── MODULES ──
-const MODS={corretor:{name:'ReagiNota',sub:'Corretor de Gabaritos',src:'reagiNota_jt.html'},biolab:{name:'Notas',sub:'Notas e Desempenho',src:'notas_jt.html'},planejador:{name:'Planejador',sub:'Planejamento Semanal',src:'planejador_jt.html'}};
+const MODS={
+  corretor:{name:'ReagiNota',sub:'Corretor de Gabaritos',src:'reagiNota_jt.html'},
+  biolab:{name:'Notas',sub:'Notas e Desempenho',src:'notas_jt.html'},
+  planejador:{name:'Planejador',sub:'Planejamento Semanal',src:'planejador_jt.html'},
+  provas:{name:'Provas Externas',sub:'Avaliações e Simulados',src:'provas_externas_jt.html'}
+};
 
 function abrirMod(id){
   const m=MODS[id];
