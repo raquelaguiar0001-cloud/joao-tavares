@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Provas Externas - LabAtivo</title>
+  <!-- Chart.js para os gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg: #0e0d17;
+      --card-bg: #161527;
+      --accent: #f5a623;
+      --text: #ffffff;
+      --text-dim: #a0a0b0;
+      --border: #292841;
+      --danger: #ff4d4d;
+      --success: #2ec4b6;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 15px;
+    }
+
+    .btn-voltar {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    h1 { margin: 0; font-size: 1.6rem; color: var(--accent); }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      background: #0e0d17;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      box-sizing: border-box;
+    }
+
+    button {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:hover { opacity: 0.9; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th { color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; }
+
+    .btn-excluir {
+      background: transparent;
+      color: var(--danger);
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      border: 1px solid var(--danger);
+    }
+
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <a href="index.html" class="btn-voltar">← Voltar ao Inicio</a>
+    <h1>📝 Provas Externas & Simulados</h1>
+  </header>
+
+  <!-- FORMULÁRIO DE CADASTRO -->
+  <div class="card">
+    <h3>Adicionar Novo Resultado</h3>
+    <form id="formProva">
+      <div class="form-group">
+        <input type="text" id="aluno" placeholder="Nome do Aluno" required>
+        <input type="text" id="prova" placeholder="Nome da Prova (ex: 1ª Caed, 2ª Caed)" required>
+        <input type="number" id="nota" placeholder="Nota ou Acertos (ex: 80 ou 8.5)" step="0.1" required>
+      </div>
+      <button type="submit">+ Salvar Registro</button>
+    </form>
+  </div>
+
+  <!-- GRÁFICO DE DESEMPENHO -->
+  <div class="card">
+    <h3>📊 Evolução Geral dos Alunos</h3>
+    <div class="chart-container">
+      <canvas id="graficoProvas"></canvas>
+    </div>
+  </div>
+
+  <!-- TABELA DE DADOS -->
+  <div class="card">
+    <h3>📋 Histórico de Provas</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Aluno</th>
+          <th>Prova / Avaliação</th>
+          <th>Nota / Pontuação</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaProvas">
+        <!-- Dados inseridos via JS -->
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  // Banco de Dados Local (LocalStorage)
+  let dadosProvas = JSON.parse(localStorage.getItem('labAtivo_provas')) || [];
+  let meuGrafico = null;
+
+  const form = document.getElementById('formProva');
+  const tabela = document.getElementById('tabelaProvas');
+
+  // Função para Renderizar a Tabela e Atualizar o Gráfico
+  function atualizarTela() {
+    // 1. Limpar e preencher Tabela
+    tabela.innerHTML = '';
+    dadosProvas.forEach((item, index) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${item.aluno}</strong></td>
+        <td>${item.prova}</td>
+        <td><span style="color: var(--success); font-weight: bold;">${item.nota}</span></td>
+        <td><button class="btn-excluir" onclick="excluirRegistro(${index})">Excluir</button></td>
+      `;
+      tabela.appendChild(tr);
+    });
+
+    // 2. Salvar Localmente
+    localStorage.setItem('labAtivo_provas', JSON.stringify(dadosProvas));
+
+    // 3. Atualizar Gráfico
+    atualizarGrafico();
+  }
+
+  // Adicionar Dados
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const aluno = document.getElementById('aluno').value;
+    const prova = document.getElementById('prova').value;
+    const nota = parseFloat(document.getElementById('nota').value);
+
+    dadosProvas.push({ aluno, prova, nota });
+    form.reset();
+    atualizarTela();
+  });
+
+  // Excluir Dados
+  function excluirRegistro(index) {
+    if(confirm("Deseja mesmo excluir este registro?")) {
+      dadosProvas.splice(index, 1);
+      atualizarTela();
+    }
+  }
+
+  // Configuração do Gráfico (Chart.js)
+  function atualizarGrafico() {
+    const ctx = document.getElementById('graficoProvas').getContext('2d');
+    
+    // Organizar dados por Prova
+    const provasNomes = [...new Set(dadosProvas.map(d => d.prova))];
+    const mediasPorProva = provasNomes.map(p => {
+      const notas = dadosProvas.filter(d => d.prova === p).map(d => d.nota);
+      const media = notas.reduce((a, b) => a + b, 0) / (notas.length || 1);
+      return media.toFixed(1);
+    });
+
+    if (meuGrafico) meuGrafico.destroy();
+
+    meuGrafico = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: provasNomes,
+        datasets: [{
+          label: 'Média de Notas da Turma',
+          data: mediasPorProva,
+          backgroundColor: '#f5a623',
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true, grid: { color: '#292841' } },
+          x: { grid: { color: '#292841' } }
+        },
+        plugins: {
+          legend: { labels: { color: '#fff' } }
+        }
+      }
+    });
+  }
+
+  // Inicializar na carga
+  atualizarTela();
+</script>
+
+</body>
+</html>
