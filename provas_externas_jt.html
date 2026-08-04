@@ -46,11 +46,34 @@
       background: var(--card-bg); border: 1px solid var(--border);
       border-radius: 16px; padding: 20px; margin-bottom: 20px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
     }
 
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; user-select: none;
+    }
+
+    .btn-toggle {
+      background: rgba(255, 255, 255, 0.08); color: var(--accent);
+      border: 1px solid var(--border); padding: 5px 12px; border-radius: 6px;
+      font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: 0.2s;
+    }
+    .btn-toggle:hover { background: rgba(251, 191, 36, 0.2); }
+
     .form-group {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px; margin-bottom: 15px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px; margin-top: 15px; margin-bottom: 15px;
+    }
+
+    .form-content {
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      max-height: 500px; opacity: 1;
+    }
+
+    .form-content.collapsed {
+      max-height: 0; opacity: 0; margin: 0; padding: 0; pointer-events: none;
     }
 
     input, select {
@@ -114,17 +137,27 @@
     <h1>📝 Módulo de Provas Externas</h1>
   </header>
 
-  <!-- FORMULÁRIO -->
+  <!-- FORMULÁRIO COM RECURSO DE MAXIMIZAR/MINIMIZAR -->
   <div class="card">
-    <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: var(--accent);">➕ Adicionar Resultado</h3>
-    <form id="formProva">
-      <div class="form-group">
-        <input type="text" id="aluno" placeholder="Nome Completo do Aluno" required>
-        <input type="text" id="prova" placeholder="Nome da Prova (ex: Caed Ciclo I, Caed Ciclo II)" required>
-        <input type="number" id="nota" placeholder="Nota ou Acertos (ex: 85 ou 8.5)" step="0.1" required>
-      </div>
-      <button type="submit" class="btn-salvar">+ Salvar Registro</button>
-    </form>
+    <div class="card-header" onclick="toggleForm()">
+      <h3 style="font-size: 1.1rem; color: var(--accent);">➕ Adicionar Resultado</h3>
+      <button type="button" class="btn-toggle" id="btnToggleForm">➖ Minimizar Painel</button>
+    </div>
+
+    <div class="form-content" id="formContent">
+      <form id="formProva">
+        <div class="form-group">
+          <input type="text" id="aluno" placeholder="Nome Completo do Aluno" required>
+          <input type="text" id="prova" placeholder="Nome da Prova (ex: Caed Ciclo I, Caed Ciclo II)" required>
+          <select id="tipoPontuacao">
+            <option value="nota">Nota (ex: 8.5 ou 85)</option>
+            <option value="porcentagem">Porcentagem (%) (ex: 85%)</option>
+          </select>
+          <input type="number" id="nota" placeholder="Valor (ex: 8.5 ou 85)" step="0.1" required>
+        </div>
+        <button type="submit" class="btn-salvar">+ Salvar Registro</button>
+      </form>
+    </div>
   </div>
 
   <!-- GRÁFICO E FILTROS -->
@@ -195,6 +228,20 @@
     return CORES[index % CORES.length] || '#fbbf24';
   }
 
+  // Minimizar e Expandir Formulário
+  function toggleForm() {
+    const content = document.getElementById('formContent');
+    const btn = document.getElementById('btnToggleForm');
+    
+    if (content.classList.contains('collapsed')) {
+      content.classList.remove('collapsed');
+      btn.textContent = '➖ Minimizar Painel';
+    } else {
+      content.classList.add('collapsed');
+      btn.textContent = '➕ Expandir Painel';
+    }
+  }
+
   // Inicialização
   function atualizarTudo() {
     salvarDados();
@@ -212,9 +259,10 @@
     e.preventDefault();
     const aluno = document.getElementById('aluno').value.trim();
     const prova = document.getElementById('prova').value.trim();
+    const tipo = document.getElementById('tipoPontuacao').value;
     const nota = parseFloat(document.getElementById('nota').value);
 
-    dadosProvas.push({ aluno, prova, nota });
+    dadosProvas.push({ aluno, prova, nota, tipo });
     document.getElementById('formProva').reset();
     atualizarTudo();
   });
@@ -234,11 +282,12 @@
 
     dadosProvas.forEach((item, index) => {
       const cor = obterCorProva(item.prova);
+      const suf = item.tipo === 'porcentagem' ? '%' : '';
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><strong>${item.aluno}</strong></td>
         <td><span class="badge-prova" style="background:${cor}">${item.prova}</span></td>
-        <td><strong style="color: var(--success)">${item.nota}</strong></td>
+        <td><strong style="color: var(--success)">${item.nota}${suf}</strong></td>
         <td><button class="btn-excluir" onclick="excluirRegistro(${index})">Excluir</button></td>
       `;
       tbody.appendChild(tr);
@@ -288,6 +337,7 @@
 
     let labels = [];
     let datasets = [];
+    let ehPorcentagem = false;
 
     if (modo === 'geral') {
       container.style.minWidth = '600px';
@@ -309,7 +359,8 @@
     } else if (modo === 'individual') {
       const provaSel = document.getElementById('selProva1').value;
       const filtrados = dadosProvas.filter(d => d.prova === provaSel);
-      
+      ehPorcentagem = filtrados.some(d => d.tipo === 'porcentagem');
+
       labels = filtrados.map(d => d.aluno);
       container.style.minWidth = Math.max(600, labels.length * 40) + 'px';
 
@@ -360,11 +411,30 @@
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#a0a0b0' } },
+          y: { 
+            beginAtZero: true, 
+            grid: { color: 'rgba(255,255,255,0.08)' }, 
+            ticks: { 
+              color: '#a0a0b0',
+              callback: function(value) {
+                return value + (ehPorcentagem ? '%' : '');
+              }
+            } 
+          },
           x: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#a0a0b0', maxRotation: 45, minRotation: 45 } }
         },
         plugins: {
-          legend: { labels: { color: '#ffffff', font: { weight: 'bold' } } }
+          legend: { labels: { color: '#ffffff', font: { weight: 'bold' } } },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) label += ': ';
+                if (context.parsed.y !== null) label += context.parsed.y + (ehPorcentagem ? '%' : '');
+                return label;
+              }
+            }
+          }
         }
       }
     });
