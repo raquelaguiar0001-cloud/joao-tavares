@@ -53,25 +53,48 @@
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     }
 
+    /* GRID DOS CARDS DE METRICAS/KPIs */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px; margin-bottom: 20px;
+    }
+    .kpi-card {
+      background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+    }
+    .kpi-title {
+      font-size: 0.75rem; text-transform: uppercase; color: var(--text-dim);
+      font-weight: 700; letter-spacing: 0.5px;
+    }
+    .kpi-value { font-size: 1.6rem; font-weight: 800; margin-top: 4px; }
+
+    /* CARD DE DICA / INTERVENÇÃO */
+    .dica-card {
+      background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 12px; padding: 16px; margin-bottom: 20px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .dica-icon {
+      font-size: 1.5rem; background: rgba(56, 189, 248, 0.15);
+      padding: 8px; border-radius: 10px; border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    /* TABS NAV VIRARAM ATALHOS PARA MODAIS */
     .tab-nav {
       display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border);
       padding-bottom: 10px; flex-wrap: wrap;
     }
     .tab-btn {
-      background: transparent; color: var(--text-dim); border: none; padding: 10px 18px;
-      font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 0.9rem;
-      transition: all 0.2s;
+      background: transparent; color: var(--text-dim); border: 1px solid var(--border);
+      padding: 10px 18px; font-weight: bold; cursor: pointer; border-radius: 8px;
+      font-size: 0.9rem; transition: all 0.2s; display: flex; align-items: center; gap: 6px;
     }
+    .tab-btn:hover { background: rgba(255, 255, 255, 0.05); color: var(--text); }
     .tab-btn.active {
-      background: rgba(251, 191, 36, 0.15); color: var(--accent); border: 1px solid rgba(251, 191, 36, 0.3);
+      background: rgba(251, 191, 36, 0.15); color: var(--accent); border-color: rgba(251, 191, 36, 0.3);
     }
 
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-
-    .form-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;
-    }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
     @media(max-width: 600px){ .form-grid { grid-template-columns: 1fr; } }
 
     input, select, textarea {
@@ -82,8 +105,6 @@
     input:focus, select:focus, textarea:focus { border-color: var(--accent); }
 
     textarea { resize: vertical; min-height: 120px; }
-
-    .hint-text { font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; display: block; }
 
     .status-banner {
       background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.3);
@@ -117,8 +138,7 @@
     td { padding: 12px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
 
     .badge-nivel {
-      display: inline-block; padding: 3px 8px; border-radius: 6px;
-      font-size: 0.75rem; font-weight: bold;
+      display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold;
     }
     .nivel-baixo { background: rgba(248, 113, 113, 0.2); color: var(--danger); border: 1px solid var(--danger); }
     .nivel-basico { background: rgba(250, 204, 21, 0.2); color: var(--warning); border: 1px solid var(--warning); }
@@ -144,27 +164,29 @@
     .q-certa { background: rgba(52, 211, 153, 0.2); color: var(--success); border: 1px solid var(--success); }
     .q-errada { background: rgba(248, 113, 113, 0.2); color: var(--danger); border: 1px solid var(--danger); }
 
+    /* MODAL SYSTEM OVERHAUL */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
+      position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px);
       display: flex; align-items: center; justify-content: center; z-index: 100;
       opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
     }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
     .modal-box {
       background: var(--card-bg); border: 1px solid var(--border);
-      border-radius: 16px; padding: 24px; max-width: 500px; width: 90%;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.6); max-height: 90vh; overflow-y: auto;
+      border-radius: 16px; padding: 24px; max-width: 700px; width: 90%;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 90vh; overflow-y: auto;
     }
-    .modal-title { font-size: 1.1rem; color: var(--accent); margin-bottom: 15px; }
-    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px; }
+    .modal-box.small { max-width: 500px; }
+    .modal-title { font-size: 1.2rem; color: var(--accent); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;}
+    .close-btn { background: none; border: none; color: var(--text-dim); font-size: 1.2rem; cursor: pointer; }
+    .close-btn:hover { color: var(--danger); }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
     .btn-cancelar {
       background: transparent; color: var(--text-dim); border: 1px solid var(--border);
       padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold;
     }
 
-    .q-detail-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 10px;
-    }
+    .q-detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; margin-top: 10px; }
     .q-card-item {
       background: rgba(0, 0, 0, 0.3); border: 1px solid var(--border); padding: 8px; border-radius: 8px;
       text-align: center; font-size: 0.8rem;
@@ -181,94 +203,54 @@
     <h1>📝 Módulo de Provas Externas — João Tavares</h1>
   </header>
 
+  <!-- NAVEGAÇÃO SUPERIOR (Botões disparam as Modais) -->
   <div class="tab-nav">
-    <button class="tab-btn active" id="btnTab1" onclick="mudarAba('abaGabarito')">1. Configurar & Editar Provas</button>
-    <button class="tab-btn" id="btnTab2" onclick="mudarAba('abaRespostas')">2. Lançar Gabaritos da Turma</button>
-    <button class="tab-btn" id="btnTab3" onclick="mudarAba('abaAnalise')">3. Diagnóstico e Gráficos</button>
+    <button class="tab-btn" onclick="abrirJanela('modalConfigProva')">⚙️ 1. Configurar & Editar Provas</button>
+    <button class="tab-btn" onclick="abrirJanela('modalLancarGabaritos')">⚡ 2. Lançar Gabaritos da Turma</button>
+    <button class="tab-btn active">📊 3. Diagnósticos e Gráficos</button>
   </div>
 
-  <!-- ABA 1 -->
-  <div id="abaGabarito" class="tab-content active card">
-    <h3 style="color: var(--accent); margin-bottom: 12px;">⚙️ Configuração / Cadastro de Avaliação</h3>
-    <form id="formCadProva">
-      <input type="hidden" id="editProvaId">
-      <div class="form-grid">
-        <div>
-          <label>Nome da Avaliação / Prova:</label>
-          <input type="text" id="nomeProvaCad" placeholder="Ex: Prova 1 - CAEd Ciências" required>
-        </div>
-        <div>
-          <label>Nível Esperado Geral:</label>
-          <select id="nivelGeralProva">
-            <option value="Baixo">Baixo (Reconhecimento visual/direto)</option>
-            <option value="Básico" selected>Básico (Descrição e explicação)</option>
-            <option value="Médio">Médio (Inferência e dedução)</option>
-            <option value="Alto">Alto (Interpretação e análise)</option>
-          </select>
-        </div>
+  <!-- TELA PRINCIPAL FIXA: DIAGNÓSTICO -->
+  <div id="abaAnalise">
+    
+    <div class="filter-bar">
+      <div>
+        <label style="font-weight: bold; margin-right: 8px;">Exibindo Resultados da Prova:</label>
+        <select id="selFiltroProvaGrafico" onchange="aoMudarFiltroProva()"></select>
       </div>
-
-      <div style="margin-bottom: 12px;">
-        <label>Gabarito Oficial (Separado por vírgula ou espaço):</label>
-        <input type="text" id="gabaritoOficial" placeholder="Ex: A, C, B, D, A, C, B, D" required>
-      </div>
-
-      <div style="margin-bottom: 12px;">
-        <label>Nível Cognitivo de Cada Questão:</label>
-        <input type="text" id="niveisQuestoes" placeholder="Ex: Baixo, Baixo, Básico, Básico, Médio, Médio, Alto, Alto" required>
-      </div>
-
-      <button type="submit" class="btn-salvar" id="btnSalvarProva">💾 Salvar Prova e Ativar para Correção</button>
-      <button type="button" class="btn-cancelar" id="btnCancelarEditProva" style="display:none; width:100%; margin-top:6px;" onclick="resetFormProva()">Cancelar Edição</button>
-    </form>
-
-    <hr style="border: 0; border-top: 1px solid var(--border); margin: 25px 0 15px 0;">
-
-    <h4 style="color: var(--accent); margin-bottom: 10px;">📚 Provas Cadastradas (João Tavares)</h4>
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Nome da Prova</th>
-            <th>Questões</th>
-            <th>Gabarito</th>
-            <th>Nível Geral</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaProvasCadastradas"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ABA 2 -->
-  <div id="abaRespostas" class="tab-content card">
-    <div id="bannerProvaAtiva" class="status-banner">
-      <span id="textoProvaAtiva">📌 Nenhuma prova selecionada.</span>
     </div>
 
-    <div style="margin-bottom: 15px;">
-      <label>Selecionar Prova Ativa para Lançamento:</label>
-      <select id="selProvaRespostas" onchange="selecionarProvaAtivaDirecto()"></select>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-title">Total de Alunos</div>
+        <div class="kpi-value" id="kpiTotalAlunos" style="color: var(--text);">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Média de Acertos</div>
+        <div class="kpi-value" id="kpiMediaAcertos" style="color: var(--success);">0%</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Regulação da Turma</div>
+        <div class="kpi-value" id="kpiRegulacaoTurma" style="color: var(--warning);">-</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-title">Questão Crítica</div>
+        <div class="kpi-value" id="kpiQuestaoCritica" style="color: var(--danger);">-</div>
+      </div>
     </div>
 
-    <h3 style="color: var(--accent); margin-bottom: 10px;">⚡ Lançamento Express da Turma</h3>
-    <textarea id="listaRespostasAlunos" placeholder="Exemplo de colar em lote:&#10;Arthur Pereira, A, C, B, D, A, C, B, D&#10;Beatriz Lima, A, A, B, C, A, C, B, D"></textarea>
+    <div class="dica-card">
+      <div class="dica-icon">💡</div>
+      <div>
+        <h4 style="color: var(--info); margin-bottom: 4px; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;">Recomendação de Intervenção Pedagógica</h4>
+        <p id="textoDicaPedagogica" style="font-size: 0.9rem; color: var(--text-dim); line-height: 1.4;">
+          Cadastre uma prova, faça lançamentos e selecione-a no filtro para gerar o diagnóstico.
+        </p>
+      </div>
+    </div>
 
-    <button type="button" onclick="processarRespostasLote()" class="btn-salvar">🚀 Corrigir e Gerar Diagnóstico da Turma</button>
-  </div>
-
-  <!-- ABA 3 -->
-  <div id="abaAnalise" class="tab-content">
     <div class="card">
       <h3 style="color: var(--accent); margin-bottom: 15px;">📊 Visão Geral da Turma por Proficiência</h3>
-      <div class="filter-bar">
-        <div>
-          <label>Filtrar Prova:</label>
-          <select id="selFiltroProvaGrafico" onchange="aoMudarFiltroProva()"></select>
-        </div>
-      </div>
-
       <div class="chart-wrapper">
         <div class="chart-container">
           <canvas id="graficoDiagnostico"></canvas>
@@ -298,33 +280,125 @@
   </div>
 </div>
 
-<!-- MODAL EDITAR ALUNO -->
-<div class="modal-overlay" id="modalEditAluno">
+<!-- ================= MODAIS EXCLUSIVAS ================= -->
+
+<!-- JANELA 1: CONFIGURAR PROVAS -->
+<div class="modal-overlay" id="modalConfigProva">
   <div class="modal-box">
-    <h3 class="modal-title">✏️ Editar Registro do Aluno</h3>
+    <div class="modal-title">
+      <span>⚙️ Cadastro e Edição de Avaliações</span>
+      <button class="close-btn" onclick="fecharJanela('modalConfigProva')">✖</button>
+    </div>
+    
+    <form id="formCadProva">
+      <input type="hidden" id="editProvaId">
+      <div class="form-grid">
+        <div>
+          <label>Nome da Avaliação / Prova:</label>
+          <input type="text" id="nomeProvaCad" placeholder="Ex: Prova 1 - CAEd Ciências" required>
+        </div>
+        <div>
+          <label>Nível Esperado Geral:</label>
+          <select id="nivelGeralProva">
+            <option value="Baixo">Baixo (Reconhecimento visual/direto)</option>
+            <option value="Básico" selected>Básico (Descrição e explicação)</option>
+            <option value="Médio">Médio (Inferência e dedução)</option>
+            <option value="Alto">Alto (Interpretação e análise)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 12px;">
+        <label>Gabarito Oficial (Separado por vírgula ou espaço):</label>
+        <input type="text" id="gabaritoOficial" placeholder="Ex: A, C, B, D, A, C, B, D" required>
+      </div>
+
+      <div style="margin-bottom: 12px;">
+        <label>Nível Cognitivo de Cada Questão:</label>
+        <input type="text" id="niveisQuestoes" placeholder="Ex: Baixo, Baixo, Básico, Básico, Médio, Médio, Alto, Alto" required>
+      </div>
+
+      <button type="submit" class="btn-salvar" id="btnSalvarProva">💾 Salvar Prova</button>
+      <button type="button" class="btn-cancelar" id="btnCancelarEditProva" style="display:none; width:100%; margin-top:6px;" onclick="resetFormProva()">Cancelar Edição</button>
+    </form>
+
+    <hr style="border: 0; border-top: 1px solid var(--border); margin: 25px 0 15px 0;">
+    <h4 style="color: var(--accent); margin-bottom: 10px;">📚 Banco de Provas Cadastradas</h4>
+    
+    <div class="table-wrapper" style="max-height: 250px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Prova</th>
+            <th>Gabarito</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaProvasCadastradas"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- JANELA 2: LANÇAR GABARITOS -->
+<div class="modal-overlay" id="modalLancarGabaritos">
+  <div class="modal-box small">
+    <div class="modal-title">
+      <span>⚡ Lançamento Express da Turma</span>
+      <button class="close-btn" onclick="fecharJanela('modalLancarGabaritos')">✖</button>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label>Prova de Destino (Onde os dados serão salvos):</label>
+      <select id="selProvaRespostas"></select>
+    </div>
+
+    <div style="margin-bottom: 15px;">
+      <label>Cole a lista de alunos e respostas (Separados por vírgula):</label>
+      <textarea id="listaRespostasAlunos" placeholder="Exemplo de colar em lote:&#10;Arthur Pereira, A, C, B, D, A, C, B, D&#10;Beatriz Lima, A, A, B, C, A, C, B, D"></textarea>
+      <span class="hint-text">Cada aluno em uma linha. Primeiro o nome, depois as alternativas.</span>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-cancelar" onclick="fecharJanela('modalLancarGabaritos')">Cancelar</button>
+      <button type="button" class="btn-salvar" style="width: auto; margin-top:0;" onclick="processarRespostasLote()">🚀 Corrigir e Gerar Diagnóstico</button>
+    </div>
+  </div>
+</div>
+
+<!-- JANELA EDITAR ALUNO (Existente) -->
+<div class="modal-overlay" id="modalEditAluno">
+  <div class="modal-box small">
+    <div class="modal-title">
+      <span>✏️ Editar Registro do Aluno</span>
+      <button class="close-btn" onclick="fecharJanela('modalEditAluno')">✖</button>
+    </div>
     <input type="hidden" id="editRegId">
     <div style="margin-bottom: 12px;">
       <label>Nome do Aluno:</label>
       <input type="text" id="editAlunoNome" required>
     </div>
     <div style="margin-bottom: 12px;">
-      <label>Respostas Enviadas (Separadas por vírgula ou espaço):</label>
+      <label>Respostas Enviadas (Separadas por vírgula):</label>
       <input type="text" id="editAlunoRespostas" required>
     </div>
     <div class="modal-actions">
-      <button type="button" class="btn-cancelar" onclick="fecharModal('modalEditAluno')">Cancelar</button>
+      <button type="button" class="btn-cancelar" onclick="fecharJanela('modalEditAluno')">Cancelar</button>
       <button type="button" class="btn-salvar" style="width: auto; margin-top:0;" onclick="salvarEdicaoAluno()">Salvar Alterações</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL RAIO-X / DETALHES -->
+<!-- JANELA RAIO-X / DETALHES (Existente) -->
 <div class="modal-overlay" id="modalDetalhesAluno">
   <div class="modal-box">
-    <h3 class="modal-title" id="detalheAlunoTitulo">🔍 Raio-X do Aluno</h3>
+    <div class="modal-title">
+      <span id="detalheAlunoTitulo">🔍 Raio-X do Aluno</span>
+      <button class="close-btn" onclick="fecharJanela('modalDetalhesAluno')">✖</button>
+    </div>
     <div id="detalhesConteudo"></div>
     <div class="modal-actions">
-      <button type="button" class="btn-cancelar" onclick="fecharModal('modalDetalhesAluno')">Fechar</button>
+      <button type="button" class="btn-cancelar" onclick="fecharJanela('modalDetalhesAluno')">Fechar</button>
     </div>
   </div>
 </div>
@@ -341,22 +415,14 @@
     if (provaAtivaId) localStorage.setItem('labAtivo_jt_provaAtivaId', provaAtivaId);
   }
 
-  function mudarAba(abaId) {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-    if (abaId === 'abaGabarito') document.getElementById('btnTab1').classList.add('active');
-    if (abaId === 'abaRespostas') document.getElementById('btnTab2').classList.add('active');
-    if (abaId === 'abaAnalise') document.getElementById('btnTab3').classList.add('active');
-
-    document.getElementById(abaId).classList.add('active');
-
-    atualizarSelects();
-    if (abaId === 'abaGabarito') atualizarTabelaProvas();
-    if (abaId === 'abaAnalise') {
-      desenharGrafico();
-      atualizarTabela();
-    }
+  // Controle de Janelas Flutuantes (Modais)
+  function abrirJanela(modalId) {
+    document.getElementById(modalId).classList.add('active');
+    if(modalId === 'modalConfigProva') atualizarTabelaProvas();
+    if(modalId === 'modalLancarGabaritos') atualizarSelects();
+  }
+  function fecharJanela(modalId) {
+    document.getElementById(modalId).classList.remove('active');
   }
 
   function recalcularTodosOsResultados() {
@@ -394,7 +460,7 @@
     const niveis = niveisRaw.split(',').map(s => s.trim()).filter(s => s !== '');
 
     if (gabarito.length !== niveis.length) {
-      alert(`Quantidade divergente! Você inseriu ${gabarito.length} respostas no gabarito e ${niveis.length} níveis.`);
+      alert(`Quantidade divergente! Você inseriu ${gabarito.length} respostas e ${niveis.length} níveis.`);
       return;
     }
 
@@ -402,25 +468,24 @@
       const idx = bancoProvas.findIndex(p => p.id == editId);
       if (idx !== -1) {
         bancoProvas[idx] = { id: parseInt(editId), nome, nivelGeral, gabarito, niveis };
-        alert(`Prova "${nome}" atualizada com sucesso!`);
       }
     } else {
       const novaProva = { id: Date.now(), nome, nivelGeral, gabarito, niveis };
       bancoProvas.push(novaProva);
       provaAtivaId = novaProva.id;
-      alert(`Prova "${nome}" salva com sucesso!`);
     }
 
     recalcularTodosOsResultados();
     resetFormProva();
     atualizarTabelaProvas();
     atualizarSelects();
+    aoMudarFiltroProva(); // Atualiza a tela de fundo
   });
 
   function resetFormProva() {
     document.getElementById('editProvaId').value = '';
     document.getElementById('formCadProva').reset();
-    document.getElementById('btnSalvarProva').innerHTML = '💾 Salvar Prova e Ativar para Correção';
+    document.getElementById('btnSalvarProva').innerHTML = '💾 Salvar Prova';
     document.getElementById('btnCancelarEditProva').style.display = 'none';
   }
 
@@ -435,17 +500,17 @@
 
       document.getElementById('btnSalvarProva').innerHTML = '✏️ Salvar Alterações da Prova';
       document.getElementById('btnCancelarEditProva').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }
 
   function excluirProva(id) {
-    if (confirm("Deseja excluir esta prova?")) {
+    if (confirm("Deseja excluir esta prova e todas as suas configurações?")) {
       bancoProvas = bancoProvas.filter(p => p.id != id);
       if (provaAtivaId == id) provaAtivaId = bancoProvas.length > 0 ? bancoProvas[0].id : null;
       salvarTudo();
       atualizarTabelaProvas();
       atualizarSelects();
+      aoMudarFiltroProva();
     }
   }
 
@@ -458,9 +523,7 @@
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td><strong>${p.nome}</strong></td>
-        <td>${p.gabarito.length}</td>
-        <td><code style="color:var(--accent);">${p.gabarito.join(', ')}</code></td>
-        <td><span class="badge-nivel ${obterClasseBadge(p.nivelGeral)}">${p.nivelGeral || 'Básico'}</span></td>
+        <td><code style="color:var(--accent); font-size: 0.8rem;">${p.gabarito.join(', ')}</code></td>
         <td>
           <div class="action-btns">
             <button type="button" class="btn-acao btn-editar" onclick="editarProva(${p.id})">Editar</button>
@@ -472,26 +535,11 @@
     });
   }
 
-  function selecionarProvaAtivaDirecto() {
-    provaAtivaId = parseInt(document.getElementById('selProvaRespostas').value);
-    salvarTudo();
-    atualizarBanner();
-  }
-
-  function atualizarBanner() {
-    const banner = document.getElementById('textoProvaAtiva');
-    const p = bancoProvas.find(item => item.id == provaAtivaId);
-    if (p) {
-      banner.innerHTML = `📌 Prova Ativa: <strong>${p.nome}</strong> (${p.gabarito.length} Questões)`;
-    } else {
-      banner.innerHTML = `📌 Nenhuma prova cadastrada ou selecionada.`;
-    }
-  }
-
   function processarRespostasLote() {
-    const provaObj = bancoProvas.find(p => p.id == provaAtivaId);
+    const pId = document.getElementById('selProvaRespostas').value;
+    const provaObj = bancoProvas.find(p => p.id == pId);
     if (!provaObj) {
-      alert("Por favor, cadastre uma prova na Aba 1 antes de lançar os alunos.");
+      alert("Por favor, selecione ou cadastre uma prova primeiro.");
       return;
     }
 
@@ -537,10 +585,12 @@
     });
 
     if (processados > 0) {
+      provaAtivaId = provaObj.id; // Atualiza o filtro principal
       salvarTudo();
-      alert(`Sucesso! ${processados} alunos corrigidos na prova "${provaObj.nome}".`);
       document.getElementById('listaRespostasAlunos').value = '';
-      mudarAba('abaAnalise');
+      fecharJanela('modalLancarGabaritos');
+      atualizarSelects();
+      aoMudarFiltroProva(); // Recarrega o painel central
     } else {
       alert("Nenhum registro no formato correto encontrado.");
     }
@@ -562,7 +612,6 @@
     if (!provaAtivaId && bancoProvas.length > 0) {
       provaAtivaId = bancoProvas[0].id;
     }
-    atualizarBanner();
   }
 
   function obterClasseBadge(nivel) {
@@ -576,20 +625,30 @@
   }
 
   function aoMudarFiltroProva() {
-    atualizarTabela();
+    const selectFiltro = document.getElementById('selFiltroProvaGrafico');
+    if(selectFiltro && selectFiltro.value) {
+      provaAtivaId = selectFiltro.value;
+      salvarTudo();
+    }
+    atualizarTabelaEIndicadores();
     desenharGrafico();
   }
 
-  function atualizarTabela() {
+  function atualizarTabelaEIndicadores() {
     const tbody = document.getElementById('tabelaResultados');
     if (!tbody) return;
     tbody.innerHTML = '';
 
     const pFiltro = document.getElementById('selFiltroProvaGrafico').value;
     const filtrados = resultadosAlunos.filter(r => r.provaId == pFiltro);
+    const provaObj = bancoProvas.find(p => p.id == pFiltro);
+
+    let somaPercentual = 0;
+    let acertosPorQuestao = provaObj ? new Array(provaObj.gabarito.length).fill(0) : [];
 
     filtrados.forEach((item) => {
       const p = bancoProvas.find(prova => prova.id == item.provaId);
+      somaPercentual += item.percentual;
       
       let tagsHtml = '';
       if (p && item.respostas) {
@@ -597,6 +656,7 @@
           const respAluno = item.respostas[idx];
           if (respAluno === correta) {
             tagsHtml += `<span class="q-tag q-certa" title="Q${idx+1}: Certa (${respAluno})">${idx+1}</span>`;
+            if (acertosPorQuestao[idx] !== undefined) acertosPorQuestao[idx]++;
           } else {
             tagsHtml += `<span class="q-tag q-errada" title="Q${idx+1}: Errada (Marcou: ${respAluno || '-'}, Correto: ${correta})">${idx+1}</span>`;
           }
@@ -616,22 +676,69 @@
         <td>
           <div class="action-btns">
             <button type="button" class="btn-acao btn-detalhes" onclick="verDetalhesAluno('${item.idReg}')">Ver Detalhes</button>
-            <button type="button" class="btn-acao btn-editar" onclick="abrirModalEditAluno('${item.idReg}')">Editar</button>
+            <button type="button" class="btn-acao btn-editar" onclick="abrirJanelaEdicao('${item.idReg}')">Editar</button>
             <button type="button" class="btn-acao btn-excluir" onclick="excluirResultado('${item.idReg}')">Excluir</button>
           </div>
         </td>
       `;
       tbody.appendChild(tr);
     });
+
+    const total = filtrados.length;
+    document.getElementById('kpiTotalAlunos').innerText = total;
+
+    if (total > 0 && provaObj) {
+      const media = Math.round(somaPercentual / total);
+      document.getElementById('kpiMediaAcertos').innerText = `${media}%`;
+
+      let regNivel = 'Baixo';
+      let regCor = 'var(--danger)';
+      if (media >= 80) { regNivel = 'Alto'; regCor = 'var(--success)'; }
+      else if (media >= 60) { regNivel = 'Médio'; regCor = 'var(--info)'; }
+      else if (media >= 40) { regNivel = 'Básico'; regCor = 'var(--warning)'; }
+
+      const elReg = document.getElementById('kpiRegulacaoTurma');
+      elReg.innerText = regNivel;
+      elReg.style.color = regCor;
+
+      let menorAcerto = total + 1;
+      let qCriticaIndex = 0;
+      acertosPorQuestao.forEach((qtd, idx) => {
+        if (qtd < menorAcerto) {
+          menorAcerto = qtd;
+          qCriticaIndex = idx;
+        }
+      });
+
+      const numQ = qCriticaIndex + 1;
+      const pctCritica = Math.round((menorAcerto / total) * 100);
+      const nivelCognitivoCritico = provaObj.niveis[qCriticaIndex] || 'Básico';
+
+      document.getElementById('kpiQuestaoCritica').innerText = `Q${numQ} (${pctCritica}%)`;
+
+      let dica = `A questão com maior taxa de erro é a **Questão ${numQ}** (Nível ${nivelCognitivoCritico}), acertada por apenas **${pctCritica}%** da turma. `;
+      if (regNivel === 'Baixo' || regNivel === 'Básico') {
+        dica += `Como a turma se encontra globalmente no nível **${regNivel}**, recomenda-se realizar um momento de **recomposição de aprendizagem**, revisando os conceitos diretos dessa questão com o apoio de diagramas visuais.`;
+      } else {
+        dica += `Com a turma regulada no nível **${regNivel}**, a maioria dos conteúdos está bem consolidada. Recomenda-se realizar uma breve discussão em grupo focada na Questão ${numQ}.`;
+      }
+      document.getElementById('textoDicaPedagogica').innerHTML = dica;
+    } else {
+      document.getElementById('kpiMediaAcertos').innerText = `0%`;
+      document.getElementById('kpiRegulacaoTurma').innerText = `-`;
+      document.getElementById('kpiRegulacaoTurma').style.color = 'var(--warning)';
+      document.getElementById('kpiQuestaoCritica').innerText = `-`;
+      document.getElementById('textoDicaPedagogica').innerText = `Sem lançamentos para a prova selecionada.`;
+    }
   }
 
-  function abrirModalEditAluno(idReg) {
+  function abrirJanelaEdicao(idReg) {
     const reg = resultadosAlunos.find(r => String(r.idReg) === String(idReg));
     if (reg) {
       document.getElementById('editRegId').value = reg.idReg;
       document.getElementById('editAlunoNome').value = reg.aluno;
       document.getElementById('editAlunoRespostas').value = reg.respostas ? reg.respostas.join(', ') : '';
-      document.getElementById('modalEditAluno').classList.add('active');
+      abrirJanela('modalEditAluno');
     }
   }
 
@@ -663,9 +770,8 @@
       }
 
       salvarTudo();
-      fecharModal('modalEditAluno');
-      atualizarTabela();
-      desenharGrafico();
+      fecharJanela('modalEditAluno');
+      aoMudarFiltroProva();
     }
   }
 
@@ -705,19 +811,14 @@
 
     html += `</div>`;
     document.getElementById('detalhesConteudo').innerHTML = html;
-    document.getElementById('modalDetalhesAluno').classList.add('active');
-  }
-
-  function fecharModal(modalId) {
-    document.getElementById(modalId).classList.remove('active');
+    abrirJanela('modalDetalhesAluno');
   }
 
   function excluirResultado(idReg) {
     if (confirm("Deseja remover esta nota da lista?")) {
       resultadosAlunos = resultadosAlunos.filter(r => String(r.idReg) !== String(idReg));
       salvarTudo();
-      atualizarTabela();
-      desenharGrafico();
+      aoMudarFiltroProva();
     }
   }
 
@@ -741,7 +842,7 @@
       data: {
         labels: ['Nível Baixo', 'Nível Básico', 'Nível Médio', 'Nível Alto'],
         datasets: [{
-          label: 'Alunos por Nível de Proficiência',
+          label: 'Alunos por Nível',
           data: [contagem.Baixo, contagem.Básico, contagem.Médio, contagem.Alto],
           backgroundColor: ['#f87171', '#facc15', '#38bdf8', '#34d399'],
           borderRadius: 8
@@ -751,20 +852,20 @@
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#a0a0b0' } },
-          x: { grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#a0a0b0' } }
+          y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#a0a0b0', stepSize: 1 } },
+          x: { grid: { display: false }, ticks: { color: '#a0a0b0' } }
         },
         plugins: {
-          legend: { labels: { color: '#ffffff', font: { weight: 'bold' } } }
+          legend: { display: false }
         }
       }
     });
   }
 
-  // Inicialização
+  // Inicialização Automática da Tela Principal
   recalcularTodosOsResultados();
   atualizarSelects();
-  atualizarTabelaProvas();
+  aoMudarFiltroProva();
 </script>
 </body>
 </html>
