@@ -9,6 +9,11 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><radialGradient id='bgGrad' cx='50%' cy='50%' r='50%'><stop offset='0%' stop-color='%231b0e36'/><stop offset='100%' stop-color='%2307040d'/></radialGradient><linearGradient id='chemGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%2338bdf8'/><stop offset='100%' stop-color='%2334d399'/></linearGradient><linearGradient id='glassGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='rgba(255,255,255,0.8)'/><stop offset='100%' stop-color='rgba(255,255,255,0.2)'/></linearGradient><linearGradient id='goldGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23fbbf24'/><stop offset='100%' stop-color='%23f59e0b'/></linearGradient></defs><rect width='512' height='512' rx='128' fill='url(%23bgGrad)'/><rect width='496' height='496' x='8' y='8' rx='120' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='4'/><g transform='translate(140, 100) rotate(15, 100, 150)'><path d='M75,180 L125,180 C125,230 110,250 100,250 C90,250 75,230 75,180 Z' fill='url(%23chemGrad)'/><path d='M70,60 L130,60 L130,200 C130,240 115,260 100,260 C85,260 70,240 70,200 Z' fill='none' stroke='url(%23glassGrad)' stroke-width='14' stroke-linecap='round' stroke-linejoin='round'/><rect x='60' y='48' width='80' height='16' rx='8' fill='url(%23glassGrad)'/><circle cx='92' cy='150' r='7' fill='%23ffffff' opacity='0.8'/><circle cx='110' cy='120' r='5' fill='%23ffffff' opacity='0.6'/></g><path d='M280,210 C280,130 370,110 390,110 C390,190 300,210 280,210 Z' fill='url(%23chemGrad)'/><path d='M380,80 L386,100 L406,106 L386,112 L380,132 L374,112 L354,106 L374,100 Z' fill='url(%23goldGrad)'/></svg>">
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- FIREBASE SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
   <style>
     :root {
       --bg: #0d0618;
@@ -106,12 +111,6 @@
 
     textarea { resize: vertical; min-height: 120px; }
 
-    .status-banner {
-      background: rgba(52, 211, 153, 0.1); border: 1px solid rgba(52, 211, 153, 0.3);
-      color: var(--success); padding: 12px 16px; border-radius: 10px; margin-bottom: 15px;
-      font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: space-between;
-    }
-
     button.btn-salvar {
       background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #1a0a00;
       font-weight: 800; border: none; padding: 12px 20px; border-radius: 8px;
@@ -120,10 +119,17 @@
     button.btn-salvar:hover { opacity: 0.9; transform: translateY(-1px); }
 
     .filter-bar {
-      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;
       margin-bottom: 20px; background: rgba(255, 255, 255, 0.03);
-      padding: 12px; border-radius: 10px; border: 1px solid var(--border);
+      padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border);
     }
+
+    .btn-download {
+      background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid rgba(52, 211, 153, 0.4);
+      padding: 8px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem;
+      display: inline-flex; align-items: center; gap: 6px; transition: 0.2s;
+    }
+    .btn-download:hover { background: rgba(52, 211, 153, 0.25); transform: translateY(-1px); }
 
     .chart-wrapper { width: 100%; overflow-x: auto; padding-bottom: 10px; }
     .chart-container { position: relative; height: 350px; min-width: 600px; }
@@ -218,6 +224,7 @@
         <label style="font-weight: bold; margin-right: 8px;">Exibindo Resultados da Prova:</label>
         <select id="selFiltroProvaGrafico" onchange="aoMudarFiltroProva()"></select>
       </div>
+      <button type="button" class="btn-download" onclick="baixarResultadosCSV()">📥 Baixar Resultados (.csv)</button>
     </div>
 
     <div class="kpi-grid">
@@ -404,18 +411,48 @@
 </div>
 
 <script>
-  let bancoProvas = JSON.parse(localStorage.getItem('labAtivo_jt_configProvas')) || [];
-  let resultadosAlunos = JSON.parse(localStorage.getItem('labAtivo_jt_resultadosProvas')) || [];
-  let provaAtivaId = localStorage.getItem('labAtivo_jt_provaAtivaId') || null;
+  // CONFIGURAÇÃO REAL DO FIREBASE - UE JOÃO TAVARES DA COSTA
+  const firebaseConfig = {
+    apiKey: "AIzaSyAXIOrHsZbHXvOIGTk0HS8NOwVBvpmwrOo",
+    authDomain: "ue-joao-tavares-da-costa.firebaseapp.com",
+    databaseURL: "https://ue-joao-tavares-da-costa-default-rtdb.firebaseio.com",
+    projectId: "ue-joao-tavares-da-costa",
+    storageBucket: "ue-joao-tavares-da-costa.firebasestorage.app",
+    messagingSenderId: "879518153821",
+    appId: "1:879518153821:web:282a71916d6b1e9199a1b4"
+  };
+
+  // Inicializa o Firebase
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+  const db = firebase.database();
+
+  let bancoProvas = [];
+  let resultadosAlunos = [];
+  let provaAtivaId = null;
   let meuGrafico = null;
 
+  // ESCUTADOR EM TEMPO REAL - Sincroniza dados instantaneamente entre todos os dispositivos
+  db.ref('labAtivo_jt_provasExternas').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    bancoProvas = data.configProvas || [];
+    resultadosAlunos = data.resultadosProvas || [];
+    if (!provaAtivaId && bancoProvas.length > 0) {
+      provaAtivaId = bancoProvas[0].id;
+    }
+    recalcularTodosOsResultados(false);
+    atualizarSelects();
+    aoMudarFiltroProva();
+  });
+
   function salvarTudo() {
-    localStorage.setItem('labAtivo_jt_configProvas', JSON.stringify(bancoProvas));
-    localStorage.setItem('labAtivo_jt_resultadosProvas', JSON.stringify(resultadosAlunos));
-    if (provaAtivaId) localStorage.setItem('labAtivo_jt_provaAtivaId', provaAtivaId);
+    db.ref('labAtivo_jt_provasExternas').set({
+      configProvas: bancoProvas,
+      resultadosProvas: resultadosAlunos
+    });
   }
 
-  // Controle de Janelas Flutuantes (Modais)
   function abrirJanela(modalId) {
     document.getElementById(modalId).classList.add('active');
     if(modalId === 'modalConfigProva') atualizarTabelaProvas();
@@ -425,7 +462,7 @@
     document.getElementById(modalId).classList.remove('active');
   }
 
-  function recalcularTodosOsResultados() {
+  function recalcularTodosOsResultados(dispararSalvar = true) {
     resultadosAlunos.forEach(res => {
       const p = bancoProvas.find(item => item.id == res.provaId);
       if (p) {
@@ -444,7 +481,7 @@
         else res.nivelCalculado = 'Baixo';
       }
     });
-    salvarTudo();
+    if (dispararSalvar) salvarTudo();
   }
 
   document.getElementById('formCadProva').addEventListener('submit', (e) => {
@@ -479,7 +516,7 @@
     resetFormProva();
     atualizarTabelaProvas();
     atualizarSelects();
-    aoMudarFiltroProva(); // Atualiza a tela de fundo
+    aoMudarFiltroProva();
   });
 
   function resetFormProva() {
@@ -585,12 +622,12 @@
     });
 
     if (processados > 0) {
-      provaAtivaId = provaObj.id; // Atualiza o filtro principal
+      provaAtivaId = provaObj.id;
       salvarTudo();
       document.getElementById('listaRespostasAlunos').value = '';
       fecharJanela('modalLancarGabaritos');
       atualizarSelects();
-      aoMudarFiltroProva(); // Recarrega o painel central
+      aoMudarFiltroProva();
     } else {
       alert("Nenhum registro no formato correto encontrado.");
     }
@@ -628,7 +665,6 @@
     const selectFiltro = document.getElementById('selFiltroProvaGrafico');
     if(selectFiltro && selectFiltro.value) {
       provaAtivaId = selectFiltro.value;
-      salvarTudo();
     }
     atualizarTabelaEIndicadores();
     desenharGrafico();
@@ -862,10 +898,36 @@
     });
   }
 
-  // Inicialização Automática da Tela Principal
-  recalcularTodosOsResultados();
-  atualizarSelects();
-  aoMudarFiltroProva();
+  // BAIXAR OS RESULTADOS DA PROVA SELECIONADA EM EXCEL (.CSV)
+  function baixarResultadosCSV() {
+    const pFiltro = document.getElementById('selFiltroProvaGrafico').value;
+    const provaObj = bancoProvas.find(p => p.id == pFiltro);
+    const filtrados = resultadosAlunos.filter(r => r.provaId == pFiltro);
+
+    if (!provaObj || filtrados.length === 0) {
+      alert("Não há dados cadastrados ou selecionados para baixar nesta prova.");
+      return;
+    }
+
+    let csvContent = "\uFEFF";
+    csvContent += "Aluno;Avaliacao;Acertos;TotalQuestoes;NotaPercentual;NivelCognitivo;RespostasEnviadas\n";
+
+    filtrados.forEach(item => {
+      const respStr = item.respostas ? item.respostas.join('-') : '';
+      csvContent += `"${item.aluno}";"${item.provaNome}";${item.acertos};${item.totalQuestoes};${item.percentual}%;"${item.nivelCalculado}";"${respStr}"\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const nomeArquivo = `Resultados_${provaObj.nome.replace(/[^a-zA-Z0-9]/g, '_')}.csv`;
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", nomeArquivo);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 </script>
 </body>
 </html>
