@@ -8,7 +8,9 @@
   <!-- FAVICON EMBUTIDO -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><radialGradient id='bgGrad' cx='50%' cy='50%' r='50%'><stop offset='0%' stop-color='%231b0e36'/><stop offset='100%' stop-color='%2307040d'/></radialGradient><linearGradient id='chemGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%2338bdf8'/><stop offset='100%' stop-color='%2334d399'/></linearGradient><linearGradient id='glassGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='rgba(255,255,255,0.8)'/><stop offset='100%' stop-color='rgba(255,255,255,0.2)'/></linearGradient><linearGradient id='goldGrad' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23fbbf24'/><stop offset='100%' stop-color='%23f59e0b'/></linearGradient></defs><rect width='512' height='512' rx='128' fill='url(%23bgGrad)'/><rect width='496' height='496' x='8' y='8' rx='120' fill='none' stroke='rgba(255,255,255,0.08)' stroke-width='4'/><g transform='translate(140, 100) rotate(15, 100, 150)'><path d='M75,180 L125,180 C125,230 110,250 100,250 C90,250 75,230 75,180 Z' fill='url(%23chemGrad)'/><path d='M70,60 L130,60 L130,200 C130,240 115,260 100,260 C85,260 70,240 70,200 Z' fill='none' stroke='url(%23glassGrad)' stroke-width='14' stroke-linecap='round' stroke-linejoin='round'/><rect x='60' y='48' width='80' height='16' rx='8' fill='url(%23glassGrad)'/><circle cx='92' cy='150' r='7' fill='%23ffffff' opacity='0.8'/><circle cx='110' cy='120' r='5' fill='%23ffffff' opacity='0.6'/></g><path d='M280,210 C280,130 370,110 390,110 C390,190 300,210 280,210 Z' fill='url(%23chemGrad)'/><path d='M380,80 L386,100 L406,106 L386,112 L380,132 L374,112 L354,106 L374,100 Z' fill='url(%23goldGrad)'/></svg>">
 
+  <!-- CHART.JS & HTML2PDF -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   
   <!-- FIREBASE SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -243,12 +245,12 @@
     .filter-group { display: flex; gap: 10px; flex-wrap: wrap; flex: 1 1 250px; }
     .filter-item { flex: 1 1 120px; }
 
-    .btn-download {
-      background: rgba(52, 211, 153, 0.15); color: var(--success); border: 1px solid rgba(52, 211, 153, 0.4);
-      padding: 9px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem;
+    .btn-download-pdf {
+      background: rgba(251, 191, 36, 0.15); color: var(--accent); border: 1px solid rgba(251, 191, 36, 0.4);
+      padding: 9px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 0.85rem;
       display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s;
     }
-    .btn-download:hover { background: rgba(52, 211, 153, 0.25); }
+    .btn-download-pdf:hover { background: rgba(251, 191, 36, 0.25); transform: translateY(-1px); }
 
     .chart-wrapper { width: 100%; overflow-x: auto; }
     .chart-container { position: relative; height: 280px; min-width: 450px; }
@@ -278,6 +280,24 @@
       display: flex; gap: 10px; align-items: center; margin-bottom: 8px;
       background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px; border: 1px solid var(--border);
     }
+
+    /* ESTILO EXCLUSIVO PARA O RELATÓRIO PDF */
+    .pdf-render-area {
+      background: #ffffff !important;
+      color: #111827 !important;
+      padding: 25px !important;
+      font-family: Arial, sans-serif !important;
+    }
+    .pdf-render-area h2 { color: #1e3a8a !important; margin-bottom: 5px !important; font-size: 1.4rem !important; }
+    .pdf-render-area h4 { color: #3b82f6 !important; margin-top: 15px !important; margin-bottom: 8px !important; font-size: 1rem !important; }
+    .pdf-render-area .pdf-kpi-grid { display: flex !important; gap: 10px !important; margin-bottom: 15px !important; }
+    .pdf-render-area .pdf-kpi-card { flex: 1 !important; background: #f3f4f6 !important; border: 1px solid #e5e7eb !important; border-radius: 8px !important; padding: 10px !important; }
+    .pdf-render-area .pdf-kpi-title { font-size: 0.65rem !important; color: #6b7280 !important; font-weight: bold !important; text-transform: uppercase !important; }
+    .pdf-render-area .pdf-kpi-value { font-size: 1.2rem !important; font-weight: bold !important; color: #1f2937 !important; margin-top: 2px !important; }
+    .pdf-render-area .pdf-dica-card { background: #eff6ff !important; border: 1px solid #bfdbfe !important; border-radius: 8px !important; padding: 12px !important; margin-bottom: 15px !important; font-size: 0.85rem !important; color: #1e40af !important; }
+    .pdf-render-area table { width: 100% !important; border-collapse: collapse !important; margin-top: 10px !important; }
+    .pdf-render-area th { background: #f3f4f6 !important; color: #374151 !important; padding: 8px !important; font-size: 0.75rem !important; border: 1px solid #d1d5db !important; }
+    .pdf-render-area td { padding: 8px !important; font-size: 0.8rem !important; border: 1px solid #e5e7eb !important; color: #1f2937 !important; }
   </style>
 </head>
 <body>
@@ -532,65 +552,67 @@
           <select id="selFiltroProvaGrafico" onchange="aoMudarFiltroProva()"></select>
         </div>
       </div>
-      <button type="button" class="btn-download" onclick="baixarResultadosCSV()">📥 Baixar Relatório (.csv)</button>
+      <button type="button" class="btn-download-pdf" onclick="baixarResultadosPDF()">📄 Baixar Relatório Completo (.pdf)</button>
     </div>
 
-    <div class="kpi-grid">
-      <div class="kpi-card">
-        <div class="kpi-title">Total de Alunos</div>
-        <div class="kpi-value" id="kpiTotalAlunos" style="color: var(--text);">0</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title">Média de Acertos</div>
-        <div class="kpi-value" id="kpiMediaAcertos" style="color: var(--success);">0%</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title">Regulação da Turma</div>
-        <div class="kpi-value" id="kpiRegulacaoTurma" style="color: var(--warning);">-</div>
-      </div>
-      <div class="kpi-card">
-        <div class="kpi-title">Questão Crítica</div>
-        <div class="kpi-value" id="kpiQuestaoCritica" style="color: var(--danger);">-</div>
-      </div>
-    </div>
-
-    <div class="dica-card">
-      <div class="dica-icon">💡</div>
-      <div>
-        <h4 style="color: var(--info); margin-bottom: 2px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;">Recomendação Pedagógica</h4>
-        <p id="textoDicaPedagogica" style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.4;">
-          Selecione a turma e a prova para visualizar os diagnósticos.
-        </p>
-      </div>
-    </div>
-
-    <div class="card">
-      <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 0.95rem;">📊 Visão Geral da Turma por Proficiência</h4>
-      <div class="chart-wrapper">
-        <div class="chart-container">
-          <canvas id="graficoDiagnostico"></canvas>
+    <div id="areaRelatorioPDF">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-title">Total de Alunos</div>
+          <div class="kpi-value" id="kpiTotalAlunos" style="color: var(--text);">0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Média de Acertos</div>
+          <div class="kpi-value" id="kpiMediaAcertos" style="color: var(--success);">0%</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Regulação da Turma</div>
+          <div class="kpi-value" id="kpiRegulacaoTurma" style="color: var(--warning);">-</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-title">Questão Crítica</div>
+          <div class="kpi-value" id="kpiQuestaoCritica" style="color: var(--danger);">-</div>
         </div>
       </div>
-    </div>
 
-    <div class="card">
-      <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 0.95rem;">📋 Matriz de Diagnóstico Individual</h4>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Aluno</th>
-              <th>Turma</th>
-              <th>Prova</th>
-              <th>Acertos</th>
-              <th>Nota (%)</th>
-              <th>Raio-X (C / E)</th>
-              <th>Nível</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaResultados"></tbody>
-        </table>
+      <div class="dica-card">
+        <div class="dica-icon">💡</div>
+        <div>
+          <h4 style="color: var(--info); margin-bottom: 2px; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;">Recomendação Pedagógica</h4>
+          <p id="textoDicaPedagogica" style="font-size: 0.85rem; color: var(--text-dim); line-height: 1.4;">
+            Selecione a turma e a prova para visualizar os diagnósticos.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 0.95rem;">📊 Visão Geral da Turma por Proficiência</h4>
+        <div class="chart-wrapper">
+          <div class="chart-container">
+            <canvas id="graficoDiagnostico"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h4 style="color: var(--accent); margin-bottom: 10px; font-size: 0.95rem;">📋 Matriz de Diagnóstico Individual</h4>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Aluno</th>
+                <th>Turma</th>
+                <th>Prova</th>
+                <th>Acertos</th>
+                <th>Nota (%)</th>
+                <th>Raio-X (C / E)</th>
+                <th>Nível</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaResultados"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -672,7 +694,6 @@
     resultadosAlunos = data.resultadosProvas || [];
     bancoAlunosTurmas = data.alunosTurmas || {};
     
-    // Garante inicialização das turmas no objeto de alunos
     nomesTurmas.forEach(t => {
       if (!bancoAlunosTurmas[t]) bancoAlunosTurmas[t] = [];
     });
@@ -711,10 +732,8 @@
     if (novoNome && novoNome.trim() !== "" && novoNome.trim() !== nomeAntigo) {
       const nomeFormatado = novoNome.trim().toUpperCase();
       
-      // Atualiza array principal
       nomesTurmas[index] = nomeFormatado;
 
-      // Migra a lista de alunos
       if (bancoAlunosTurmas[nomeAntigo]) {
         bancoAlunosTurmas[nomeFormatado] = bancoAlunosTurmas[nomeAntigo];
         delete bancoAlunosTurmas[nomeAntigo];
@@ -722,7 +741,6 @@
         bancoAlunosTurmas[nomeFormatado] = [];
       }
 
-      // Migra histórico de resultados
       resultadosAlunos.forEach(r => {
         if (r.turma === nomeAntigo) {
           r.turma = nomeFormatado;
@@ -1396,7 +1414,8 @@
     });
   }
 
-  function baixarResultadosCSV() {
+  // GERAR E BAIXAR RELATÓRIO PDF ORGANIZADO
+  function baixarResultadosPDF() {
     const pFiltro = document.getElementById('selFiltroProvaGrafico').value;
     const tFiltro = document.getElementById('selFiltroTurmaGrafico').value;
     const provaObj = bancoProvas.find(p => p.id == pFiltro);
@@ -1407,29 +1426,90 @@
     }
 
     if (!provaObj || filtrados.length === 0) {
-      alert("Não há dados selecionados para baixar neste filtro.");
+      alert("Não há dados selecionados para baixar o relatório em PDF.");
       return;
     }
 
-    let csvContent = "\uFEFF";
-    csvContent += "Aluno;Turma;Avaliacao;Acertos;TotalQuestoes;NotaPercentual;NivelCognitivo;RespostasEnviadas\n";
+    const graficoCanvas = document.getElementById('graficoDiagnostico');
+    const graficoImgData = graficoCanvas ? graficoCanvas.toDataURL('image/png') : '';
 
+    const pdfDiv = document.createElement('div');
+    pdfDiv.className = 'pdf-render-area';
+
+    let tabelaTrs = '';
     filtrados.forEach(item => {
-      const respStr = item.respostas ? item.respostas.join('-') : '';
-      csvContent += `"${item.aluno}";"${item.turma || nomesTurmas[0]}";"${item.provaNome}";${item.acertos};${item.totalQuestoes};${item.percentual}%;"${item.nivelCalculado}";"${respStr}"\n`;
+      tabelaTrs += `
+        <tr>
+          <td><strong>${item.aluno}</strong></td>
+          <td>${item.turma}</td>
+          <td>${item.acertos} / ${item.totalQuestoes}</td>
+          <td><strong>${item.percentual}%</strong></td>
+          <td>${item.nivelCalculado}</td>
+        </tr>
+      `;
     });
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    const strTurma = tFiltro !== "TODAS" ? `_Turma_${tFiltro}` : '';
-    const nomeArquivo = `Resultados_${provaObj.nome.replace(/[^a-zA-Z0-9]/g, '_')}${strTurma}.csv`;
-    
-    link.setAttribute("href", url);
-    link.setAttribute("download", nomeArquivo);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    pdfDiv.innerHTML = `
+      <h2>📝 Relatório Pedagógico — UE João Tavares</h2>
+      <p style="font-size:0.85rem; color:#4b5563; margin-bottom:15px;">
+        <strong>Avaliação:</strong> ${provaObj.nome} | <strong>Turma:</strong> ${tFiltro} | <strong>Data de Emissão:</strong> ${new Date().toLocaleDateString('pt-BR')}
+      </p>
+
+      <div class="pdf-kpi-grid">
+        <div class="pdf-kpi-card">
+          <div class="pdf-kpi-title">Total Alunos</div>
+          <div class="pdf-kpi-value">${document.getElementById('kpiTotalAlunos').innerText}</div>
+        </div>
+        <div class="pdf-kpi-card">
+          <div class="pdf-kpi-title">Média Acertos</div>
+          <div class="pdf-kpi-value">${document.getElementById('kpiMediaAcertos').innerText}</div>
+        </div>
+        <div class="pdf-kpi-card">
+          <div class="pdf-kpi-title">Regulação</div>
+          <div class="pdf-kpi-value">${document.getElementById('kpiRegulacaoTurma').innerText}</div>
+        </div>
+        <div class="pdf-kpi-card">
+          <div class="pdf-kpi-title">Questão Crítica</div>
+          <div class="pdf-kpi-value">${document.getElementById('kpiQuestaoCritica').innerText}</div>
+        </div>
+      </div>
+
+      <div class="pdf-dica-card">
+        <strong>💡 Recomendação Pedagógica:</strong><br>
+        ${document.getElementById('textoDicaPedagogica').innerText}
+      </div>
+
+      <h4>📊 Distribuição de Proficiência da Turma</h4>
+      <div style="text-align:center; margin-bottom:20px;">
+        <img src="${graficoImgData}" style="max-width:100%; height:200px; border:1px solid #e5e7eb; border-radius:8px;">
+      </div>
+
+      <h4>📋 Matriz de Diagnóstico Individual</h4>
+      <table>
+        <thead>
+          <tr>
+            <th>Aluno</th>
+            <th>Turma</th>
+            <th>Acertos</th>
+            <th>Nota (%)</th>
+            <th>Nível</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tabelaTrs}
+        </tbody>
+      </table>
+    `;
+
+    const opt = {
+      margin:       10,
+      filename:     `Relatorio_Pedagogico_${provaObj.nome.replace(/[^a-zA-Z0-9]/g, '_')}_${tFiltro}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    html2pdf().set(opt).from(pdfDiv).save();
   }
 </script>
 </body>
